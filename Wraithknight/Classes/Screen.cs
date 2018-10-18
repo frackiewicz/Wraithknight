@@ -9,10 +9,10 @@ namespace Wraithknight
 {
     public abstract class Screen
     {
-        public virtual void LoadContent() { }
-        public virtual void UnloadContent() { }
-        public virtual void HandleInput(GameTime gameTime) { }
-        public virtual void Update(GameTime gameTime) { }
-        public virtual void Draw(GameTime gameTime) { }
+        public virtual Screen LoadContent() { return this; }
+        public virtual Screen UnloadContent() { return this; }
+        public virtual Screen HandleInput(GameTime gameTime) { return this; }
+        public virtual Screen Update(GameTime gameTime) { return this; }
+        public virtual Screen Draw(GameTime gameTime) { return this; }
     }
 }
