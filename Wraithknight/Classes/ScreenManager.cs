@@ -21,13 +21,11 @@ namespace Wraithknight
 
         public SpriteBatch SpriteBatch { get; private set; }
         public readonly InputReader Input; //pass input to each screen
-        internal readonly ECS ecsEnvironment; //Maybe move further down? TODO Ask Breunig for possible improvements
 
         public ScreenManager(GameBase game)
         {
             _game = game;
             Input = new InputReader();
-            ecsEnvironment = new ECS();
         }
 
         public void Initialize()
@@ -82,9 +80,7 @@ namespace Wraithknight
             Input.Update();
             if (_screens.Count > 0)
             {
-                Screen activeScreen = _screens[_screens.Count - 1]; //TODO remove temp var? change return type to Screen + chaining
-                activeScreen.HandleInput(_gameTime);
-                activeScreen.Update(_gameTime);
+                _screens[_screens.Count - 1].HandleInput(_gameTime).Update(_gameTime);
             }
         }
 

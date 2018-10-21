@@ -1,0 +1,1 @@
+Handle inertia with agility multiplier?

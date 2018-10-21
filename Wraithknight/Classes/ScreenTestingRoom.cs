@@ -19,26 +19,27 @@ namespace Wraithknight
         public ScreenTestingRoom(ScreenManager screenManager)
         {
             _screenManager = screenManager;
-            _ecs = screenManager.ecsEnvironment;
             _input = _screenManager.Input;
             _ecs = new ECS();
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
         }
 
-        public override void Update(GameTime gameTime)
+        public override Screen Update(GameTime gameTime)
         {
-            _ecs.UpdateSystems();
+            _ecs.UpdateSystems(gameTime);
+            return this;
         }
 
-        public override void Draw(GameTime gameTime)
+        public override Screen Draw(GameTime gameTime)
         {
             _screenManager.SpriteBatch.Begin();
-            _ecs.DrawEntities();
+            _ecs.Draw();
             _screenManager.SpriteBatch.End();
+            return this;
         }
 
         private int _i = 0;
-        public override void HandleInput(GameTime gameTime)
+        public override Screen HandleInput(GameTime gameTime)
         {
             float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             int speed = 100;
@@ -80,6 +81,7 @@ namespace Wraithknight
                 _i++;
             }
             base.HandleInput(gameTime);
+            return this;
         }
     }
 }

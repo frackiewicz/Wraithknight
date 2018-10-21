@@ -13,7 +13,6 @@ namespace Wraithknight
     {
 
         #region attributes
-
         private KeyboardState _previousKeyboardState;
         private KeyboardState _currentKeyboardState;
 
@@ -26,7 +25,6 @@ namespace Wraithknight
         private GamePadCapabilities _gamePadCapabilities;
         private GamePadState _previousGamePadState;
         private GamePadState _currentGamePadState;
-
         #endregion
 
 
@@ -47,14 +45,11 @@ namespace Wraithknight
                 _previousGamePadState = GamePad.GetState(PlayerIndex.One);
                 _currentGamePadState = GamePad.GetState(PlayerIndex.One);
             }
-
-
         }
 
         #region inputHandeling
 
         #region keyboard
-
         public bool IsKeyPressed(Keys key)
         {
             return _currentKeyboardState.IsKeyDown(key);
@@ -71,11 +66,9 @@ namespace Wraithknight
             return _currentKeyboardState.IsKeyUp(key) &&
                    _previousKeyboardState.IsKeyDown(key);
         }
-
         #endregion
 
         #region mouse
-
         public bool IsMouseButtonPressed(MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
@@ -110,7 +103,6 @@ namespace Wraithknight
             return false;
         }
 
-
         public bool IsMouseButtonReleased(MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
@@ -128,12 +120,7 @@ namespace Wraithknight
 
             return false;
         }
-
-
-
         #endregion
-
-
 
         #endregion
 
@@ -147,15 +134,12 @@ namespace Wraithknight
 
         private void UpdateStates()
         {
-            // update the keyboard state
             _previousKeyboardState = _currentKeyboardState;
             _currentKeyboardState = Keyboard.GetState();
 
-            // update the mouse state
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();
 
-            // update the gamepad state
             _previousGamePadState = _currentGamePadState;
             _currentGamePadState = GamePad.GetState(PlayerIndex.One);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
@@ -10,7 +11,8 @@ namespace Wraithknight
     {
         Testing
     }
-    class ECS
+
+    internal class ECS
     {
         private readonly List<Entity> _entityList = new List<Entity>();
         private readonly List<System> _systemList = new List<System>(); // replace with map for direct communication?
@@ -21,18 +23,17 @@ namespace Wraithknight
             CreateEntities(routine);
             CreateSystems(routine);
             RegisterAllEntities();
-            
         }
 
-        public void UpdateSystems()
+        public void UpdateSystems(GameTime gameTime)
         {
             foreach (var System in _systemList)
             {
-                System.Update();
+                System.Update(gameTime);
             }
         }
 
-        public void DrawEntities()
+        public void Draw()
         {
             drawSystem.Draw();
         }
@@ -40,11 +41,14 @@ namespace Wraithknight
         #region Routines
         private void CreateEntities(ecsBootRoutine routine)
         {
-            for (int i = 0; i < 10; i++)
+            if (routine == ecsBootRoutine.Testing)
             {
-                Entity entity = new Entity(EntityType.Player);
-                entity.AddComponent(new DrawComponent());
-                _entityList.Add(entity);
+                for (int i = 0; i < 10; i++)
+                {
+                    Entity entity = new Entity(EntityType.Player);
+                    entity.AddComponent(new DrawComponent());
+                    _entityList.Add(entity);
+                }
             }
         }
 
@@ -72,7 +76,6 @@ namespace Wraithknight
         {
             return _systemList.FirstOrDefault(system => system.GetType() == typeof(T));
         }
-        
 
     }
 }

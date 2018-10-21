@@ -12,8 +12,8 @@ namespace Wraithknight
         public bool active { get; protected set; } = false;
         public int RootID { get; protected set; } // is this necessary?
 
-        public abstract void Activate();
-        public abstract void Deactivate();
-       
+        public virtual void Activate() { active = true; }
+        public virtual void Deactivate() { active = false; }
+
     }
 }

@@ -29,9 +29,10 @@ namespace Wraithknight
             //TODO this
         }
 
-        public override void Draw(GameTime gameTime)
+        public override Screen Draw(GameTime gameTime)
         {
 
+            return this;
         }
 
 

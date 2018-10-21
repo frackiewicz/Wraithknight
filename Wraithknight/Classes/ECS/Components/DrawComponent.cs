@@ -16,7 +16,7 @@ namespace Wraithknight
 
         // TODO REMOVE EVERYTHING | are you sure?
         #region Constructors
-        public DrawComponent() 
+        public DrawComponent()
         {
             Texture = Assets.GetTexture("DummyTexture");
             ChangeSize(16,16);
@@ -46,7 +46,7 @@ namespace Wraithknight
             DrawRec.Height = height;
         }
 
-        private void automaticOffset() // ??? 
+        private void automaticOffset() // ???
         {
             Offset.X = -(int) Texture.Width / 2;
             Offset.Y = -(int) Texture.Height / 2;
