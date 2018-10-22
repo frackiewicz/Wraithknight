@@ -11,15 +11,12 @@ namespace Wraithknight
 {
     class ScreenTestingRoom : Screen
     {
-
         private readonly ScreenManager _screenManager;
-        private readonly InputReader _input;
         private readonly ECS _ecs;
 
         public ScreenTestingRoom(ScreenManager screenManager)
         {
             _screenManager = screenManager;
-            _input = _screenManager.Input;
             _ecs = new ECS();
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
         }
@@ -62,17 +59,17 @@ namespace Wraithknight
                 _hero.MoveActor(new Vector2(speed * deltaSeconds, 0));
             }
             */
-            if (_input.IsKeyPressed(Keys.Space))
+            if (InputReader.IsKeyPressed(Keys.Space))
             {
 
             }
 
-            if (_input.IsKeyPressed(Keys.F))
+            if (InputReader.IsKeyPressed(Keys.F))
             {
                 GC.Collect();
             }
 
-            if (_input.IsKeyTriggered(Keys.F1))
+            if (InputReader.IsKeyTriggered(Keys.F1))
             {
                 Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
                 Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;

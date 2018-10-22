@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Wraithknight.Classes.ECS.Components
+namespace Wraithknight
 {
-    class InputComponent : Component
+    public class InputComponent : Component
     {
-        public Vector2 MovementVector; 
-        public Point CursorPoint;
-        //TODO Use these abstracts or copy from InputReader -> Breunig?
+        public KeyboardState PreviousKeyboardState;
+        public KeyboardState CurrentKeyboardState;
+
+        public MouseState PreviousMouseState;
+        public MouseState CurrentMouseState;
+        public Point PreviousCursorPos;
+        public Point CurrentCursorPos;
+
+
+        public GamePadCapabilities GamePadCapabilities;
+        public GamePadState PreviousGamePadState;
+        public GamePadState CurrentGamePadState;
+        //TODO Use abstracts or copy from InputReader -> Breunig?
     }
 }

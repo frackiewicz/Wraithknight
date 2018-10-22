@@ -24,9 +24,9 @@ namespace Wraithknight
 
 
 
-        public GameScreen(ScreenManager screenManager, InputReader input)
+        public GameScreen(ScreenManager screenManager)
         {
-            //TODO this
+
         }
 
         public override Screen Draw(GameTime gameTime)

@@ -77,5 +77,18 @@ namespace Wraithknight
             return _systemList.FirstOrDefault(system => system.GetType() == typeof(T));
         }
 
+        public Entity CreateEntity(EntityType type)
+        {
+            Entity entity = new Entity(type);
+            List<Component> components = new List<Component>();
+            if (type == EntityType.Hero)
+            {
+                components.Add(new DrawComponent());
+                components.Add(new InputComponent());
+                components.Add(new MovementComponent());
+            }
+            return entity;
+        }
+
     }
 }

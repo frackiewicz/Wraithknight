@@ -11,13 +11,8 @@ namespace Wraithknight
         private readonly GraphicsDeviceManager _graphics;
         private readonly ScreenManager _screenManager;
         private readonly SoundManager _soundManager;
-        //Assetmanager?
 
         public readonly Color ColorBackground = Color.LightGray;
-
-        private Texture2D _dummyTexture;
-        private Vector2 _testpos = new Vector2(0,0);
-
         private readonly FpsCalculator _fpsCalculator;
 
 
@@ -42,7 +37,7 @@ namespace Wraithknight
 
         protected override void Initialize()
         {
-            
+            InputReader.Initialize();
             base.Initialize();
         }
 
@@ -50,7 +45,6 @@ namespace Wraithknight
         {
             Assets.Initialize(GraphicsDevice, Content);
             _screenManager.Initialize();
-            _dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
            
         }
 
@@ -62,19 +56,20 @@ namespace Wraithknight
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit(); //emergency exit
-            
+            InputReader.Update();
             _screenManager.Update(gameTime);
-
             base.Update(gameTime);
+        }
+
+        private void CheckForEmergencyExit()
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit(); //emergency exit
         }
 
         protected override void Draw(GameTime gameTime)
         {
             _screenManager.Draw(gameTime);
-
             UpdateFps(gameTime);
-            
             base.Draw(gameTime);
         }
 

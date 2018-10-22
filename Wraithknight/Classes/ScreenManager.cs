@@ -15,17 +15,14 @@ namespace Wraithknight
     public class ScreenManager
     {   //manages screens - loads, updates, passes input, draws, and removes screens
         private readonly GameBase _game;
-        private GameTime _gameTime;
 
         private readonly List<Screen> _screens = new List<Screen>();
 
         public SpriteBatch SpriteBatch { get; private set; }
-        public readonly InputReader Input; //pass input to each screen
 
         public ScreenManager(GameBase game)
         {
             _game = game;
-            Input = new InputReader();
         }
 
         public void Initialize()
@@ -76,11 +73,14 @@ namespace Wraithknight
 
         public void Update(GameTime gameTime)
         {
-            _gameTime = gameTime;
-            Input.Update();
+            UpdateHighestScreen(gameTime);
+        }
+
+        private void UpdateHighestScreen(GameTime gameTime)
+        {
             if (_screens.Count > 0)
             {
-                _screens[_screens.Count - 1].HandleInput(_gameTime).Update(_gameTime);
+                _screens[_screens.Count - 1].HandleInput(gameTime).Update(gameTime);
             }
         }
 

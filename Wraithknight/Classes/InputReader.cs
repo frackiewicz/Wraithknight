@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
     public enum MouseButtons { LeftButton, RightButton }
-    public class InputReader
+    public static class InputReader //is static alright here? TODO Breunig
     {
 
         #region attributes
-        private KeyboardState _previousKeyboardState;
-        private KeyboardState _currentKeyboardState;
+        private static KeyboardState _previousKeyboardState;
+        private static KeyboardState _currentKeyboardState;
 
-        private MouseState _previousMouseState;
-        private MouseState _currentMouseState;
-        public Point PreviousCursorPos { get; private set; }
-        public Point CurrentCursorPos { get; private set; }
+        private static MouseState _previousMouseState;
+        private static MouseState _currentMouseState;
+        public static Point PreviousCursorPos { get; private set; }
+        public static Point CurrentCursorPos { get; private set; }
 
 
-        private GamePadCapabilities _gamePadCapabilities;
-        private GamePadState _previousGamePadState;
-        private GamePadState _currentGamePadState;
+        private static GamePadCapabilities _gamePadCapabilities;
+        private static GamePadState _previousGamePadState;
+        private static GamePadState _currentGamePadState;
         #endregion
 
 
-        public InputReader()
+        public static void Initialize()
         {
             _previousKeyboardState = Keyboard.GetState();
             _currentKeyboardState = Keyboard.GetState();
@@ -47,21 +42,34 @@ namespace Wraithknight
             }
         }
 
+        public static void UpdateInputComponent(InputComponent component)
+        {
+            component.PreviousKeyboardState = _previousKeyboardState;
+            component.CurrentKeyboardState = _currentKeyboardState;
+            component.PreviousMouseState = _previousMouseState;
+            component.CurrentMouseState = _currentMouseState;
+            component.PreviousCursorPos = PreviousCursorPos;
+            component.CurrentCursorPos = CurrentCursorPos;
+            component.GamePadCapabilities = _gamePadCapabilities;
+            component.PreviousGamePadState = _previousGamePadState;
+            component.CurrentGamePadState = _currentGamePadState;
+        }
+
         #region inputHandeling
 
         #region keyboard
-        public bool IsKeyPressed(Keys key)
+        public static bool IsKeyPressed(Keys key)
         {
             return _currentKeyboardState.IsKeyDown(key);
         }
 
-        public bool IsKeyTriggered(Keys key)
+        public static bool IsKeyTriggered(Keys key)
         {
             return _currentKeyboardState.IsKeyDown(key) &&
                    _previousKeyboardState.IsKeyUp(key);
         }
 
-        public bool IsKeyReleased(Keys key)
+        public static bool IsKeyReleased(Keys key)
         {
             return _currentKeyboardState.IsKeyUp(key) &&
                    _previousKeyboardState.IsKeyDown(key);
@@ -69,7 +77,7 @@ namespace Wraithknight
         #endregion
 
         #region mouse
-        public bool IsMouseButtonPressed(MouseButtons button)
+        public static bool IsMouseButtonPressed(MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
             {
@@ -85,7 +93,7 @@ namespace Wraithknight
             return false;
         }
 
-        public bool IsMouseButtonTriggered(MouseButtons button)
+        public static bool IsMouseButtonTriggered(MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
             {
@@ -103,7 +111,7 @@ namespace Wraithknight
             return false;
         }
 
-        public bool IsMouseButtonReleased(MouseButtons button)
+        public static bool IsMouseButtonReleased(MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
             {
@@ -126,13 +134,13 @@ namespace Wraithknight
 
         #region update
 
-        public void Update()
+        public static void Update()
         {
             UpdateStates();
             UpdateMousePos();
         }
 
-        private void UpdateStates()
+        private static void UpdateStates()
         {
             _previousKeyboardState = _currentKeyboardState;
             _currentKeyboardState = Keyboard.GetState();
@@ -144,7 +152,7 @@ namespace Wraithknight
             _currentGamePadState = GamePad.GetState(PlayerIndex.One);
         }
 
-        private void UpdateMousePos()
+        private static void UpdateMousePos()
         {
             PreviousCursorPos = CurrentCursorPos;
             CurrentCursorPos = new Point(_currentMouseState.X, _currentMouseState.Y);
