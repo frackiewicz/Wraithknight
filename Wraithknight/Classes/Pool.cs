@@ -12,7 +12,6 @@ namespace Wraithknight
         private int _activeActors;
         public readonly List<Actor> PseudoActorPool; //push created actors here, but dont remove them until cleanup
 
-        public Hero Hero { get; private set; }
 
         public Pool()
         {
@@ -33,14 +32,9 @@ namespace Wraithknight
             {
                 Functions_Draw.Draw(actor);
             }
-            Functions_Draw.Draw(Hero);
         }
 
 
-        public void SetHero(Hero hero)
-        {
-            Hero = hero;
-        }
 
         public void TempTestingEnvironment()
         {
@@ -60,11 +54,6 @@ namespace Wraithknight
         {
             ComponentIntelligence ai = actor.Intelligence;
             AiType type = ai.AiType;
-
-            if (type == AiType.Simple)
-            {
-                ai.MoveTarget = Hero.Movement.Position;
-            }
         }
     }
 }

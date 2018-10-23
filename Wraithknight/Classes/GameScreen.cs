@@ -12,16 +12,10 @@ namespace Wraithknight
     {
         private readonly ScreenManager _screenManager;
 
-        private GameManager _gameManager; // Logic (point?)
-
         private Camera2D _camera; // Maybe insert variables into the camera instance TODO cleanup
         private Rectangle _cameraRectangle;
         private Rectangle _cullRectangle;
         private Point _cullBound;
-
-
-        private Hero _hero;
-
 
 
         public GameScreen(ScreenManager screenManager)

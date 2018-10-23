@@ -14,6 +14,7 @@ namespace Wraithknight
         public abstract void Update(GameTime gameTime);
         public abstract void ResetSystem();
 
+        //DrawSystem differs
         protected void CoupleComponents<T>(ICollection<T> Target, ICollection<Entity> From)
         {
             foreach (var entity in From)

@@ -69,9 +69,7 @@
     <Compile Include="Classes\GameBase.cs" />
     <Compile Include="Classes\Functions\Functions_Draw.cs" />
     <Compile Include="Classes\Functions\Functions_Operators.cs" />
-    <Compile Include="Classes\GameManager.cs" />
     <Compile Include="Classes\GameScreen.cs" />
-    <Compile Include="Classes\Hero.cs" />
     <Compile Include="Classes\InputReader.cs" />
     <Compile Include="Classes\Level.cs" />
     <Compile Include="Classes\LevelManager.cs" />

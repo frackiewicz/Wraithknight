@@ -35,35 +35,8 @@ namespace Wraithknight
             return this;
         }
 
-        private int _i = 0;
         public override Screen HandleInput(GameTime gameTime)
         {
-            float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            int speed = 100;
-            /*
-            if (_input.IsKeyPressed(Keys.A))
-            {
-                _hero.MoveActor(new Vector2(-speed * deltaSeconds, 0));
-                Console.Write("pressed A");
-            }
-            if (_input.IsKeyPressed(Keys.W))
-            {
-                _hero.MoveActor(new Vector2(0, -speed * deltaSeconds));
-            }
-            if (_input.IsKeyPressed(Keys.S))
-            {
-                _hero.MoveActor(new Vector2(0, speed * deltaSeconds));
-            }
-            if (_input.IsKeyPressed(Keys.D))
-            {
-                _hero.MoveActor(new Vector2(speed * deltaSeconds, 0));
-            }
-            */
-            if (InputReader.IsKeyPressed(Keys.Space))
-            {
-
-            }
-
             if (InputReader.IsKeyPressed(Keys.F))
             {
                 GC.Collect();
@@ -74,8 +47,6 @@ namespace Wraithknight
                 Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
                 Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
                 Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
-                Console.WriteLine("F1 : " + _i);
-                _i++;
             }
             base.HandleInput(gameTime);
             return this;

@@ -21,10 +21,14 @@ namespace Wraithknight
         {
             foreach (MovementComponent movement in _components)
             {
-                movement.Moving = movement.Speed.Equals(Constants.NullVector);
-                movement.Position += movement.Speed * gameTime.ElapsedGameTime.Seconds;
+                movement.Moving = !movement.Speed.Equals(Constants.NullVector);
+                movement.Position += movement.Speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 ApplyInertia(movement, gameTime);
-                movement.Speed += movement.Acceleration * gameTime.ElapsedGameTime.Seconds;
+                AccelerateUntilMaxSpeed(movement, gameTime);
+
+
+                Console.WriteLine(movement.Speed);
+                Console.WriteLine(movement.Acceleration);
             }
         }
 
@@ -37,51 +41,66 @@ namespace Wraithknight
         {
             if (movement.Speed.X > 0)
             {
-                if (movement.Speed.X - movement.Friction <= 0) //step too small
+                if (movement.Speed.X - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds <= 0) //step too small
                 {
                     movement.Speed.X = 0; //snap
                 }
                 else
                 {
-                    movement.Speed.X -= movement.Friction * gameTime.ElapsedGameTime.Seconds;
+                    movement.Speed.X -= movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
-
             if (movement.Speed.X < 0)
             {
-                if (movement.Speed.X + movement.Friction >= 0)
+                if (movement.Speed.X + movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds >= 0)
                 {
                     movement.Speed.X = 0;
                 }
                 else
                 {
-                    movement.Speed.X += movement.Friction * gameTime.ElapsedGameTime.Seconds;
+                    movement.Speed.X += movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
-
             if (movement.Speed.Y > 0)
             {
-                if (movement.Speed.Y - movement.Friction <= 0)
+                if (movement.Speed.Y - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds <= 0)
                 {
                     movement.Speed.Y = 0;
                 }
                 else
                 {
-                    movement.Speed.Y -= movement.Friction * gameTime.ElapsedGameTime.Seconds;
+                    movement.Speed.Y -= movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
-
             if (movement.Speed.Y < 0)
             {
-                if (movement.Speed.Y + movement.Friction >= 0)
+                if (movement.Speed.Y + movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds >= 0)
                 {
                     movement.Speed.Y = 0;
                 }
                 else
                 {
-                    movement.Speed.Y += movement.Friction * gameTime.ElapsedGameTime.Seconds;
+                    movement.Speed.Y += movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
                 }
             }
+        }
+
+        private void AccelerateUntilMaxSpeed(MovementComponent movement, GameTime gameTime)
+        {
+            movement.Speed += (movement.Acceleration) * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            if (movement.MaxSpeed != 0.0f) //default
+            {
+                if (movement.Speed.X < -movement.MaxSpeed) { movement.Speed.X = -movement.MaxSpeed; }
+                if (movement.Speed.X > movement.MaxSpeed) { movement.Speed.X = movement.MaxSpeed; }
+                if (movement.Speed.Y < -movement.MaxSpeed) { movement.Speed.Y = -movement.MaxSpeed; }
+                if (movement.Speed.Y > movement.MaxSpeed) { movement.Speed.Y = movement.MaxSpeed; }
+            }
+            
+        }
+
+        private bool DiagonalTooLong(MovementComponent movement) // TODO Breunig
+        {
+            return false;
         }
     }
 }

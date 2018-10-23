@@ -10,7 +10,6 @@ namespace Wraithknight
     public class Actor// break inheritance?
     //newsflash: GET THE FUCK OUTTA HERE
     {
-        public ActorType ActorType;
         public Boolean Active;
 
         public DrawComponent Sprite;
@@ -23,22 +22,12 @@ namespace Wraithknight
 
         public Actor()
         {
-            ActorType = ActorType.Empty;
             Sprite = new DrawComponent();
             Movement = new ComponentMovement();
             Collision = new ComponentCollision();
             Intelligence = new ComponentIntelligence();
         }
 
-        public void SetActor(ActorType actorType, DrawComponent sprite = null, ComponentMovement movement = null,
-            ComponentCollision collision = null, ComponentIntelligence intelligence = null)
-        {
-            ActorType = actorType;
-            if (sprite != null) Sprite = sprite;
-            if (movement != null) Movement = movement;
-            if (collision != null) Collision = collision;
-            if (intelligence != null) Intelligence = intelligence;
-        }
 
         public virtual void MoveActor(Vector2 vector) //Move higher for collision?
         {

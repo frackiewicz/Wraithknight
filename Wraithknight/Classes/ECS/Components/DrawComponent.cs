@@ -40,7 +40,7 @@ namespace Wraithknight
         #endregion
 
 
-        public void ChangeSize(int width, int height) //LOGIC? Does it break ecsEnvironment? TODO Ask Breunig
+        public void ChangeSize(int width, int height)
         {
             DrawRec.Width = width;
             DrawRec.Height = height;

@@ -15,9 +15,13 @@ namespace Wraithknight
     public enum Direction
     {
         Up,
+        UpRight,
+        Right,
+        DownRight,
         Down,
+        DownLeft,
         Left,
-        Right
+        UpLeft
     }
 
     public enum AiType
@@ -25,9 +29,4 @@ namespace Wraithknight
         Simple
     }
 
-    public enum ActorType //HeroSwordsman , ForestWolf   <-- seperate with prefixes
-    {
-        Empty,
-        test
-    }
 }

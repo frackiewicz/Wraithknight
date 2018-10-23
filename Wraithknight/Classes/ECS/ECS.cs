@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Wraithknight.Classes.ECS.Systems;
 
 namespace Wraithknight
 {
@@ -43,12 +44,8 @@ namespace Wraithknight
         {
             if (routine == ecsBootRoutine.Testing)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    Entity entity = new Entity(EntityType.Player);
-                    entity.AddComponent(new DrawComponent());
-                    _entityList.Add(entity);
-                }
+                
+                _entityList.Add(CreateEntity(EntityType.Hero));
             }
         }
 
@@ -59,7 +56,9 @@ namespace Wraithknight
 
             if (routine == ecsBootRoutine.Testing)
             {
-
+                _systemList.Add(new InputSystem());
+                _systemList.Add(new HeroControlSystem());
+                _systemList.Add(new MovementSystem());
             }
         }
 
@@ -77,15 +76,14 @@ namespace Wraithknight
             return _systemList.FirstOrDefault(system => system.GetType() == typeof(T));
         }
 
-        public Entity CreateEntity(EntityType type)
+        private Entity CreateEntity(EntityType type)
         {
             Entity entity = new Entity(type);
-            List<Component> components = new List<Component>();
             if (type == EntityType.Hero)
             {
-                components.Add(new DrawComponent());
-                components.Add(new InputComponent());
-                components.Add(new MovementComponent());
+                entity.Components.Add(new DrawComponent());
+                entity.Components.Add(new InputComponent());
+                entity.Components.Add(new MovementComponent().ChangeAccelerationBase(1000).ChangeMaxSpeed(100).ChangeFriction(50));
             }
             return entity;
         }
