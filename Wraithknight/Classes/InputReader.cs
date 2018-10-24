@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
-    public enum MouseButtons { LeftButton, RightButton }
+    public enum MouseButtons { LMB, RMB }
     public static class InputReader //is static alright here? TODO Breunig
     {
 
@@ -42,19 +42,6 @@ namespace Wraithknight
             }
         }
 
-        public static void UpdateInputComponent(InputComponent component)
-        {
-            component.PreviousKeyboardState = _previousKeyboardState;
-            component.CurrentKeyboardState = _currentKeyboardState;
-            component.PreviousMouseState = _previousMouseState;
-            component.CurrentMouseState = _currentMouseState;
-            component.PreviousCursorPos = PreviousCursorPos;
-            component.CurrentCursorPos = CurrentCursorPos;
-            component.GamePadCapabilities = _gamePadCapabilities;
-            component.PreviousGamePadState = _previousGamePadState;
-            component.CurrentGamePadState = _currentGamePadState;
-        }
-
         #region inputHandeling
 
         #region keyboard
@@ -79,12 +66,12 @@ namespace Wraithknight
         #region mouse
         public static bool IsMouseButtonPressed(MouseButtons button)
         {
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButtons.LMB)
             {
                 return _currentMouseState.LeftButton == ButtonState.Pressed;
             }
 
-            if (button == MouseButtons.RightButton)
+            if (button == MouseButtons.RMB)
             {
                 return _currentMouseState.RightButton == ButtonState.Pressed;
             }
@@ -95,13 +82,13 @@ namespace Wraithknight
 
         public static bool IsMouseButtonTriggered(MouseButtons button)
         {
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButtons.LMB)
             {
                 return _currentMouseState.LeftButton == ButtonState.Pressed && 
                        _previousMouseState.RightButton == ButtonState.Released;
             }
 
-            if (button == MouseButtons.RightButton)
+            if (button == MouseButtons.RMB)
             {
                 return _currentMouseState.RightButton == ButtonState.Pressed &&
                        _previousMouseState.RightButton == ButtonState.Released;
@@ -113,13 +100,13 @@ namespace Wraithknight
 
         public static bool IsMouseButtonReleased(MouseButtons button)
         {
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButtons.LMB)
             {
                 return _currentMouseState.LeftButton == ButtonState.Released &&
                        _previousMouseState.LeftButton == ButtonState.Pressed;
             }
 
-            if (button == MouseButtons.RightButton)
+            if (button == MouseButtons.RMB)
             {
                 return _currentMouseState.RightButton == ButtonState.Released &&
                        _previousMouseState.RightButton == ButtonState.Pressed;

@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    //TODO How will you align sprites?
     class DrawSystem : System
     {
         private struct Pair

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
@@ -18,9 +19,32 @@ namespace Wraithknight
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var component in _components)
+            foreach (var component in _components) //TODO cleanup?
             {
-                InputReader.UpdateInputComponent(component);
+                component.MovementDirection.X = 0;
+                component.MovementDirection.Y = 0;
+                if (InputReader.IsKeyPressed(Keys.W))
+                {
+                    component.MovementDirection.Y = -1;
+                }
+                if (InputReader.IsKeyPressed(Keys.A))
+                {
+                    component.MovementDirection.X = -1;
+                }
+                if (InputReader.IsKeyPressed(Keys.S))
+                {
+                    component.MovementDirection.Y = 1;
+                }
+                if (InputReader.IsKeyPressed(Keys.D))
+                {
+                    component.MovementDirection.X = 1;
+                }
+
+                component.PrimaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.LMB);
+                component.SecondaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.RMB);
+                component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
+                component.Action = InputReader.IsKeyTriggered(Keys.F);
+                component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
             }
         }
 

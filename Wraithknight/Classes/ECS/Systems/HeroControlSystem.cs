@@ -38,24 +38,8 @@ namespace Wraithknight.Classes.ECS.Systems
 
         public override void Update(GameTime gameTime)
         {
-            _movement.Acceleration.X = 0;
-            _movement.Acceleration.Y = 0;
-            if (_input.CurrentKeyboardState.IsKeyDown(Keys.W))
-            {
-                _movement.Acceleration.Y = -_movement.AccelerationBase;
-            }
-            if (_input.CurrentKeyboardState.IsKeyDown(Keys.A))
-            {
-                _movement.Acceleration.X = -_movement.AccelerationBase;
-            }
-            if (_input.CurrentKeyboardState.IsKeyDown(Keys.S))
-            {
-                _movement.Acceleration.Y = _movement.AccelerationBase;
-            }
-            if (_input.CurrentKeyboardState.IsKeyDown(Keys.D))
-            {
-                _movement.Acceleration.X = _movement.AccelerationBase;
-            }
+            _movement.Acceleration.X = _input.MovementDirection.X * _movement.AccelerationBase;
+            _movement.Acceleration.Y = _input.MovementDirection.Y * _movement.AccelerationBase;
         }
 
         public override void ResetSystem()

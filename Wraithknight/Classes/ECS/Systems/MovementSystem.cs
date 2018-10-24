@@ -98,7 +98,7 @@ namespace Wraithknight
             
         }
 
-        private bool DiagonalTooLong(MovementComponent movement) // TODO Breunig
+        private bool DiagonalTooLong(MovementComponent movement) // TODO polar
         {
             return false;
         }

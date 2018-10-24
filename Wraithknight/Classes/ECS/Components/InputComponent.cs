@@ -10,6 +10,7 @@ namespace Wraithknight
 {
     public class InputComponent : Component
     {
+        /*
         public KeyboardState PreviousKeyboardState;
         public KeyboardState CurrentKeyboardState;
 
@@ -22,6 +23,15 @@ namespace Wraithknight
         public GamePadCapabilities GamePadCapabilities;
         public GamePadState PreviousGamePadState;
         public GamePadState CurrentGamePadState;
-        //TODO Use abstracts or copy from InputReader -> Breunig?
+        */
+
+        public Vector2 MovementDirection = new Vector2(0, 0); //WASD
+        public bool PrimaryAttack = false; //LMB
+        public bool SecondaryAttack = false; //RMB
+        public bool SwitchWeapons = false; //Space
+        public bool Action = false; //F
+        public bool Blink = false; //Shift
+
+        //TODO Use abstracts
     }
 }
