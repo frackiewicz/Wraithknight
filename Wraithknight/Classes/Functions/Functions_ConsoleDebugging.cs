@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wraithknight.Classes.Functions
+namespace Wraithknight
 {
     public static class Functions_ConsoleDebugging //maybe useful in the future?
     {

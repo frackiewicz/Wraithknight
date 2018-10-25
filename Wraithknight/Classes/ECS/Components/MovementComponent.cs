@@ -5,9 +5,45 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Wraithknight
+namespace Wraithknight //TODO structs could use some improvements
 {
-    class MovementComponent : Component // TODO Implement movement with angles
+    public struct Momentum
+    {
+        public PolarCoord Polar;
+        public Vector2 Cartesian;
+
+        public Momentum (PolarCoord polar)
+        {
+            Polar = polar;
+            Cartesian = new Vector2((float) (polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle))), (float) (polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle))));
+        }
+
+        public Momentum (Vector2 cartesian)
+        {
+            Polar = new PolarCoord(cartesian);
+            Cartesian = cartesian;
+        }
+    }
+
+    public struct PolarCoord
+    {
+        public float Length;
+        public float Angle;
+
+        public PolarCoord(float length, float angle)
+        {
+            Length = length;
+            Angle = angle;
+        }
+
+        public PolarCoord(Vector2 vector)
+        {
+            Length = (float) Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2));
+            Angle = Functions_Math.RadianToDegree((float) Math.Atan2(vector.X, vector.Y));
+        }
+    }
+
+    public class MovementComponent : Component // TODO Implement movement with angles
     {
         public Direction Direction = Direction.Down; //havent figured out the use yet
         public Boolean Moving = false;

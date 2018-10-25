@@ -49,12 +49,14 @@
     <Compile Include="Classes\Components\Generics\ComponentCollision.cs" />
     <Compile Include="Classes\Components\Generics\ComponentIntelligence.cs" />
     <Compile Include="Classes\ECS\Component.cs" />
+    <Compile Include="Classes\ECS\Components\CollisionComponent.cs" />
     <Compile Include="Classes\ECS\Components\DrawComponent.cs" />
     <Compile Include="Classes\ECS\Components\InputComponent.cs" />
     <Compile Include="Classes\ECS\Components\MovementComponent.cs" />
     <Compile Include="Classes\ECS\ECS.cs" />
     <Compile Include="Classes\ECS\Entity.cs" />
     <Compile Include="Classes\ECS\System.cs" />
+    <Compile Include="Classes\ECS\Systems\CollisionSystem.cs" />
     <Compile Include="Classes\ECS\Systems\DrawSystem.cs" />
     <Compile Include="Classes\Assets.cs" />
     <Compile Include="Classes\Camera2D.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Classes\Flags.cs" />
     <Compile Include="Classes\FpsCalculator.cs" />
     <Compile Include="Classes\Functions\Functions_ConsoleDebugging.cs" />
+    <Compile Include="Classes\Functions\Functions_Math.cs" />
     <Compile Include="Classes\GameBase.cs" />
     <Compile Include="Classes\Functions\Functions_Draw.cs" />
     <Compile Include="Classes\Functions\Functions_Operators.cs" />

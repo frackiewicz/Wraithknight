@@ -34,9 +34,16 @@ namespace Wraithknight
             #endregion
         }
 
-
         protected override void Initialize()
         {
+            Momentum test = new Momentum(new Vector2(10, 10));
+            Console.WriteLine(test.Polar.Angle + "°");
+            Console.WriteLine(test.Polar.Length);
+            Momentum newVector = new Momentum(test.Polar);
+            Console.WriteLine(newVector.Polar.Angle + "°");
+            Console.WriteLine(newVector.Polar.Length);
+            Console.WriteLine(newVector.Cartesian.X);
+            Console.WriteLine(newVector.Cartesian.Y);
             InputReader.Initialize();
             base.Initialize();
         }

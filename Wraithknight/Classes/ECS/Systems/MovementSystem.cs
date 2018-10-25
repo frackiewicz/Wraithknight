@@ -26,9 +26,10 @@ namespace Wraithknight
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
 
-
+                /*
                 Console.WriteLine(movement.Speed);
                 Console.WriteLine(movement.Acceleration);
+                */
             }
         }
 
