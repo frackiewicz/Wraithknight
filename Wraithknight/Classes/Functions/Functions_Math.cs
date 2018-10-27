@@ -9,17 +9,17 @@ namespace Wraithknight
     public static class Functions_Math
     {
 
-        public static float Sqrt(float number)
+        public static double Sqrt(float number)
         {
             throw new NotImplementedException();
         }
 
-        public static float Pow2(float basenumber)
+        public static double Pow2(float basenumber)
         {
             return basenumber * basenumber;
         }
 
-        public static float PowPositive(float basenumber, float exponent)
+        public static double PowPositive(float basenumber, float exponent)
         {
             if(exponent == 0)
             {

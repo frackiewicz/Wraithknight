@@ -36,14 +36,25 @@ namespace Wraithknight
 
         protected override void Initialize()
         {
-            Momentum test = new Momentum(new Vector2(10, 10));
+            /*
+            Coord2 test = new Coord2(new Vector2(-1, 100));
+
             Console.WriteLine(test.Polar.Angle + "°");
             Console.WriteLine(test.Polar.Length);
-            Momentum newVector = new Momentum(test.Polar);
+            Console.WriteLine(test.Cartesian.X + " X");
+            Console.WriteLine(test.Cartesian.Y + " Y");
+
+            Console.WriteLine("----------------");
+            Coord2 newVector = new Coord2(test.Polar);
             Console.WriteLine(newVector.Polar.Angle + "°");
             Console.WriteLine(newVector.Polar.Length);
-            Console.WriteLine(newVector.Cartesian.X);
-            Console.WriteLine(newVector.Cartesian.Y);
+            Console.WriteLine(newVector.Cartesian.X + " X");
+            Console.WriteLine(newVector.Cartesian.Y + " Y");*/
+            Coord2 test2 = new Coord2(new Vector2(2,2));
+            Coord2 test3 = new Coord2(new Vector2(8,8));
+            test2.AddPolar2(test3.Polar);
+            Console.WriteLine(test2.Cartesian);
+
             InputReader.Initialize();
             base.Initialize();
         }

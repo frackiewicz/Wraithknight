@@ -13,6 +13,7 @@ namespace Wraithknight
         public Texture2D Texture;
         public Rectangle DrawRec;
         public Point Offset; //the offset from the collision center
+        public float Rotation;
 
         // TODO REMOVE EVERYTHING | are you sure?
         #region Constructors

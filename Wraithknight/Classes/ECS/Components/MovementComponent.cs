@@ -6,40 +6,122 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace Wraithknight //TODO structs could use some improvements
-{
-    public struct Momentum
+{ // Too much memory clutter?
+    public class Coord2
     {
-        public PolarCoord Polar;
+        public Polar2 Polar;
         public Vector2 Cartesian;
 
-        public Momentum (PolarCoord polar)
+        #region Constructors
+        public Coord2 (Polar2 polar)
         {
             Polar = polar;
-            Cartesian = new Vector2((float) (polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle))), (float) (polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle))));
+            Cartesian = CartesianFromPolar(polar);
         }
 
-        public Momentum (Vector2 cartesian)
+        public Coord2 (Vector2 cartesian)
         {
-            Polar = new PolarCoord(cartesian);
+            Polar = PolarFromCartesian(cartesian);
             Cartesian = cartesian;
+        }
+        #endregion
+
+        public void ChangePolarLength(float newLength)
+        {
+            Polar.Length = newLength;
+            ChangeCartesianFromPolar(Polar);
+            AttemptToRoundCartesian();
+        }
+
+        public void AddVector2(Vector2 vector)
+        {
+            ChangePolarFromCartesian(vector);
+            Cartesian += vector;
+            AttemptToRoundCartesian();
+        }
+
+        public void AddPolar2(Polar2 polar)
+        {
+            ChangePolarFromCartesian(Polar.InCartesian() + polar.InCartesian());
+            ChangeCartesianFromPolar(Polar);
+            AttemptToRoundCartesian();
+        }
+
+        #region Conversions
+        public static Vector2 CartesianFromPolar(Polar2 polar)
+        {
+            return new Vector2((float) (polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle - 90f))), (float) (polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle - 90f))));
+        }
+
+        public static Polar2 PolarFromCartesian(Vector2 cartesian)
+        {
+            return new Polar2(cartesian);
+        }
+
+        private void ChangeCartesianFromPolar(Polar2 polar) //Make public?
+        {
+            Cartesian.X = (float)(polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle - 90f)));
+            Cartesian.Y = (float)(polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle - 90f)));
+        }
+
+        private void ChangePolarFromCartesian(Vector2 cartesian)
+        {
+            Polar.ChangeLengthFromCartesian(cartesian);
+            Polar.ChangeAngleFromCartesian(cartesian);
+        }
+        #endregion
+
+        private void AttemptToRoundCartesian()
+        {
+            if ((int) (Cartesian.X + 1) - 0.001 <= Cartesian.X)
+            {
+                Cartesian.X = (int) Cartesian.X + 1;
+            }
+
+            if ((int) (Cartesian.Y + 1) - 0.001 <= Cartesian.Y)
+            {
+                Cartesian.Y = (int) Cartesian.Y + 1;
+            }
         }
     }
 
-    public struct PolarCoord
+    public class Polar2
     {
         public float Length;
         public float Angle;
 
-        public PolarCoord(float length, float angle)
+        public Polar2(Polar2 polar)
+        {
+            Length = polar.Length;
+            Angle = polar.Angle;
+        }
+
+        public Polar2(float length, float angle)
         {
             Length = length;
             Angle = angle;
         }
 
-        public PolarCoord(Vector2 vector)
+        public Polar2(Vector2 cartesian)
         {
-            Length = (float) Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2));
-            Angle = Functions_Math.RadianToDegree((float) Math.Atan2(vector.X, vector.Y));
+            ChangeLengthFromCartesian(cartesian);
+            ChangeAngleFromCartesian(cartesian);
+        }
+
+        public void ChangeLengthFromCartesian(Vector2 cartesian)
+        {
+            Length = (float)Math.Sqrt(Math.Pow(cartesian.Y, 2) + Math.Pow(cartesian.X, 2));
+        }
+
+        public void ChangeAngleFromCartesian(Vector2 cartesian)
+        {
+            Angle = (float)Functions_Math.RadianToDegree(Math.Atan2(cartesian.Y, cartesian.X)) + 90f;
+
+        }
+
+        public Vector2 InCartesian() 
+        {
+            return Coord2.CartesianFromPolar(this);//to reduce redundance
         }
     }
 
