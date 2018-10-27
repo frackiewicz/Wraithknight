@@ -83,7 +83,7 @@ namespace Wraithknight
             {
                 entity.Components.Add(new DrawComponent());
                 entity.Components.Add(new InputComponent());
-                entity.Components.Add(new MovementComponent().ChangeAccelerationBase(1000).ChangeMaxSpeed(100).ChangeFriction(50));
+                entity.Components.Add(new MovementComponent().ChangeAccelerationBase(600).ChangeMaxSpeed(200).ChangeFriction(500));
             }
             return entity;
         }

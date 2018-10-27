@@ -13,6 +13,12 @@ namespace Wraithknight //TODO structs could use some improvements
         public Vector2 Cartesian;
 
         #region Constructors
+        public Coord2()
+        {
+            Polar = new Polar2(0, 0);
+            Cartesian = new Vector2(0, 0);
+        }
+
         public Coord2 (Polar2 polar)
         {
             Polar = polar;
@@ -35,8 +41,8 @@ namespace Wraithknight //TODO structs could use some improvements
 
         public void AddVector2(Vector2 vector)
         {
-            ChangePolarFromCartesian(vector);
             Cartesian += vector;
+            ChangePolarFromCartesian(Cartesian);
             AttemptToRoundCartesian();
         }
 
@@ -131,7 +137,7 @@ namespace Wraithknight //TODO structs could use some improvements
         public Boolean Moving = false;
 
         public Vector2 Position = new Vector2(0, 0);
-        public Vector2 Speed = new Vector2(0, 0);
+        public Coord2 Speed = new Coord2();
         public Vector2 Acceleration = new Vector2(0, 0);
 
         public float AccelerationBase = 0;

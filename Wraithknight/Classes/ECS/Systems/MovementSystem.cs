@@ -22,14 +22,11 @@ namespace Wraithknight
             foreach (MovementComponent movement in _components)
             {
                 movement.Moving = !movement.Speed.Equals(Constants.NullVector);
-                movement.Position += movement.Speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
+                movement.Position += movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                /*
-                Console.WriteLine(movement.Speed);
-                Console.WriteLine(movement.Acceleration);
-                */
             }
         }
 
@@ -40,61 +37,29 @@ namespace Wraithknight
 
         private void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
-            if (movement.Speed.X > 0)
+            if (movement.Speed.Polar.Length > 0 && movement.Acceleration.Equals(Vector2.Zero))
             {
-                if (movement.Speed.X - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds <= 0) //step too small
+                if (movement.Speed.Polar.Length - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds < 0 )
                 {
-                    movement.Speed.X = 0; //snap
+                    movement.Speed.ChangePolarLength(0);
                 }
                 else
                 {
-                    movement.Speed.X -= movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
-                }
-            }
-            if (movement.Speed.X < 0)
-            {
-                if (movement.Speed.X + movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds >= 0)
-                {
-                    movement.Speed.X = 0;
-                }
-                else
-                {
-                    movement.Speed.X += movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
-                }
-            }
-            if (movement.Speed.Y > 0)
-            {
-                if (movement.Speed.Y - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds <= 0)
-                {
-                    movement.Speed.Y = 0;
-                }
-                else
-                {
-                    movement.Speed.Y -= movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
-                }
-            }
-            if (movement.Speed.Y < 0)
-            {
-                if (movement.Speed.Y + movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds >= 0)
-                {
-                    movement.Speed.Y = 0;
-                }
-                else
-                {
-                    movement.Speed.Y += movement.Friction * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                    movement.Speed.ChangePolarLength(movement.Speed.Polar.Length - (movement.Friction * ((float) gameTime.ElapsedGameTime.TotalSeconds)));
+
                 }
             }
         }
 
         private void AccelerateUntilMaxSpeed(MovementComponent movement, GameTime gameTime)
         {
-            movement.Speed += (movement.Acceleration) * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            movement.Speed.AddVector2(movement.Acceleration * (float) gameTime.ElapsedGameTime.TotalSeconds);
             if (movement.MaxSpeed != 0.0f) //default
             {
-                if (movement.Speed.X < -movement.MaxSpeed) { movement.Speed.X = -movement.MaxSpeed; }
-                if (movement.Speed.X > movement.MaxSpeed) { movement.Speed.X = movement.MaxSpeed; }
-                if (movement.Speed.Y < -movement.MaxSpeed) { movement.Speed.Y = -movement.MaxSpeed; }
-                if (movement.Speed.Y > movement.MaxSpeed) { movement.Speed.Y = movement.MaxSpeed; }
+                if (movement.Speed.Polar.Length >= movement.MaxSpeed)
+                {
+                    movement.Speed.ChangePolarLength(movement.MaxSpeed);
+                }
             }
             
         }
