@@ -64,6 +64,7 @@
     <Compile Include="Classes\ECS\Systems\HeroControlSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
+    <Compile Include="Classes\EntitySpawner.cs" />
     <Compile Include="Classes\Enumerators.cs" />
     <Compile Include="Classes\Flags.cs" />
     <Compile Include="Classes\FpsCalculator.cs" />

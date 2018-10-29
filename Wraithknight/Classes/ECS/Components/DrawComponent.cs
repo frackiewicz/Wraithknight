@@ -14,6 +14,7 @@ namespace Wraithknight
         public Rectangle DrawRec;
         public Point Offset; //the offset from the collision center
         public float Rotation;
+        public Color Tint = Color.White;
 
         // TODO REMOVE EVERYTHING | are you sure?
         #region Constructors
@@ -51,6 +52,12 @@ namespace Wraithknight
         {
             Offset.X = -(int) Texture.Width / 2;
             Offset.Y = -(int) Texture.Height / 2;
+        }
+
+        public DrawComponent ChangeTint(Color tint)
+        {
+            Tint = tint;
+            return this;
         }
 
         public override void Activate()

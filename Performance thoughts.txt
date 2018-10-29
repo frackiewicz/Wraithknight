@@ -1,0 +1,2 @@
+When the game is running too slowly, clipping is possible
+-> how do you switch to fixed timestep if game is running too slowly?

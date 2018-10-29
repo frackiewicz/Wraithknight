@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace Wraithknight //TODO structs could use some improvements
+//TODO BREUNIG
 { // Too much memory clutter?
     public class Coord2
     {
@@ -53,6 +54,20 @@ namespace Wraithknight //TODO structs could use some improvements
             AttemptToRoundCartesian();
         }
 
+        public void ChangeX(float newX)
+        {
+            Cartesian.X = newX;
+            ChangePolarFromCartesian(Cartesian);
+            AttemptToRoundCartesian();
+        }
+
+        public void ChangeY(float newY)
+        {
+            Cartesian.Y = newY;
+            ChangePolarFromCartesian(Cartesian);
+            AttemptToRoundCartesian();
+        }
+
         #region Conversions
         public static Vector2 CartesianFromPolar(Polar2 polar)
         {
@@ -77,7 +92,7 @@ namespace Wraithknight //TODO structs could use some improvements
         }
         #endregion
 
-        private void AttemptToRoundCartesian()
+        private void AttemptToRoundCartesian() //for pretties :)
         {
             if ((int) (Cartesian.X + 1) - 0.001 <= Cartesian.X)
             {
@@ -131,10 +146,10 @@ namespace Wraithknight //TODO structs could use some improvements
         }
     }
 
-    public class MovementComponent : Component // TODO Implement movement with angles
+    public class MovementComponent : Component
     {
-        public Direction Direction = Direction.Down; //havent figured out the use yet
-        public Boolean Moving = false;
+        public Direction Direction = Direction.Down;
+        public Boolean IsMoving = false;
 
         public Vector2 Position = new Vector2(0, 0);
         public Coord2 Speed = new Coord2();
@@ -142,7 +157,7 @@ namespace Wraithknight //TODO structs could use some improvements
 
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
-        public float Friction = 0.0f; //inertia
+        public float Friction = 0.0f;
 
         public MovementComponent ChangeAccelerationBase(float value)
         {

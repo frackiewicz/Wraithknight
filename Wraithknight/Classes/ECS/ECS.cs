@@ -13,6 +13,12 @@ namespace Wraithknight
         Testing
     }
 
+    public enum EntityType
+    {
+        Hero,
+        Wall
+    }
+
     internal class ECS
     {
         private readonly List<Entity> _entityList = new List<Entity>();
@@ -44,22 +50,24 @@ namespace Wraithknight
         {
             if (routine == ecsBootRoutine.Testing)
             {
-                
                 _entityList.Add(CreateEntity(EntityType.Hero));
+                _entityList.Add(CreateEntity(EntityType.Wall));
             }
         }
 
         private void CreateSystems(ecsBootRoutine routine) // figure out good Routine
         {
             drawSystem = new DrawSystem();
-            _systemList.Add(drawSystem);
 
             if (routine == ecsBootRoutine.Testing)
             {
                 _systemList.Add(new InputSystem());
                 _systemList.Add(new HeroControlSystem());
                 _systemList.Add(new MovementSystem());
+                _systemList.Add(new CollisionSystem());
             }
+
+            _systemList.Add(drawSystem); //add last for "true data"
         }
 
         private void RegisterAllEntities()
@@ -84,8 +92,25 @@ namespace Wraithknight
                 entity.Components.Add(new DrawComponent());
                 entity.Components.Add(new InputComponent());
                 entity.Components.Add(new MovementComponent().ChangeAccelerationBase(600).ChangeMaxSpeed(200).ChangeFriction(500));
+                entity.Components.Add(new CollisionComponent());
             }
+
+            else if (type == EntityType.Wall)
+            {
+                entity.Components.Add(new DrawComponent().ChangeTint(Color.Blue));
+                entity.Components.Add(new CollisionComponent().ChangeCollisionRectangleWidth(16).ChangeCollisionRectangleHeight(16));
+            }
+
+            SetRootIDs(entity);
             return entity;
+        }
+
+        private void SetRootIDs(Entity entity)
+        {
+            foreach (var component in entity.Components)
+            {
+                component.RootID = entity.ID;
+            }
         }
 
     }

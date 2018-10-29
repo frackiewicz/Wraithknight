@@ -40,10 +40,12 @@ namespace Wraithknight
                     {
                         _drawComponents.Add(Functions_Operators.CastComponent<DrawComponent>(drawComponent));
                         drawComponent.Activate(); //do you want this?
-                        if(movementComponents != null) {
+                        if (movementComponents != null)
+                        {
                             foreach (var movementComponent in movementComponents)
                             {
-                                _moveableDrawComponents.Add(new Pair(Functions_Operators.CastComponent<DrawComponent>(drawComponent), Functions_Operators.CastComponent<MovementComponent>(movementComponent)));
+                                if (movementComponent.RootID.Equals(drawComponent.RootID))
+                                    _moveableDrawComponents.Add(new Pair(Functions_Operators.CastComponent<DrawComponent>(drawComponent), Functions_Operators.CastComponent<MovementComponent>(movementComponent)));
                             }
                         }
                     }

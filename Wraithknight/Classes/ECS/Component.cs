@@ -10,7 +10,7 @@ namespace Wraithknight
     public abstract class Component
     {
         public bool active { get; protected set; } = false;
-        public int RootID { get; protected set; } // is this necessary?
+        public int RootID; // is this necessary?
 
         public virtual void Activate() { active = true; }
         public virtual void Deactivate() { active = false; }

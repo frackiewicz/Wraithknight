@@ -4,12 +4,6 @@ using System.Linq;
 
 namespace Wraithknight
 {
-    public enum EntityType
-    {
-        Hero,
-        Player
-    }
-
     public class Entity
     {
         private static int IDcount = 0;
