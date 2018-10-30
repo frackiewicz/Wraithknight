@@ -21,9 +21,15 @@ namespace Wraithknight
 
     internal class ECS
     {
-        private readonly List<Entity> _entityList = new List<Entity>();
-        private readonly List<System> _systemList = new List<System>(); // replace with map for direct communication?
+        private readonly List<Entity> _entityList = new List<Entity>(); //early testing says: count should stay below 1k
+        private readonly List<System> _systemList = new List<System>(); // replace with map for direct communication? //nvm, getSystem works just fine
         private DrawSystem drawSystem; //maybe turn into Interface + List for multiple systems?
+        private Camera2D _camera;
+
+        public ECS(Camera2D camera)
+        {
+            _camera = camera;
+        }
 
         public void StartupRoutine(ecsBootRoutine routine)
         {
@@ -38,6 +44,7 @@ namespace Wraithknight
             {
                 system.Update(gameTime);
             }
+            // Console.WriteLine(_entityList.Count);
         }
 
         public void Draw()
@@ -55,20 +62,21 @@ namespace Wraithknight
             }
         }
 
-        private void CreateSystems(ecsBootRoutine routine) // figure out good Routine
+        private void CreateSystems(ecsBootRoutine routine)
         {
             drawSystem = new DrawSystem();
 
             if (routine == ecsBootRoutine.Testing)
             {
-                _systemList.Add(new InputSystem());
-                _systemList.Add(new HeroControlSystem());
+                _systemList.Add(new InputSystem(_camera));
+                _systemList.Add(new HeroControlSystem(this));
                 _systemList.Add(new MovementSystem());
                 _systemList.Add(new CollisionSystem());
             }
 
             _systemList.Add(drawSystem); //add last for "true data"
         }
+        #endregion
 
         private void RegisterAllEntities()
         {
@@ -77,14 +85,22 @@ namespace Wraithknight
                 system.RegisterComponents(_entityList);
             }
         }
-        #endregion
 
-        public System GetSystem<T>()
+        public void RegisterEntity(Entity entity)
         {
-            return _systemList.FirstOrDefault(system => system.GetType() == typeof(T));
+            _entityList.Add(entity);
+            foreach (var system in _systemList)
+            {
+                system.RegisterComponents(entity);
+            }
         }
 
-        private Entity CreateEntity(EntityType type)
+        public T GetSystem<T>()
+        {
+            return Functions_Operators.CastSystem<T>(_systemList.FirstOrDefault(system => system.GetType() == typeof(T)));
+        }
+
+        public Entity CreateEntity(EntityType type, Vector2? position = null, Coord2 speed = null)
         {
             #region actors
             Entity entity = new Entity(type);
@@ -92,23 +108,24 @@ namespace Wraithknight
             {
                 entity.Components.Add(new DrawComponent());
                 entity.Components.Add(new InputComponent());
-                entity.Components.Add(new MovementComponent().ChangeAccelerationBase(600).ChangeMaxSpeed(200).ChangeFriction(500));
-                entity.Components.Add(new CollisionComponent().ChangeCollisionRectangleWidth(16).ChangeCollisionRectangleHeight(16));
+                entity.Components.Add(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500));
+                entity.Components.Add(new CollisionComponent(collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16))));
             }
             #endregion
             #region objects
             else if (type == EntityType.Wall)
             {
-                entity.Components.Add(new DrawComponent().ChangeTint(Color.Blue));
-                entity.Components.Add(new CollisionComponent().ChangeCollisionRectangleWidth(16).ChangeCollisionRectangleHeight(16));
+                entity.Components.Add(new DrawComponent(tint: Color.Blue));
+                entity.Components.Add(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16)), isImpassable: true));
             }
             #endregion
             #region projectiles
             else if (type == EntityType.KnightSlash)
             {
-                entity.Components.Add(new DrawComponent());
-                entity.Components.Add(new MovementComponent().ChangeMaxSpeed(400).ChangeFriction(50));
-                entity.Components.Add(new CollisionComponent().ChangeCollisionBehavior(CollisionBehavior.Pass)); //think about this
+                float startingSpeed = 400;
+                entity.Components.Add(new DrawComponent(tint: Color.Red));
+                entity.Components.Add(new MovementComponent(maxSpeed: 400, friction: 50, position: (Vector2) position, speed: speed.ChangePolarLength(startingSpeed)));
+                entity.Components.Add(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point(0,0), new Point(16, 16)))); //WRONG ORIGIN POINT
             }
             #endregion
             SetRootIDs(entity);

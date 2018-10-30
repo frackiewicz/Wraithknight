@@ -31,7 +31,6 @@ namespace Wraithknight
         public bool SwitchWeapons = false; //Space
         public bool Action = false; //F
         public bool Blink = false; //Shift
-
-        //TODO Use abstracts
+        public Point CursorPoint = new Point();
     }
 }

@@ -18,9 +18,9 @@ namespace Wraithknight
         public ScreenTestingRoom(ScreenManager screenManager, GraphicsDevice graphics)
         {
             _screenManager = screenManager;
-            _ecs = new ECS();
-            _ecs.StartupRoutine(ecsBootRoutine.Testing);
             _camera = new Camera2D(graphics);
+            _ecs = new ECS(_camera);
+            _ecs.StartupRoutine(ecsBootRoutine.Testing);
         }
 
         public override Screen Update(GameTime gameTime)
@@ -77,16 +77,13 @@ namespace Wraithknight
                 _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            if (InputReader.IsScrollingUp())
-            {
-                _camera.TargetZoom += 300 * (float) gameTime.ElapsedGameTime.TotalSeconds;
-            }
 
-            if (InputReader.IsScrollingDown())
-            {
-               _camera.TargetZoom -= 300 * (float) gameTime.ElapsedGameTime.TotalSeconds;
-               if(_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.1f;
-            }
+            if (InputReader.IsScrollingUp()) _camera.TargetZoom += 1;
+            if (InputReader.IsScrollingDown()) _camera.TargetZoom -= 1;
+
+            if (_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.1f;
+            else if (_camera.TargetZoom > 1) _camera.TargetZoom = (int) _camera.TargetZoom;
+
         }
     }
 }

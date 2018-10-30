@@ -53,6 +53,8 @@
     <Compile Include="Classes\ECS\Components\DrawComponent.cs" />
     <Compile Include="Classes\ECS\Components\InputComponent.cs" />
     <Compile Include="Classes\ECS\Components\MovementComponent.cs" />
+    <Compile Include="Classes\ECS\Components\ProjectileComponent.cs" />
+    <Compile Include="Classes\ECS\Components\TimerComponent.cs" />
     <Compile Include="Classes\ECS\ECS.cs" />
     <Compile Include="Classes\ECS\Entity.cs" />
     <Compile Include="Classes\ECS\System.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Classes\ECS\Systems\HeroControlSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
+    <Compile Include="Classes\ECS\Systems\TimerSystem.cs" />
     <Compile Include="Classes\EntitySpawner.cs" />
     <Compile Include="Classes\Enumerators.cs" />
     <Compile Include="Classes\Flags.cs" />

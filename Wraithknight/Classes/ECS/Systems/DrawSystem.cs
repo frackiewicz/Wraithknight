@@ -64,7 +64,7 @@ namespace Wraithknight
             AlignAllPairs();
             foreach (var drawComponent in _drawComponents)
             {
-                if (drawComponent.active)
+                if (drawComponent.Active)
                 {
                     Functions_Draw.Draw(drawComponent);
                 }

@@ -67,7 +67,8 @@ namespace Wraithknight
                 {
                     //you got some traps here, check other comments for info
                     //Fuck collisions, giving up
-                    if (actor.Movement.IsMoving && actor.Collision != target)
+                    //Current bandaid doesnt work on lower speeds!
+                    if (actor.Movement.IsMoving && actor.Collision != target && target.Behavior != CollisionBehavior.Pass)
                     {
                         if ((actor.Movement.Speed.Cartesian.X > 0 && IsTouchingLeft(actor, target, gameTime)) ||
                             (actor.Movement.Speed.Cartesian.X < 0 & IsTouchingRight(actor, target, gameTime)))

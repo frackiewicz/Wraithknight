@@ -11,7 +11,12 @@ namespace Wraithknight
     class InputSystem : System
     {
         private List<InputComponent> _components = new List<InputComponent>();
+        private Camera2D _camera;
 
+        public InputSystem(Camera2D camera)
+        {
+            _camera = camera;
+        }
         public override void RegisterComponents(ICollection<Entity> entities)
         {
             base.CoupleComponents(_components, entities);
@@ -45,6 +50,7 @@ namespace Wraithknight
                 component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
                 component.Action = InputReader.IsKeyTriggered(Keys.F);
                 component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
+                component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
             }
         }
 

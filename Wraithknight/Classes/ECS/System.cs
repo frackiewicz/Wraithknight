@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    abstract class System
+    public abstract class System
     {
         public abstract void RegisterComponents(ICollection<Entity> entities);
         public          void RegisterComponents(Entity entity) { RegisterComponents(new List<Entity>(){entity}); }

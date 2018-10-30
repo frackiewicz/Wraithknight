@@ -19,9 +19,18 @@ namespace Wraithknight
 
     class CollisionComponent : Component //you will have to be efficient with this one
     {
-        public CollisionBehavior Behavior = CollisionBehavior.Block;
-        public Rectangle CollisionRectangle = new Rectangle();
+        public CollisionBehavior Behavior;
+        public Rectangle CollisionRectangle;
         public Point Offset;
+        public bool IsImpassable;
+
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false)
+        {
+            Behavior = behavior;
+            CollisionRectangle = collisionRectangle;
+            Offset = offset;
+            IsImpassable = isImpassable;
+        }
 
         public CollisionComponent ChangeCollisionBehavior(CollisionBehavior behavior)
         {
@@ -43,6 +52,12 @@ namespace Wraithknight
         public CollisionComponent ChangeOffset(Point point)
         {
             Offset = point;
+            return this;
+        }
+
+        public CollisionComponent ChangeIsImpassable(bool value)
+        {
+            IsImpassable = value;
             return this;
         }
     }

@@ -14,30 +14,19 @@ namespace Wraithknight
         public Rectangle DrawRec;
         public Point Offset; //the offset from the collision center
         public float Rotation;
-        public Color Tint = Color.White;
+        public Color Tint;
 
         // TODO REMOVE EVERYTHING | are you sure?
         #region Constructors
-        public DrawComponent()
+        public DrawComponent(Texture2D texture = null, Rectangle? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null)
         {
-            Texture = Assets.GetTexture("DummyTexture");
-            ChangeSize(16,16);
-            Texture.SetData(new Color[] { Color.Purple });
-            automaticOffset();
-        }
-
-        public DrawComponent(Texture2D texture)
-        {
-            Texture = texture;
-            DrawRec = new Rectangle(0, 0, texture.Width, texture.Height);
-            automaticOffset();
-        }
-
-        public DrawComponent(Texture2D texture, Point offset)
-        {
-            Texture = texture;
-            DrawRec = new Rectangle(0, 0, texture.Width, texture.Height);
-            Offset = offset;
+            Texture = texture ?? Assets.GetTexture("DummyTexture");
+            DrawRec = drawRec ?? new Rectangle(Point.Zero, new Point(Texture.Width, Texture.Height));
+            if (size == null) ChangeSize(16,16); else ChangeSize((Point)size);
+            if (offset == null) AutomaticOffset(); else Offset = (Point) offset;
+            Rotation = rotation;
+            if (tint == null) Tint = Color.White; else Tint = (Color) tint;
+            //Texture.SetData(new Color[] { Color.Purple });
         }
         #endregion
 
@@ -48,10 +37,17 @@ namespace Wraithknight
             DrawRec.Height = height;
         }
 
-        private void automaticOffset() // ???
+        public void ChangeSize(Point point)
+        {
+            DrawRec.Width = point.X;
+            DrawRec.Height = point.Y;
+        }
+
+        public DrawComponent AutomaticOffset()
         {
             Offset.X = -(int) Texture.Width / 2;
             Offset.Y = -(int) Texture.Height / 2;
+            return this;
         }
 
         public DrawComponent ChangeTint(Color tint)
@@ -62,12 +58,12 @@ namespace Wraithknight
 
         public override void Activate()
         {
-            active = true;
+            Active = true;
         }
 
         public override void Deactivate()
         {
-            active = false;
+            Active = false;
         }
     }
 }

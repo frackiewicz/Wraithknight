@@ -54,6 +54,11 @@ namespace Wraithknight{
             _ = Graphics.Viewport.Unproject(_, Projection, View, Matrix.Identity);
             _t.X = (int)_.X; _t.Y = (int)_.Y; return _t;
         }
+
+        public Point ConvertScreenToWorld(Point point)
+        {
+            return ConvertScreenToWorld(point.X, point.Y);
+        }
         public Point ConvertWorldToScreen(int x, int y)
         {   //converts world position to screen position
             Projection = Matrix.CreateOrthographicOffCenter(0f, Graphics.Viewport.Width, Graphics.Viewport.Height, 0f, 0f, 1f);

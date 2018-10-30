@@ -33,39 +33,44 @@ namespace Wraithknight //TODO structs could use some improvements
         }
         #endregion
 
-        public void ChangePolarLength(float newLength)
+        public Coord2 ChangePolarLength(float newLength)
         {
             Polar.Length = newLength;
             ChangeCartesianFromPolar(Polar);
             AttemptToRoundCartesian();
+            return this;
         }
 
-        public void AddVector2(Vector2 vector)
+        public Coord2 AddVector2(Vector2 vector)
         {
             Cartesian += vector;
             ChangePolarFromCartesian(Cartesian);
             AttemptToRoundCartesian();
+            return this;
         }
 
-        public void AddPolar2(Polar2 polar)
+        public Coord2 AddPolar2(Polar2 polar)
         {
             ChangePolarFromCartesian(Polar.InCartesian() + polar.InCartesian());
             ChangeCartesianFromPolar(Polar);
             AttemptToRoundCartesian();
+            return this;
         }
 
-        public void ChangeX(float newX)
+        public Coord2 ChangeX(float newX)
         {
             Cartesian.X = newX;
             ChangePolarFromCartesian(Cartesian);
             AttemptToRoundCartesian();
+            return this;
         }
 
-        public void ChangeY(float newY)
+        public Coord2 ChangeY(float newY)
         {
             Cartesian.Y = newY;
             ChangePolarFromCartesian(Cartesian);
             AttemptToRoundCartesian();
+            return this;
         }
 
         #region Conversions
@@ -151,15 +156,25 @@ namespace Wraithknight //TODO structs could use some improvements
         public Direction Direction = Direction.Down;
         public Boolean IsMoving = false;
 
-        public Vector2 Position = new Vector2(0, 0);
-        public Vector2 OldPosition = new Vector2(0, 0); //I give up //IT DOESNT FUCKING WORK LMAO
+        public Vector2 Position;
+        public Vector2 OldPosition; //I give up //IT DOESNT FUCKING WORK LMAO
 
-        public Coord2 Speed = new Coord2();
-        public Vector2 Acceleration = new Vector2(0, 0);
+        public Coord2 Speed;
+        public Vector2 Acceleration;
 
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
         public float Friction = 0.0f;
+
+        public MovementComponent(Vector2 position = new Vector2(), Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f)
+        {
+            Position = position;
+            Speed = speed ?? new Coord2();
+            Acceleration = acceleration;
+            AccelerationBase = accelerationBase;
+            MaxSpeed = maxSpeed;
+            Friction = friction;
+        }
 
         public MovementComponent StopX()
         {

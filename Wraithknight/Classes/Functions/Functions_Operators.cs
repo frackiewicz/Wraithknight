@@ -20,5 +20,18 @@ namespace Wraithknight
                 return default(T);
             }
         }
+
+        public static T CastSystem<T>(System system)
+        {
+            try
+            {
+                return (T)Convert.ChangeType(system, typeof(T));
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Wrong cast: " + system.GetType() + " to " + typeof(T));
+                return default(T);
+            }
+        }
     }
 }

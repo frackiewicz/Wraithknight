@@ -9,11 +9,11 @@ namespace Wraithknight
 {
     public abstract class Component
     {
-        public bool active { get; protected set; } = false;
-        public int RootID; // is this necessary?
+        public bool Active { get; protected set; } = false;
+        public int RootID;
 
-        public virtual void Activate() { active = true; }
-        public virtual void Deactivate() { active = false; }
+        public virtual void Activate() { Active = true; }
+        public virtual void Deactivate() { Active = false; }
 
     }
 }
