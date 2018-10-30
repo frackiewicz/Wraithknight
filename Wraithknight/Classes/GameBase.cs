@@ -36,19 +36,25 @@ namespace Wraithknight
 
         protected override void Initialize()
         {
+            ConsoleTesting();
             Window.AllowUserResizing = true;
-
             InputReader.Initialize();
             base.Initialize();
         }
-
+        private void ConsoleTesting()
+        {
+            Coord2 test = new Coord2(new Vector2(0, 500));
+            test.ChangePolarLength(1000);
+            Console.WriteLine(test.Cartesian);
+            Console.WriteLine(test.Polar.Angle);
+            Console.WriteLine(test.Polar.Length);
+        }
         protected override void LoadContent()
         {
             Assets.Initialize(GraphicsDevice, Content);
             _screenManager.Initialize();
            
         }
-
         protected override void UnloadContent()
         {
             
@@ -61,12 +67,6 @@ namespace Wraithknight
             _screenManager.Update(gameTime);
             base.Update(gameTime);
         }
-
-        private void CheckForEmergencyExit()
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit(); //emergency exit
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             _screenManager.Draw(gameTime);
@@ -74,11 +74,16 @@ namespace Wraithknight
             base.Draw(gameTime);
         }
 
+        private void CheckForEmergencyExit()
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit(); //emergency exit
+        }
         private void UpdateFps(GameTime gameTime)
         {
             _fpsCalculator.Update(gameTime);
             Window.Title = _fpsCalculator.Getfps() + " fps";
         }
 
+        
     }
 }

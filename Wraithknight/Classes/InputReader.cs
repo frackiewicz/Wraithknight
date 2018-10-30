@@ -75,8 +75,6 @@ namespace Wraithknight
             {
                 return _currentMouseState.RightButton == ButtonState.Pressed;
             }
-
-
             return false;
         }
 
@@ -93,8 +91,6 @@ namespace Wraithknight
                 return _currentMouseState.RightButton == ButtonState.Pressed &&
                        _previousMouseState.RightButton == ButtonState.Released;
             }
-
-
             return false;
         }
 
@@ -111,9 +107,27 @@ namespace Wraithknight
                 return _currentMouseState.RightButton == ButtonState.Released &&
                        _previousMouseState.RightButton == ButtonState.Pressed;
             }
-
-
             return false;
+        }
+
+        public static bool IsScrollingUp()
+        {
+            return _previousMouseState.ScrollWheelValue < _currentMouseState.ScrollWheelValue;
+        }
+
+        public static bool IsScrollingDown()
+        {
+            return _previousMouseState.ScrollWheelValue > _currentMouseState.ScrollWheelValue;
+        }
+
+        public static int GetMouseWheel()
+        {
+            return _currentMouseState.ScrollWheelValue;
+        }
+
+        public static int GetHorizontalMouseWheel()
+        {
+            return _currentMouseState.HorizontalScrollWheelValue;
         }
         #endregion
 

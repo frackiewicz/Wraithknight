@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Wraithknight.Classes.ECS.Systems;
 
 namespace Wraithknight
 {
@@ -16,7 +15,8 @@ namespace Wraithknight
     public enum EntityType
     {
         Hero,
-        Wall
+        Wall,
+        KnightSlash
     }
 
     internal class ECS
@@ -34,9 +34,9 @@ namespace Wraithknight
 
         public void UpdateSystems(GameTime gameTime)
         {
-            foreach (var System in _systemList)
+            foreach (var system in _systemList)
             {
-                System.Update(gameTime);
+                system.Update(gameTime);
             }
         }
 
@@ -72,9 +72,9 @@ namespace Wraithknight
 
         private void RegisterAllEntities()
         {
-            foreach (var System in _systemList)
+            foreach (var system in _systemList)
             {
-                System.RegisterComponents(_entityList);
+                system.RegisterComponents(_entityList);
             }
         }
         #endregion
@@ -86,21 +86,31 @@ namespace Wraithknight
 
         private Entity CreateEntity(EntityType type)
         {
+            #region actors
             Entity entity = new Entity(type);
             if (type == EntityType.Hero)
             {
                 entity.Components.Add(new DrawComponent());
                 entity.Components.Add(new InputComponent());
                 entity.Components.Add(new MovementComponent().ChangeAccelerationBase(600).ChangeMaxSpeed(200).ChangeFriction(500));
-                entity.Components.Add(new CollisionComponent());
+                entity.Components.Add(new CollisionComponent().ChangeCollisionRectangleWidth(16).ChangeCollisionRectangleHeight(16));
             }
-
+            #endregion
+            #region objects
             else if (type == EntityType.Wall)
             {
                 entity.Components.Add(new DrawComponent().ChangeTint(Color.Blue));
                 entity.Components.Add(new CollisionComponent().ChangeCollisionRectangleWidth(16).ChangeCollisionRectangleHeight(16));
             }
-
+            #endregion
+            #region projectiles
+            else if (type == EntityType.KnightSlash)
+            {
+                entity.Components.Add(new DrawComponent());
+                entity.Components.Add(new MovementComponent().ChangeMaxSpeed(400).ChangeFriction(50));
+                entity.Components.Add(new CollisionComponent().ChangeCollisionBehavior(CollisionBehavior.Pass)); //think about this
+            }
+            #endregion
             SetRootIDs(entity);
             return entity;
         }

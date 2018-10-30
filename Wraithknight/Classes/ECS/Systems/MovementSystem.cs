@@ -22,11 +22,17 @@ namespace Wraithknight
             foreach (MovementComponent movement in _components)
             {
                 movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
-
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
-                movement.Position += movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                ApplySpeed(movement, gameTime);
+            }
+        }
 
+        public override void FinalizeUpdate(GameTime gameTime) //Yo i feel really bad about this
+        {
+            foreach (MovementComponent movement in _components)
+            {
+                
             }
         }
 
@@ -64,9 +70,11 @@ namespace Wraithknight
             
         }
 
-        private bool DiagonalTooLong(MovementComponent movement) // TODO polar
+        private void ApplySpeed(MovementComponent movement, GameTime gameTime)
         {
-            return false;
+            movement.OldPosition.X = movement.Position.X;
+            movement.OldPosition.Y = movement.Position.Y;
+            movement.Position += movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds; //TODO Breunig there has to be a better way
         }
     }
 }

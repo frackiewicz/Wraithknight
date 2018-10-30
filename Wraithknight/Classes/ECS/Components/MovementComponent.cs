@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight //TODO structs could use some improvements
 //TODO BREUNIG
-{ // Too much memory clutter?
+{ //You got some calculation mistakes here
     public class Coord2
     {
         public Polar2 Polar;
@@ -152,12 +152,28 @@ namespace Wraithknight //TODO structs could use some improvements
         public Boolean IsMoving = false;
 
         public Vector2 Position = new Vector2(0, 0);
+        public Vector2 OldPosition = new Vector2(0, 0); //I give up //IT DOESNT FUCKING WORK LMAO
+
         public Coord2 Speed = new Coord2();
         public Vector2 Acceleration = new Vector2(0, 0);
 
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
         public float Friction = 0.0f;
+
+        public MovementComponent StopX()
+        {
+            Speed.ChangeX(0);
+            Acceleration.X = 0;
+            return this;
+        }
+
+        public MovementComponent StopY()
+        {
+            Speed.ChangeY(0);
+            Acceleration.Y = 0;
+            return this;
+        }
 
         public MovementComponent ChangeAccelerationBase(float value)
         {

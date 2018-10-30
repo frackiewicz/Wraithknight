@@ -31,5 +31,10 @@ namespace Wraithknight
                 else { Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(T)); } // Output: Entity-0 lacks DrawComponent
             }
         }
+
+        public virtual void FinalizeUpdate(GameTime gameTime)
+        {
+
+        }
     }
 }

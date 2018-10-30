@@ -45,7 +45,7 @@ namespace Wraithknight
 
         public static void Draw(DrawComponent sprite)
         {
-            _spriteBatch.Draw(sprite.Texture, sprite.DrawRec, Color.White * 1);
+            _spriteBatch.Draw(sprite.Texture, sprite.DrawRec, sprite.Tint * 1);
         }
 
 

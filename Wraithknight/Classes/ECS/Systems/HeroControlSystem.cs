@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Wraithknight.Classes.ECS.Systems
+namespace Wraithknight
 {
-    class HeroControlSystem : System
+    class HeroControlSystem : Wraithknight.System
     {
         public Entity Hero;
+        public ECS _ecs;
+
+
+
 
         private MovementComponent _movement;
         private InputComponent _input;
@@ -24,7 +28,7 @@ namespace Wraithknight.Classes.ECS.Systems
                     if (Hero != null)
                     {
                         Functions_ConsoleDebugging.DumpEntityInfo(entity);
-                        Console.WriteLine("Multiple Heroes in Controller. Overwriting");
+                        Console.WriteLine("Multiple Heroes in ControlSystem. Overwriting");
                     }
 
                     Hero = entity;
@@ -47,3 +51,4 @@ namespace Wraithknight.Classes.ECS.Systems
         }
     }
 }
+    

@@ -30,6 +30,7 @@ namespace Wraithknight{
 
         public float Speed = 5f; //how fast the camera moves
         public Vector2 CurrentPosition;
+        public Vector2 CurrentPositionSnapped;
         public Vector2 TargetPosition;
 
         public Matrix Projection;
@@ -61,28 +62,6 @@ namespace Wraithknight{
             _t.X = (int)_.X; _t.Y = (int)_.Y; return _t;
         }
 
-
-        public void SetView()
-        {
-            TranslateCenter.X = (int)Graphics.Viewport.Width / 2f;
-            TranslateCenter.Y = (int)Graphics.Viewport.Height / 2f;
-            TranslateCenter.Z = 0;
-
-            TranslateBody.X = -CurrentPosition.X;
-            TranslateBody.Y = -CurrentPosition.Y;
-            TranslateBody.Z = 0;
-
-            MatZoom = Matrix.CreateScale(CurrentZoom, CurrentZoom, 1); //allows camera to properly zoom
-            View = Matrix.CreateTranslation(TranslateBody) *
-                    MatRotation *
-                    MatZoom *
-                    Matrix.CreateTranslation(TranslateCenter);
-        }
-
-
-        
-
-
         public void Update(GameTime gameTime)
         {   //move the camera to the target position, match the target zoom
             Delta = TargetPosition - CurrentPosition;
@@ -92,8 +71,8 @@ namespace Wraithknight{
             else //camera is not close and should move according to speed
             { CurrentPosition += Delta * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds; }
             //round current position down to whole number - this prevents tearing/artifacting of sprites
-            CurrentPosition.X = (int)CurrentPosition.X;
-            CurrentPosition.Y = (int)CurrentPosition.Y;
+            CurrentPositionSnapped.X = (int)CurrentPosition.X;
+            CurrentPositionSnapped.Y = (int)CurrentPosition.Y;
             if (CurrentZoom != TargetZoom)
             {   //gradually match the zoom
                 if (Math.Abs((CurrentZoom - TargetZoom)) < 0.05f) { CurrentZoom = TargetZoom; } //limit zoom
@@ -102,6 +81,23 @@ namespace Wraithknight{
                  
             }
             SetView();
+        }
+
+        public void SetView()
+        {
+            TranslateCenter.X = (int)Graphics.Viewport.Width / 2f;
+            TranslateCenter.Y = (int)Graphics.Viewport.Height / 2f;
+            TranslateCenter.Z = 0;
+
+            TranslateBody.X = -CurrentPositionSnapped.X;
+            TranslateBody.Y = -CurrentPositionSnapped.Y;
+            TranslateBody.Z = 0;
+
+            MatZoom = Matrix.CreateScale(CurrentZoom, CurrentZoom, 1); //allows camera to properly zoom
+            View = Matrix.CreateTranslation(TranslateBody) *
+                   MatRotation *
+                   MatZoom *
+                   Matrix.CreateTranslation(TranslateCenter);
         }
     }
 }

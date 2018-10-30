@@ -21,6 +21,13 @@ namespace Wraithknight
     {
         public CollisionBehavior Behavior = CollisionBehavior.Block;
         public Rectangle CollisionRectangle = new Rectangle();
+        public Point Offset;
+
+        public CollisionComponent ChangeCollisionBehavior(CollisionBehavior behavior)
+        {
+            Behavior = behavior;
+            return this;
+        }
 
         public CollisionComponent ChangeCollisionRectangleWidth(int width)
         {
@@ -30,6 +37,12 @@ namespace Wraithknight
         public CollisionComponent ChangeCollisionRectangleHeight(int height)
         {
             CollisionRectangle.Height = height;
+            return this;
+        }
+
+        public CollisionComponent ChangeOffset(Point point)
+        {
+            Offset = point;
             return this;
         }
     }

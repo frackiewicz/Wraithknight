@@ -61,7 +61,7 @@ namespace Wraithknight
 
         public void Draw()
         {
-            Align();
+            AlignAllPairs();
             foreach (var drawComponent in _drawComponents)
             {
                 if (drawComponent.active)
@@ -71,7 +71,7 @@ namespace Wraithknight
             }
         }
 
-        private void Align()
+        private void AlignAllPairs()
         {
             foreach (var pair in _moveableDrawComponents) // TODO Improvements possible
             {
