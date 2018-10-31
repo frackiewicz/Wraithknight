@@ -51,6 +51,7 @@
     <Compile Include="Classes\ECS\Component.cs" />
     <Compile Include="Classes\ECS\Components\CollisionComponent.cs" />
     <Compile Include="Classes\ECS\Components\DrawComponent.cs" />
+    <Compile Include="Classes\ECS\Components\HealthComponent.cs" />
     <Compile Include="Classes\ECS\Components\InputComponent.cs" />
     <Compile Include="Classes\ECS\Components\MovementComponent.cs" />
     <Compile Include="Classes\ECS\Components\ProjectileComponent.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Classes\Assets.cs" />
     <Compile Include="Classes\Camera2D.cs" />
     <Compile Include="Classes\Components\Generics\ComponentMovement.cs" />
+    <Compile Include="Classes\ECS\Systems\HealthSystem.cs" />
     <Compile Include="Classes\ECS\Systems\HeroControlSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
