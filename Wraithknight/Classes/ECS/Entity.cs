@@ -9,6 +9,7 @@ namespace Wraithknight
         private static int IDcount = 0;
 
         public readonly int ID = IDcount++;
+        public bool Alive = true; //used for garbage collection
         public EntityType Type;
         public List<Component> Components = new List<Component>();
 

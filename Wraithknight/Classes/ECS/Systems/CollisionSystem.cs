@@ -5,6 +5,7 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
@@ -63,12 +64,14 @@ namespace Wraithknight
 
             foreach (var actor in _moveableCollisionComponents)
             {
+                if(!actor.Collision.Active) continue;
                 foreach (var target in _collisionComponents) 
                 {
                     //you got some traps here, check other comments for info
                     //Fuck collisions, giving up
+                    //ALSO IT ROYALLY FUCKS YOUR PERFORMANCE
                     //Current bandaid doesnt work on lower speeds!
-                    if (actor.Movement.IsMoving && actor.Collision != target && target.Behavior != CollisionBehavior.Pass)
+                    if (actor.Movement.IsMoving && actor.Collision != target && target.Behavior != CollisionBehavior.Pass) //TODO breunig talk about performance of collision
                     {
                         if ((actor.Movement.Speed.Cartesian.X > 0 && IsTouchingLeft(actor, target, gameTime)) ||
                             (actor.Movement.Speed.Cartesian.X < 0 & IsTouchingRight(actor, target, gameTime)))
@@ -99,11 +102,6 @@ namespace Wraithknight
                         }
 
                         AlignPair(actor); 
-                    }
-
-                    if (actor.Collision.CollisionRectangle.Intersects(target.CollisionRectangle))
-                    {
-
                     }
                 }
             }
@@ -136,9 +134,10 @@ namespace Wraithknight
             AlignPair(entity);
         }
 
-        public override void ResetSystem()
+        public override void Reset()
         {
-            throw new NotImplementedException();
+            _moveableCollisionComponents.Clear();
+            _collisionComponents.Clear();
         }
 
         #region AABB checking

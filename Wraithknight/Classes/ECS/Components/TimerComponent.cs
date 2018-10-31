@@ -7,21 +7,23 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    class TimerComponent
+    public enum TimerType
     {
-        public GameTime StartTime;
-        public int TargetMilliseconds;
+        Death
+    }
 
-        public TimerComponent SetStartTime(GameTime startTime)
-        {
-            StartTime = startTime;
-            return this;
-        }
+    class TimerComponent : Component
+    {
+        public TimerType Type;
+        public double StartTimeInMilliseconds;
+        public int TargetLifespanInMilliseconds;
 
-        public TimerComponent SetTargetMilliseconds(int target)
+        public TimerComponent(TimerType type, GameTime startTime = null,int targetLifespanInMilliseconds = 0)
         {
-            TargetMilliseconds = target;
-            return this;
+            Type = type;
+            if (startTime != null) StartTimeInMilliseconds = startTime.TotalGameTime.TotalMilliseconds;
+            else StartTimeInMilliseconds = -1;
+            TargetLifespanInMilliseconds = targetLifespanInMilliseconds;
         }
     }
 }

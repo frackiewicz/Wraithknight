@@ -40,41 +40,41 @@ namespace Wraithknight
 
         public override Screen HandleInput(GameTime gameTime)
         {
-            if (InputReader.IsKeyPressed(Keys.F))
-            {
-                GC.Collect();
-            }
-
             if (InputReader.IsKeyTriggered(Keys.F1))
             {
-                Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
-                Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
-                Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
+                ToggleDebug();
             }
-
             SimpleCameraMovement(gameTime);
+
 
             base.HandleInput(gameTime);
             return this;
+        }
+
+        public void ToggleDebug()
+        {
+            Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
+            Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
+            Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
         }
 
         private void SimpleCameraMovement(GameTime gameTime)
         {
             if (InputReader.IsKeyPressed(Keys.Up))
             {
-                _camera.TargetPosition.Y += 50 * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                _camera.TargetPosition.Y += 50 * (float) gameTime.ElapsedGameTime.TotalSeconds * 1/_camera.CurrentZoom;
             }
             if (InputReader.IsKeyPressed(Keys.Down))
             {
-                _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
             }
             if (InputReader.IsKeyPressed(Keys.Left))
             {
-                _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
             }
             if (InputReader.IsKeyPressed(Keys.Right))
             {
-                _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
             }
 
 

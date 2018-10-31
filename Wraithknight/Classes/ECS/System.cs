@@ -12,7 +12,7 @@ namespace Wraithknight
         public abstract void RegisterComponents(ICollection<Entity> entities);
         public          void RegisterComponents(Entity entity) { RegisterComponents(new List<Entity>(){entity}); }
         public abstract void Update(GameTime gameTime);
-        public abstract void ResetSystem();
+        public abstract void Reset();
 
         //DrawSystem differs
         protected void CoupleComponents<T>(ICollection<T> Target, ICollection<Entity> From)

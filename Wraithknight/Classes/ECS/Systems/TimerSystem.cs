@@ -10,7 +10,12 @@ namespace Wraithknight
     class TimerSystem : System
     {
         private List<TimerComponent> _timerComponents = new List<TimerComponent>();
+        private ECS _ecs;
 
+        public TimerSystem(ECS ecs)
+        {
+            _ecs = ecs;
+        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
@@ -21,16 +26,18 @@ namespace Wraithknight
         {
             foreach (var timer in _timerComponents)
             {
-                if (timer.StartTime.TotalGameTime.Milliseconds + timer.TargetMilliseconds > gameTime.TotalGameTime.Milliseconds)
+                if (!timer.Active) continue;
+                if (timer.StartTimeInMilliseconds != -1 && timer.StartTimeInMilliseconds + timer.TargetLifespanInMilliseconds < gameTime.TotalGameTime.TotalMilliseconds)
                 {
-                    //Do shit
+                    if(timer.Type == TimerType.Death)
+                    _ecs.KillEntity(timer.RootID);
                 }
             }
         }
 
-        public override void ResetSystem()
+        public override void Reset()
         {
-            throw new NotImplementedException();
+            _timerComponents.Clear();
         }
     }
 }

@@ -48,17 +48,18 @@ namespace Wraithknight
 
         public override void Update(GameTime gameTime)
         {
+            if (!Hero.Alive) return;
             _movement.Acceleration.X = _input.MovementDirection.X * _movement.AccelerationBase;
             _movement.Acceleration.Y = _input.MovementDirection.Y * _movement.AccelerationBase;
             if (_input.PrimaryAttack)
             {
-                _ecs.RegisterEntity(_ecs.CreateEntity(EntityType.KnightSlash, position: _movement.Position, speed: new Coord2(new Vector2(_input.CursorPoint.X - _movement.Position.X, _input.CursorPoint.Y - _movement.Position.Y))));
+                _ecs.RegisterEntity(_ecs.CreateEntity(EntityType.KnightSlash, position: _movement.Position, speed: new Coord2(new Vector2(_input.CursorPoint.X - _movement.Position.X, _input.CursorPoint.Y - _movement.Position.Y)), gameTime: gameTime));
             }
         }
 
-        public override void ResetSystem()
+        public override void Reset()
         {
-            throw new NotImplementedException();
+            Hero = null;
         }
     }
 }

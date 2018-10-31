@@ -26,6 +26,7 @@ namespace Wraithknight
         {
             foreach (var component in _components) //TODO cleanup?
             {
+                if(!component.Active) continue;
                 component.MovementDirection.X = 0;
                 component.MovementDirection.Y = 0;
                 if (InputReader.IsKeyPressed(Keys.W))
@@ -54,9 +55,9 @@ namespace Wraithknight
             }
         }
 
-        public override void ResetSystem()
+        public override void Reset()
         {
-            throw new NotImplementedException();
+            _components.Clear();
         }
 
 

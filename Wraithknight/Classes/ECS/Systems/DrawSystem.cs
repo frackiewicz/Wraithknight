@@ -64,10 +64,8 @@ namespace Wraithknight
             AlignAllPairs();
             foreach (var drawComponent in _drawComponents)
             {
-                if (drawComponent.Active)
-                {
-                    Functions_Draw.Draw(drawComponent);
-                }
+                if (!drawComponent.Active) continue;
+                Functions_Draw.Draw(drawComponent);
             }
         }
 
@@ -80,9 +78,10 @@ namespace Wraithknight
             }
         }
 
-        public override void ResetSystem()
+        public override void Reset()
         {
-            throw new NotImplementedException();
+            _moveableDrawComponents.Clear();
+            _drawComponents.Clear();
         }
     }
 }

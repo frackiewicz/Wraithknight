@@ -26,11 +26,10 @@ namespace Wraithknight{
 
         public float CurrentZoom = 1.0f;
         public float TargetZoom = 1.0f;
-        public float ZoomSpeed = 0.05f;
+        public float ZoomSpeed = 1f;
 
-        public float Speed = 5f; //how fast the camera moves
+        public float Speed = 10f; //how fast the camera moves
         public Vector2 CurrentPosition;
-        public Vector2 CurrentPositionSnapped;
         public Vector2 TargetPosition;
 
         public Matrix Projection;
@@ -76,13 +75,11 @@ namespace Wraithknight{
             else //camera is not close and should move according to speed
             { CurrentPosition += Delta * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds; }
             //round current position down to whole number - this prevents tearing/artifacting of sprites
-            CurrentPositionSnapped.X = (int)CurrentPosition.X;
-            CurrentPositionSnapped.Y = (int)CurrentPosition.Y;
             if (CurrentZoom != TargetZoom)
             {   //gradually match the zoom
-                if (Math.Abs((CurrentZoom - TargetZoom)) < 0.05f) { CurrentZoom = TargetZoom; } //limit zoom
-                if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed; } //zoom out
-                if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed; } //zoom in
+                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; } //TODO doesnt zoom as fluently as id like
+                if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds; }
+                if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds; }
                  
             }
             SetView();
@@ -94,8 +91,8 @@ namespace Wraithknight{
             TranslateCenter.Y = (int)Graphics.Viewport.Height / 2f;
             TranslateCenter.Z = 0;
 
-            TranslateBody.X = -CurrentPositionSnapped.X;
-            TranslateBody.Y = -CurrentPositionSnapped.Y;
+            TranslateBody.X = -CurrentPosition.X;
+            TranslateBody.Y = -CurrentPosition.Y;
             TranslateBody.Z = 0;
 
             MatZoom = Matrix.CreateScale(CurrentZoom, CurrentZoom, 1); //allows camera to properly zoom
