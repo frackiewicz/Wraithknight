@@ -10,7 +10,12 @@ namespace Wraithknight
 {
     class MovementSystem : System
     {
-        private List<MovementComponent> _components = new List<MovementComponent>();
+        private HashSet<MovementComponent> _components = new HashSet<MovementComponent>();
+
+        public MovementSystem(ECS ecs) : base(ecs)
+        {
+            _ecs = ecs;
+        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
@@ -19,6 +24,8 @@ namespace Wraithknight
 
         public override void Update(GameTime gameTime)
         {
+            if (_components.Count <= 0) return;
+
             foreach (MovementComponent movement in _components)
             {
                 if (!movement.Active) continue;

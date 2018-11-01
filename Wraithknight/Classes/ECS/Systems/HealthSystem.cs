@@ -9,10 +9,9 @@ namespace Wraithknight
 {
     class HealthSystem : System
     {
-        private List<HealthComponent> _components = new List<HealthComponent>();
-        private ECS _ecs;
+        private HashSet<HealthComponent> _components = new HashSet<HealthComponent>();
 
-        public HealthSystem(ECS ecs)
+        public HealthSystem(ECS ecs) : base(ecs)
         {
             _ecs = ecs;
         }
@@ -21,12 +20,11 @@ namespace Wraithknight
         {
             CoupleComponents(_components, entities);
         }
-
         public override void Update(GameTime gameTime)
         {
             foreach (var health in _components)
             {
-                if (health.CurrentHealth < health.MinHealth)
+                if (health.CurrentHealth < 0)
                 {
                     _ecs.KillEntity(health.RootID);
                 }

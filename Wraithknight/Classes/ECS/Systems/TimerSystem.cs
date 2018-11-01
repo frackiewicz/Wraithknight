@@ -9,10 +9,9 @@ namespace Wraithknight
 {
     class TimerSystem : System
     {
-        private List<TimerComponent> _timerComponents = new List<TimerComponent>();
-        private ECS _ecs;
+        private HashSet<TimerComponent> _timerComponents = new HashSet<TimerComponent>();
 
-        public TimerSystem(ECS ecs)
+        public TimerSystem(ECS ecs) : base(ecs)
         {
             _ecs = ecs;
         }
@@ -30,7 +29,7 @@ namespace Wraithknight
                 if (timer.StartTimeInMilliseconds != -1 && timer.StartTimeInMilliseconds + timer.TargetLifespanInMilliseconds < gameTime.TotalGameTime.TotalMilliseconds)
                 {
                     if(timer.Type == TimerType.Death)
-                    _ecs.KillEntity(timer.RootID);
+                    _ecs.KillGameObject(timer.RootID);
                 }
             }
         }

@@ -22,14 +22,17 @@ namespace Wraithknight
         public CollisionBehavior Behavior;
         public Rectangle CollisionRectangle;
         public Point Offset;
-        public bool IsImpassable;
 
-        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false)
+        public bool IsImpassable;
+        public bool IsProjectile;
+
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false, bool isProjectile = false)
         {
             Behavior = behavior;
             CollisionRectangle = collisionRectangle;
             Offset = offset;
             IsImpassable = isImpassable;
+            IsProjectile = isProjectile;
         }
 
         public CollisionComponent ChangeCollisionBehavior(CollisionBehavior behavior)

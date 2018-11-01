@@ -20,8 +20,13 @@ namespace Wraithknight
                 Move = move;
             }
         }
-        private List<DrawComponent> _drawComponents = new List<DrawComponent>();
-        private List<Pair> _moveableDrawComponents = new List<Pair>();
+        private HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
+        private HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>();
+
+        public DrawSystem(ECS ecs) : base(ecs)
+        {
+            _ecs = ecs;
+        }
 
         public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponents to allow pairing //Ugly as fuck
         {
@@ -83,5 +88,7 @@ namespace Wraithknight
             _moveableDrawComponents.Clear();
             _drawComponents.Clear();
         }
+
+        
     }
 }

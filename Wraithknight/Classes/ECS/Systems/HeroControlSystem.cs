@@ -11,12 +11,11 @@ namespace Wraithknight
     class HeroControlSystem : System
     {
         public Entity Hero;
-        public ECS _ecs;
 
         private MovementComponent _movement;
         private InputComponent _input;
 
-        public HeroControlSystem(ECS ecs)
+        public HeroControlSystem(ECS ecs) : base(ecs)
         {
             _ecs = ecs;
         }

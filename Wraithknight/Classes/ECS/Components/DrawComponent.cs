@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    public class DrawComponent : Component
+    class DrawComponent : Component
     {
         public Texture2D Texture;
         public Rectangle DrawRec;

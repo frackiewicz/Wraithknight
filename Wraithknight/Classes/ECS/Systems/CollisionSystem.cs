@@ -24,8 +24,14 @@ namespace Wraithknight
                 Movement = movement;
             }
         }
-        private List<CollisionComponent> _collisionComponents = new List<CollisionComponent>();
-        private List<Pair> _moveableCollisionComponents = new List<Pair>();
+        private HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
+        private HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
+
+        public CollisionSystem(ECS ecs) : base(ecs)
+        {
+            _ecs = ecs;
+        }
+
 
         public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponents to allow pairing //Ugly as fuck
         {
@@ -64,48 +70,30 @@ namespace Wraithknight
 
             foreach (var actor in _moveableCollisionComponents)
             {
-                if(!actor.Collision.Active) continue;
+                if (!actor.Collision.Active) continue;
                 foreach (var target in _collisionComponents) 
                 {
+                    if (!target.Active) continue;
                     //you got some traps here, check other comments for info
                     //Fuck collisions, giving up
                     //ALSO IT ROYALLY FUCKS YOUR PERFORMANCE
                     //Current bandaid doesnt work on lower speeds!
-                    if (actor.Movement.IsMoving && actor.Collision != target && target.Behavior != CollisionBehavior.Pass) //TODO breunig talk about performance of collision
+                    if (actor.Movement.IsMoving && actor.Collision != target) //TODO breunig talk about performance of collision
                     {
-                        if ((actor.Movement.Speed.Cartesian.X > 0 && IsTouchingLeft(actor, target, gameTime)) ||
-                            (actor.Movement.Speed.Cartesian.X < 0 & IsTouchingRight(actor, target, gameTime)))
-                        {
-                            if (actor.Collision.Behavior == CollisionBehavior.Block)
-                            {
-                                actor.Movement.Position.X = actor.Movement.OldPosition.X;
-                                actor.Movement.StopX();
-                            }
-                            else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
-                            {
-                                actor.Movement.Speed.ChangeX(-actor.Movement.Speed.Cartesian.X);
-                            }
-                        }
-
-                        if ((actor.Movement.Speed.Cartesian.Y > 0 && IsTouchingTop(actor, target, gameTime)) ||
-                            (actor.Movement.Speed.Cartesian.Y < 0 & IsTouchingBottom(actor, target, gameTime)))
-                        {
-                            if (actor.Collision.Behavior == CollisionBehavior.Block)
-                            {
-                                actor.Movement.Position.Y = actor.Movement.OldPosition.Y;
-                                actor.Movement.StopY();
-                            }
-                            else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
-                            {
-                                actor.Movement.Speed.ChangeY(-actor.Movement.Speed.Cartesian.Y);
-                            }
-                        }
-
-                        AlignPair(actor); 
+                        if (actor.Collision.Behavior == CollisionBehavior.Block || actor.Collision.Behavior == CollisionBehavior.Bounce) HandlePhysicalCollision(actor, target, gameTime);   
+                        else if (actor.Collision.Behavior == CollisionBehavior.Disappear || actor.Collision.Behavior == CollisionBehavior.Pass) HandleLogicalCollision(actor.Collision, target);
                     }
                 }
             }
         }
+
+        public override void Reset()
+        {
+            _moveableCollisionComponents.Clear();
+            _collisionComponents.Clear();
+        }
+
+        #region General CD stuff
 
         private void AlignAllPairs() //TODO talk with breunig how to handle multiple rectangle alignment
         {
@@ -134,11 +122,7 @@ namespace Wraithknight
             AlignPair(entity);
         }
 
-        public override void Reset()
-        {
-            _moveableCollisionComponents.Clear();
-            _collisionComponents.Clear();
-        }
+        #endregion
 
         #region AABB checking
         private bool IsTouchingLeft(Pair actor, CollisionComponent target, GameTime gameTime)
@@ -173,6 +157,67 @@ namespace Wraithknight
                    actor.Collision.CollisionRectangle.Left < target.CollisionRectangle.Right;
         }
         #endregion //doesnt take friction into account
+
+        #region ComplexCollisionInteractions
+
+        private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime)
+        {
+            if (target.Behavior == CollisionBehavior.Block)
+            {
+                if ((actor.Movement.Speed.Cartesian.X > 0 && IsTouchingLeft(actor, target, gameTime)) ||
+                    (actor.Movement.Speed.Cartesian.X < 0 & IsTouchingRight(actor, target, gameTime)))
+                {
+                    if (actor.Collision.Behavior == CollisionBehavior.Block)
+                    {
+                        actor.Movement.Position.X = actor.Movement.OldPosition.X;
+                        actor.Movement.StopX();
+                    }
+                    else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
+                    {
+                        actor.Movement.Speed.ChangeX(-actor.Movement.Speed.Cartesian.X);
+                    }
+                }
+
+                if ((actor.Movement.Speed.Cartesian.Y > 0 && IsTouchingTop(actor, target, gameTime)) ||
+                    (actor.Movement.Speed.Cartesian.Y < 0 & IsTouchingBottom(actor, target, gameTime)))
+                {
+                    if (actor.Collision.Behavior == CollisionBehavior.Block)
+                    {
+                        actor.Movement.Position.Y = actor.Movement.OldPosition.Y;
+                        actor.Movement.StopY();
+                    }
+                    else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
+                    {
+                        actor.Movement.Speed.ChangeY(-actor.Movement.Speed.Cartesian.Y);
+                    }
+                }
+
+                AlignPair(actor);
+            }
+        }
+
+        private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target) //fuckfuckfuck
+        {
+            if (actor.Behavior == CollisionBehavior.Disappear) //currently the source kills the projectile, and the projectiles kill each other as well
+            {
+                if (actor.CollisionRectangle.Intersects(target.CollisionRectangle))
+                {
+                    _ecs.KillGameObject(actor.RootID);
+                }
+                return;
+            }
+
+            if (actor.Behavior == CollisionBehavior.Pass)
+            {
+                if (actor.IsProjectile)
+                {
+                    _ecs.GetEntity(actor.RootID).GetComponent<ProjectileComponent>().CurrentTargets.Add(_ecs.GetEntity(target.RootID));
+                }
+                //boy thisll be hard
+            }
+        }
+
+        #endregion
     }
    
 }

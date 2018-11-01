@@ -10,16 +10,17 @@ namespace Wraithknight
 {
     class InputSystem : System
     {
-        private List<InputComponent> _components = new List<InputComponent>();
+        private HashSet<InputComponent> _components = new HashSet<InputComponent>();
         private Camera2D _camera;
 
-        public InputSystem(Camera2D camera)
+        public InputSystem(ECS ecs, Camera2D camera) : base(ecs)
         {
+            _ecs = ecs;
             _camera = camera;
         }
         public override void RegisterComponents(ICollection<Entity> entities)
         {
-            base.CoupleComponents(_components, entities);
+            CoupleComponents(_components, entities);
         }
 
         public override void Update(GameTime gameTime)

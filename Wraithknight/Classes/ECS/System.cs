@@ -7,12 +7,23 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    public abstract class System
+    abstract class System
     {
+        private static int IDcount = 0;
+
+        public readonly int ID = IDcount++;
+
+        protected ECS _ecs;
+
         public abstract void RegisterComponents(ICollection<Entity> entities);
         public          void RegisterComponents(Entity entity) { RegisterComponents(new List<Entity>(){entity}); }
         public abstract void Update(GameTime gameTime);
         public abstract void Reset();
+
+        public System(ECS ecs)
+        {
+            _ecs = ecs;
+        }
 
         //DrawSystem differs
         protected void CoupleComponents<T>(ICollection<T> Target, ICollection<Entity> From)
@@ -35,6 +46,18 @@ namespace Wraithknight
         public virtual void FinalizeUpdate(GameTime gameTime)
         {
 
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var temp = obj as System;
+            if (temp == null) return false;
+            return ID.GetHashCode() == temp.GetHashCode();
         }
     }
 }

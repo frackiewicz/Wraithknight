@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    public static class Functions_Operators
+    static class Functions_Operators
     {
         public static T CastComponent<T>(Component component)
         {

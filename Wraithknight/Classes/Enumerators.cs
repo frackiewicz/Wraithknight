@@ -29,4 +29,10 @@ namespace Wraithknight
         Simple
     }
 
+    public enum Allegiance
+    {
+        Friendly,
+        Enemy,
+        Neutral
+    }
 }

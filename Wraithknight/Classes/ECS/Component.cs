@@ -7,13 +7,28 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    public abstract class Component
+    abstract class Component
     {
+        private static int IDcount = 0;
+
+        public readonly int ID = IDcount++;
+
         public bool Active { get; protected set; } = false;
         public int RootID;
 
         public virtual void Activate() { Active = true; }
         public virtual void Deactivate() { Active = false; }
 
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var temp = obj as Component;
+            if (temp == null) return false;
+            return ID.GetHashCode() == temp.GetHashCode();
+        }
     }
 }

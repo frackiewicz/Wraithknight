@@ -151,7 +151,7 @@ namespace Wraithknight //TODO structs could use some improvements
         }
     }
 
-    public class MovementComponent : Component
+    class MovementComponent : Component
     {
         public Direction Direction = Direction.Down;
         public Boolean IsMoving = false;

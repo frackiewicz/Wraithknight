@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    public class Actor// break inheritance?
+    class Actor// break inheritance?
     //newsflash: GET THE FUCK OUTTA HERE
     {
         public Boolean Active;

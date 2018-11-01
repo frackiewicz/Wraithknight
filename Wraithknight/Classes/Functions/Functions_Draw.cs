@@ -12,7 +12,7 @@ namespace Wraithknight
 {
     //Stateless Renderer
     //Used for all drawing in the game, static is appropiate here
-    public static class Functions_Draw
+    static class Functions_Draw
     {
         private static SpriteBatch _spriteBatch;
 
