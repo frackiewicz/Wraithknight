@@ -15,8 +15,8 @@ namespace Wraithknight
     {
         private struct Pair
         {
-            public CollisionComponent Collision;
-            public MovementComponent Movement;
+            public readonly CollisionComponent Collision;
+            public readonly MovementComponent Movement;
 
             public Pair(CollisionComponent collision, MovementComponent movement)
             {
@@ -33,35 +33,10 @@ namespace Wraithknight
         }
 
 
-        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponents to allow pairing //Ugly as fuck
+        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponent to allow pairing //Ugly as fuck
         {
-            foreach (var entity in entities)
-            {
-                IEnumerable<Component> collisionComponents = entity.GetComponents<CollisionComponent>();
-                if (collisionComponents != null)
-                {
-                    IEnumerable<Component> movementEnumerable = entity.GetComponents<MovementComponent>();
-                    List<Component> movementComponents = null;
-                    if (movementEnumerable != null)
-                    {
-                        movementComponents = movementEnumerable.ToList();
-                    }
-                    foreach (var collisionComponent in collisionComponents)
-                    {
-                        _collisionComponents.Add(Functions_Operators.CastComponent<CollisionComponent>(collisionComponent));
-                        collisionComponent.Activate(); //do you want this?
-                        if (movementComponents != null)
-                        {
-                            foreach (var movementComponent in movementComponents)
-                            {
-                                if(movementComponent.RootID.Equals(collisionComponent.RootID))
-                                _moveableCollisionComponents.Add(new Pair(Functions_Operators.CastComponent<CollisionComponent>(collisionComponent), Functions_Operators.CastComponent<MovementComponent>(movementComponent)));
-                            }
-                        }
-                    }
-                }
-                else { Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(CollisionComponent)); } // Output: Entity-0 lacks DrawComponent
-            }
+            CoupleComponent(_collisionComponents, entities);
+            BindMovementComponents();
         }
 
         public override void Update(GameTime gameTime)
@@ -83,6 +58,18 @@ namespace Wraithknight
                         if (actor.Collision.Behavior == CollisionBehavior.Block || actor.Collision.Behavior == CollisionBehavior.Bounce) HandlePhysicalCollision(actor, target, gameTime);   
                         else if (actor.Collision.Behavior == CollisionBehavior.Disappear || actor.Collision.Behavior == CollisionBehavior.Pass) HandleLogicalCollision(actor.Collision, target);
                     }
+                }
+            }
+        }
+
+        private void BindMovementComponents()
+        {
+            Component bind;
+            foreach (var component in _collisionComponents)
+            {
+                if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
+                {
+                    _moveableCollisionComponents.Add(new Pair(component, (MovementComponent)bind));
                 }
             }
         }
@@ -198,6 +185,7 @@ namespace Wraithknight
 
         private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target) //fuckfuckfuck
         {
+            
             if (actor.Behavior == CollisionBehavior.Disappear) //currently the source kills the projectile, and the projectiles kill each other as well
             {
                 if (actor.CollisionRectangle.Intersects(target.CollisionRectangle))
@@ -206,15 +194,17 @@ namespace Wraithknight
                 }
                 return;
             }
-
+            /*
             if (actor.Behavior == CollisionBehavior.Pass)
             {
                 if (actor.IsProjectile)
                 {
-                    _ecs.GetEntity(actor.RootID).GetComponent<ProjectileComponent>().CurrentTargets.Add(_ecs.GetEntity(target.RootID));
+                    (_ecs.GetEntity(actor.RootID).GetComponent<ProjectileComponent>() as ProjectileComponent).CurrentTargets.Add(_ecs.GetEntity(target.RootID));
                 }
                 //boy thisll be hard
             }
+            */
+            
         }
 
         #endregion

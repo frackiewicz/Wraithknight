@@ -17,7 +17,7 @@ namespace Wraithknight
         Pass //useful for sticky floors, event triggers etc
     }
 
-    class CollisionComponent : Component //you will have to be efficient with this one
+    class CollisionComponent : BindableComponent //you will have to be efficient with this one
     {
         public CollisionBehavior Behavior;
         public Rectangle CollisionRectangle;

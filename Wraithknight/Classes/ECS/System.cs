@@ -25,21 +25,24 @@ namespace Wraithknight
             _ecs = ecs;
         }
 
-        //DrawSystem differs
-        protected void CoupleComponents<T>(ICollection<T> Target, ICollection<Entity> From)
+        protected void CoupleComponent<T>(ICollection<T> Target, Entity entity) //Add boolean to entity if it has multiples of same component types
         {
-            foreach (var entity in From)
+            if (entity.Components.TryGetValue(typeof(T), out var component))
             {
-                IEnumerable<Component> newComponents = entity.GetComponents<T>();
-                if (newComponents != null)
-                {
-                    foreach (var component in newComponents)
-                    {
-                        Target.Add(Functions_Operators.CastComponent<T>(component));
-                        component.Activate(); //do you want this?
-                    }
-                }
-                else { Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(T)); } // Output: Entity-0 lacks DrawComponent
+                Target.Add(Functions_Operators.CastComponent<T>(component));
+                component.Activate(); //do you want this?
+            }
+            else
+            {
+                Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(T));
+            }
+        }
+
+        protected void CoupleComponent<T>(ICollection<T> Target, ICollection<Entity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                CoupleComponent(Target, entity);
             }
         }
 

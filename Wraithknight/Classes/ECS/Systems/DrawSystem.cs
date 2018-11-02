@@ -11,8 +11,8 @@ namespace Wraithknight
     {
         private struct Pair
         {
-            public DrawComponent Draw;
-            public MovementComponent Move;
+            public readonly DrawComponent Draw;
+            public readonly MovementComponent Move;
 
             public Pair(DrawComponent draw, MovementComponent move)
             {
@@ -20,43 +20,18 @@ namespace Wraithknight
                 Move = move;
             }
         }
-        private HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
-        private HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>();
+        private readonly HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
+        private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>();
 
         public DrawSystem(ECS ecs) : base(ecs)
         {
             _ecs = ecs;
         }
 
-        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponents to allow pairing //Ugly as fuck
+        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponent to allow pairing //Ugly as fuck
         {
-            foreach (var entity in entities)
-            {
-                IEnumerable<Component> drawComponents = entity.GetComponents<DrawComponent>();
-                if (drawComponents != null)
-                {
-                    IEnumerable<Component> movementEnumerable = entity.GetComponents<MovementComponent>();
-                    List<Component> movementComponents = null;
-                    if (movementEnumerable != null)
-                    {
-                        movementComponents = movementEnumerable.ToList();
-                    }
-                    foreach (var drawComponent in drawComponents)
-                    {
-                        _drawComponents.Add(Functions_Operators.CastComponent<DrawComponent>(drawComponent));
-                        drawComponent.Activate(); //do you want this?
-                        if (movementComponents != null)
-                        {
-                            foreach (var movementComponent in movementComponents)
-                            {
-                                if (movementComponent.RootID.Equals(drawComponent.RootID))
-                                    _moveableDrawComponents.Add(new Pair(Functions_Operators.CastComponent<DrawComponent>(drawComponent), Functions_Operators.CastComponent<MovementComponent>(movementComponent)));
-                            }
-                        }
-                    }
-                }
-                else { Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(DrawComponent)); } // Output: Entity-0 lacks DrawComponent
-            }
+            CoupleComponent(_drawComponents, entities);
+            BindMovementComponents();
         }
 
         public override void Update(GameTime gameTime)  
@@ -67,10 +42,22 @@ namespace Wraithknight
         public void Draw()
         {
             AlignAllPairs();
-            foreach (var drawComponent in _drawComponents)
+            foreach (var component in _drawComponents)
             {
-                if (!drawComponent.Active) continue;
-                Functions_Draw.Draw(drawComponent);
+                if (!component.Active) continue;
+                Functions_Draw.Draw(component);
+            }
+        }
+
+        private void BindMovementComponents()
+        {
+            Component bind;
+            foreach (var component in _drawComponents)
+            {
+                if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
+                {
+                    _moveableDrawComponents.Add(new Pair(component, (MovementComponent) bind));
+                }
             }
         }
 

@@ -17,7 +17,7 @@ namespace Wraithknight
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
-            CoupleComponents(_components, entities);
+            CoupleComponent(_components, entities);
         }
 
         public ProjectileSystem(ECS ecs) : base(ecs)
@@ -38,7 +38,7 @@ namespace Wraithknight
 
                 foreach (var target in actorProjectile.CurrentTargets)
                 {
-                    targetProjectile = target.GetComponent<ProjectileComponent>();
+                    targetProjectile = (ProjectileComponent)target.GetComponent<ProjectileComponent>();
                     if (targetProjectile != null && targetProjectile.Allegiance != actorProjectile.Allegiance)
                     {
                         HandleProjectileCollision(actorProjectile, targetProjectile);
@@ -46,7 +46,7 @@ namespace Wraithknight
                         continue;
                     }
 
-                    targetHealth = target.GetComponent<HealthComponent>();
+                    targetHealth = (HealthComponent)target.GetComponent<HealthComponent>();
                     if (targetHealth != null)
                     {
                         HandleHealthCollision(actorProjectile, targetHealth);

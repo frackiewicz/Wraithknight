@@ -12,7 +12,7 @@ namespace Wraithknight
         public bool Alive = true; //used for garbage collection
         public Allegiance Allegiance;
         public EntityType Type;
-        public HashSet<Component> Components = new HashSet<Component>();
+        public Dictionary<Type, Component> Components = new Dictionary<Type, Component>(); //no multiples of same type possible
 
         public Entity(EntityType type, Allegiance allegiance = Allegiance.Neutral) 
         {
@@ -26,25 +26,21 @@ namespace Wraithknight
             return this;
         }
 
-        public Entity SetComponents(HashSet<Component> components)
-        {
-            Components = components ?? throw new ArgumentNullException(); //Breunig: duplicate instead
-            return this;
-        }
-
         public void AddComponent(Component component)
         {
-            Components.Add(component);
+            Components.Add(component.GetType(), component);
         }
 
-        public T GetComponent<T>() //Really expensive TODO Figure out a way to avoid this crap as much as possible, maybe a seperate system just to save components by type
+        public void AddBindedComponent(BindableComponent component, Component bind)
         {
-            return Functions_Operators.CastComponent<T>(Components.FirstOrDefault(component => component.GetType() == typeof(T)));
+            component.AddBinding(bind);
+            AddComponent(component);
         }
 
-        public IEnumerable<Component> GetComponents<T>()
+        public Component GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead
         {
-            return Components.Where(component => component.GetType() == typeof(T));
+            Components.TryGetValue(typeof(T), out var value);
+            return value;
         }
 
         public override int GetHashCode()

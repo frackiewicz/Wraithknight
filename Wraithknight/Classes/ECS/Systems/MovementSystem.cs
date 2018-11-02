@@ -19,7 +19,7 @@ namespace Wraithknight
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
-            CoupleComponents(_components, entities);
+            CoupleComponent(_components, entities);
         }
 
         public override void Update(GameTime gameTime)
