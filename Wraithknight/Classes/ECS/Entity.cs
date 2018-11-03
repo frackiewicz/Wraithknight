@@ -17,7 +17,7 @@ namespace Wraithknight
         public Entity(EntityType type, Allegiance allegiance = Allegiance.Neutral) 
         {
             Type = type;
-            Allegiance = allegiance;
+            SetAllegiance(allegiance);
         }
 
         public Entity SetAllegiance(Allegiance allegiance)

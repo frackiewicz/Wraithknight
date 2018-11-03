@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    class HealthComponent : Component
+    class HealthComponent : BindableComponent
     {
         public int MaxHealth;
         public int CurrentHealth;

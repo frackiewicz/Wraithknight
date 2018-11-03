@@ -13,11 +13,12 @@ namespace Wraithknight
 
         public readonly int ID = IDcount++;
 
-        public bool Active { get; protected set; } = false;
+        public bool Inactive { get; protected set; } = true;
         public int RootID;
+        public Allegiance Allegiance; //RootAllegiance
 
-        public virtual void Activate() { Active = true; }
-        public virtual void Deactivate() { Active = false; }
+        public virtual void Activate() { Inactive = false; }
+        public virtual void Deactivate() { Inactive = true; }
 
         public override int GetHashCode()
         {

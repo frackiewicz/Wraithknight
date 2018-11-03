@@ -21,7 +21,7 @@ namespace Wraithknight
             }
         }
         private readonly HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
-        private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>();
+        private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>(); //TODO Breunig HashSet way more efficient than list, why?
 
         public DrawSystem(ECS ecs) : base(ecs)
         {
@@ -44,7 +44,7 @@ namespace Wraithknight
             AlignAllPairs();
             foreach (var component in _drawComponents)
             {
-                if (!component.Active) continue;
+                if (component.Inactive) continue;
                 Functions_Draw.Draw(component);
             }
         }
@@ -56,7 +56,7 @@ namespace Wraithknight
             {
                 if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
                 {
-                    _moveableDrawComponents.Add(new Pair(component, (MovementComponent) bind));
+                    _moveableDrawComponents.Add(new Pair(component, bind as MovementComponent));
                 }
             }
         }

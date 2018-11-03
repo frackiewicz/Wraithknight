@@ -28,7 +28,7 @@ namespace Wraithknight
 
             foreach (MovementComponent movement in _components)
             {
-                if (!movement.Active) continue;
+                if (movement.Inactive) continue;
                 movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);

@@ -27,7 +27,7 @@ namespace Wraithknight
         {
             foreach (var component in _components) //TODO cleanup?
             {
-                if(!component.Active) continue;
+                if(component.Inactive) continue;
                 component.MovementDirection.X = 0;
                 component.MovementDirection.Y = 0;
                 if (InputReader.IsKeyPressed(Keys.W))

@@ -16,7 +16,6 @@ namespace Wraithknight
         public float Rotation;
         public Color Tint;
 
-        // TODO REMOVE EVERYTHING | are you sure?
         #region Constructors
         public DrawComponent(Texture2D texture = null, Rectangle? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null)
         {
@@ -58,12 +57,12 @@ namespace Wraithknight
 
         public override void Activate()
         {
-            Active = true;
+            Inactive = false;
         }
 
         public override void Deactivate()
         {
-            Active = false;
+            Inactive = true;
         }
     }
 }

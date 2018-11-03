@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
-    class InputComponent : Component
+    class InputComponent : Component //IDEA: make this bindable? might allow for some fun stuff
     {
         /*
         public KeyboardState PreviousKeyboardState;

@@ -88,7 +88,6 @@ namespace Wraithknight
                 _systemSet.Add(new HeroControlSystem(this));
                 _systemSet.Add(new MovementSystem(this));
                 _systemSet.Add(new CollisionSystem(this));
-                _systemSet.Add(new ProjectileSystem(this));
                 _systemSet.Add(new TimerSystem(this));
                 _systemSet.Add(new HealthSystem(this));
             }
@@ -158,9 +157,9 @@ namespace Wraithknight
                 float startingSpeed = 400;
                 entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: (Vector2) position, speed: speed.ChangePolarLength(startingSpeed)));
                 entity.AddBindedComponent(new DrawComponent(tint: Color.Red), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16)), isProjectile: true), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
+                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
-                entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true, allegiance: Allegiance.Friendly));
+                entity.AddBindedComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
                 entity.SetAllegiance(Allegiance.Friendly);
             }
             #endregion
@@ -206,7 +205,7 @@ namespace Wraithknight
             }
         }
 
-        public void PurgeTheDead() //Experimental, no idea about possible side effects
+        public void PurgeTheDead() //Experimental, no idea about possible side effects //TODO Breunig talk about direct Component killing
         {
             CleanEntities();
             ResetSystems();

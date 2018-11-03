@@ -24,44 +24,21 @@ namespace Wraithknight
         public Point Offset;
 
         public bool IsImpassable;
-        public bool IsProjectile;
+        public bool IsPhysical;
 
-        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false, bool isProjectile = false)
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false, bool isPhysical = false)
         {
             Behavior = behavior;
+            SetIsPhysical();
             CollisionRectangle = collisionRectangle;
             Offset = offset;
             IsImpassable = isImpassable;
-            IsProjectile = isProjectile;
+            IsPhysical = isPhysical;
         }
 
-        public CollisionComponent ChangeCollisionBehavior(CollisionBehavior behavior)
+        private void SetIsPhysical()
         {
-            Behavior = behavior;
-            return this;
-        }
-
-        public CollisionComponent ChangeCollisionRectangleWidth(int width)
-        {
-            CollisionRectangle.Width = width;
-            return this;
-        }
-        public CollisionComponent ChangeCollisionRectangleHeight(int height)
-        {
-            CollisionRectangle.Height = height;
-            return this;
-        }
-
-        public CollisionComponent ChangeOffset(Point point)
-        {
-            Offset = point;
-            return this;
-        }
-
-        public CollisionComponent ChangeIsImpassable(bool value)
-        {
-            IsImpassable = value;
-            return this;
+            IsPhysical = Behavior == CollisionBehavior.Block || Behavior == CollisionBehavior.Bounce;
         }
     }
 }

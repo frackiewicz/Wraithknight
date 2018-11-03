@@ -27,16 +27,20 @@ namespace Wraithknight
         private HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
         private HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
 
+        private CollisionLogicSubsystem _logicSubsystem;
+
         public CollisionSystem(ECS ecs) : base(ecs)
         {
             _ecs = ecs;
+            _logicSubsystem = new CollisionLogicSubsystem(ecs);
         }
 
 
-        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponent to allow pairing //Ugly as fuck
+        public override void RegisterComponents(ICollection<Entity> entities)
         {
             CoupleComponent(_collisionComponents, entities);
             BindMovementComponents();
+            _logicSubsystem.RegisterComponents(entities);
         }
 
         public override void Update(GameTime gameTime)
@@ -45,18 +49,18 @@ namespace Wraithknight
 
             foreach (var actor in _moveableCollisionComponents)
             {
-                if (!actor.Collision.Active) continue;
+                if (actor.Collision.Inactive) continue;
                 foreach (var target in _collisionComponents) 
                 {
-                    if (!target.Active) continue;
-                    //you got some traps here, check other comments for info
-                    //Fuck collisions, giving up
-                    //ALSO IT ROYALLY FUCKS YOUR PERFORMANCE
+                    if (target.Inactive) continue;
                     //Current bandaid doesnt work on lower speeds!
+                    //TODO bandaid problem is solveable: you dont take friction into account, or make a better algorithm to reduce redundant calculating
+                    //Movement calculates its current position first, then solve collision problem and teleport onto last position
+                    //that might work, i guess
                     if (actor.Movement.IsMoving && actor.Collision != target) //TODO breunig talk about performance of collision
                     {
-                        if (actor.Collision.Behavior == CollisionBehavior.Block || actor.Collision.Behavior == CollisionBehavior.Bounce) HandlePhysicalCollision(actor, target, gameTime);   
-                        else if (actor.Collision.Behavior == CollisionBehavior.Disappear || actor.Collision.Behavior == CollisionBehavior.Pass) HandleLogicalCollision(actor.Collision, target);
+                        if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime);   
+                        else HandleLogicalCollision(actor.Collision, target); //later remove the else
                     }
                 }
             }
@@ -78,6 +82,7 @@ namespace Wraithknight
         {
             _moveableCollisionComponents.Clear();
             _collisionComponents.Clear();
+            _logicSubsystem.ResetSystem();
         }
 
         #region General CD stuff
@@ -147,7 +152,7 @@ namespace Wraithknight
 
         #region ComplexCollisionInteractions
 
-        private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime)
+        private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime) //TODO Implement Swept CC sometime
         {
             if (target.Behavior == CollisionBehavior.Block)
             {
@@ -183,28 +188,11 @@ namespace Wraithknight
             }
         }
 
-        private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target) //fuckfuckfuck
+        private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target)
         {
-            
-            if (actor.Behavior == CollisionBehavior.Disappear) //currently the source kills the projectile, and the projectiles kill each other as well
-            {
-                if (actor.CollisionRectangle.Intersects(target.CollisionRectangle))
-                {
-                    _ecs.KillGameObject(actor.RootID);
-                }
-                return;
-            }
-            /*
-            if (actor.Behavior == CollisionBehavior.Pass)
-            {
-                if (actor.IsProjectile)
-                {
-                    (_ecs.GetEntity(actor.RootID).GetComponent<ProjectileComponent>() as ProjectileComponent).CurrentTargets.Add(_ecs.GetEntity(target.RootID));
-                }
-                //boy thisll be hard
-            }
-            */
-            
+            if (actor.Allegiance == target.Allegiance) return;
+            _logicSubsystem.HandleCollision(actor, target);
+            //boy thisll be hard //Update: it was.
         }
 
         #endregion
