@@ -19,7 +19,7 @@ namespace Wraithknight
 
         private static Dictionary<String, RessourceTexture> TextureLibrary = new Dictionary<String, RessourceTexture>();
         //TODO Sounds
-        private static Dictionary<String, SpriteFont> FontLibrary = new Dictionary<String, SpriteFont>();
+        private static Dictionary<String, RessourceFont> FontLibrary = new Dictionary<String, RessourceFont>();
 
         public static void Initialize(GraphicsDevice graphics, ContentManager content)
         {
@@ -61,25 +61,45 @@ namespace Wraithknight
             }
         }
 
+        public static SpriteFont GetFont(String filePath)
+        {
+            if (FontLibrary.ContainsKey(filePath))
+            {
+                if (!FontLibrary[filePath].Permanent) FontLibrary[filePath].RefCount++;
+                return FontLibrary[filePath].Font;
+            }
+
+            SpriteFont font = _content.Load<SpriteFont>(filePath);
+            FontLibrary.Add(filePath, new RessourceFont(font)); // maybe implement permanent storage? FLAGS
+            return font;
+        }
+
 
         //maybe change access?
         #region internal Classes
         private class RessourceTexture
         {
-            internal Texture2D Texture;
+            internal readonly Texture2D Texture;
             internal int RefCount;
-            internal Boolean Permanent;
+            internal readonly bool Permanent;
 
-            internal RessourceTexture(Texture2D texture)
+            internal RessourceTexture(Texture2D texture, bool permanent = false)
             {
                 Texture = texture;
                 RefCount = 1;
-                Permanent = false;
+                Permanent = permanent;
             }
+        }
 
-            internal RessourceTexture(Texture2D texture, Boolean permanent)
+        private class RessourceFont
+        {
+            internal readonly SpriteFont Font;
+            internal int RefCount;
+            internal readonly bool Permanent;
+
+            internal RessourceFont(SpriteFont font, bool permanent = false)
             {
-                Texture = texture;
+                Font = font;
                 RefCount = 1;
                 Permanent = permanent;
             }

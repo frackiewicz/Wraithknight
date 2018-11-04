@@ -11,13 +11,11 @@ namespace Wraithknight
 {
     class ScreenTestingRoom : Screen
     {
-        private readonly ScreenManager _screenManager;
         private readonly ECS _ecs;
         private readonly Camera2D _camera;
 
-        public ScreenTestingRoom(ScreenManager screenManager, GraphicsDevice graphics)
+        public ScreenTestingRoom(ScreenManager screenManager, GraphicsDevice graphics) : base(screenManager)
         {
-            _screenManager = screenManager;
             _camera = new Camera2D(graphics);
             _ecs = new ECS(_camera);
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
@@ -38,16 +36,23 @@ namespace Wraithknight
             return this;
         }
 
+        public override Screen LoadContent()
+        {
+            return this;
+        }
+
+        public override Screen UnloadContent()
+        {
+            throw new NotImplementedException();
+        }
+
         public override Screen HandleInput(GameTime gameTime)
         {
-            if (InputReader.IsKeyTriggered(Keys.F1))
-            {
-                ToggleDebug();
-            }
+            if (InputReader.IsKeyTriggered(Keys.Escape)) OpenMenuScreen();
+            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleDebug();
             SimpleCameraMovement(gameTime);
 
 
-            base.HandleInput(gameTime);
             return this;
         }
 
@@ -83,7 +88,11 @@ namespace Wraithknight
 
             if (_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.1f;
             else if (_camera.TargetZoom > 1) _camera.TargetZoom = (int) _camera.TargetZoom;
+        }
 
+        private void OpenMenuScreen()
+        {
+            _screenManager.AddScreen(new GameMenuScreen(_screenManager));
         }
     }
 }

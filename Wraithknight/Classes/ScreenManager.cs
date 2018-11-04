@@ -87,7 +87,7 @@ namespace Wraithknight
         public void Draw(GameTime gameTime)
         {
             _game.GraphicsDevice.Clear(_game.ColorBackground);
-            foreach (Screen screen in _screens) { screen.Draw(gameTime); }
+            foreach (Screen screen in _screens) { if(screen.IsVisible) screen.Draw(gameTime); }
         }
     }
 }

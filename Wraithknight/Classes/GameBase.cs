@@ -39,6 +39,7 @@ namespace Wraithknight
             ConsoleTesting();
             Window.AllowUserResizing = true;
             InputReader.Initialize();
+            Functions_GameControl.ConnectGameBase(this);
             base.Initialize();
         }
         private void ConsoleTesting()

@@ -10,17 +10,35 @@ namespace Wraithknight
 {
     public class GameScreen : Screen
     {
-        private readonly ScreenManager _screenManager;
-
         private Camera2D _camera; // Maybe insert variables into the camera instance TODO cleanup
         private Rectangle _cameraRectangle;
         private Rectangle _cullRectangle;
         private Point _cullBound;
 
 
-        public GameScreen(ScreenManager screenManager)
+        public GameScreen(ScreenManager screenManager) : base(screenManager)
         {
 
+        }
+
+        public override Screen LoadContent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Screen UnloadContent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Screen HandleInput(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Screen Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
 
         public override Screen Draw(GameTime gameTime)

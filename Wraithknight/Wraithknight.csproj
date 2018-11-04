@@ -45,7 +45,11 @@
     <StartupObject>Wraithknight.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\Functions\Functions_GameControl.cs" />
+    <Compile Include="Classes\Menu\Button.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionLogicSubsystem.cs" />
+    <Compile Include="Classes\Menu\ButtonWithText.cs" />
+    <Compile Include="Classes\Menu\GameMenuScreen.cs" />
     <Compile Include="Classes\Legacy\Actor.cs" />
     <Compile Include="Classes\Components\Generics\ComponentCollision.cs" />
     <Compile Include="Classes\Components\Generics\ComponentIntelligence.cs" />
@@ -83,7 +87,9 @@
     <Compile Include="Classes\GameScreen.cs" />
     <Compile Include="Classes\InputReader.cs" />
     <Compile Include="Classes\Concepts\Level.cs" />
-    <Compile Include="Classes\LevelManager.cs" />
+    <Compile Include="Classes\Concepts\LevelManager.cs" />
+    <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
+    <Compile Include="Classes\Menu\MenuObject.cs" />
     <Compile Include="Classes\Program.cs" />
     <Compile Include="Classes\Concepts\LoadingText.cs" />
     <Compile Include="Classes\Concepts\LoadingTextGenerator.cs" />

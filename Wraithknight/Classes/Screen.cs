@@ -9,10 +9,26 @@ namespace Wraithknight
 {
     public abstract class Screen
     {
-        public virtual Screen LoadContent() { return this; }
-        public virtual Screen UnloadContent() { return this; }
-        public virtual Screen HandleInput(GameTime gameTime) { return this; }
-        public virtual Screen Update(GameTime gameTime) { return this; }
-        public virtual Screen Draw(GameTime gameTime) { return this; }
+        public enum DisplayState
+        {
+            Opening,
+            Open,
+            Closing,
+            Closed
+        }
+
+        protected ScreenManager _screenManager;
+        public bool IsVisible = true; //idea: main menu remains hidden in the background to prevent unnecessary loading
+
+        public Screen(ScreenManager screenManager)
+        {
+            _screenManager = screenManager;
+        }
+
+        public abstract Screen LoadContent();
+        public abstract Screen UnloadContent();
+        public abstract Screen HandleInput(GameTime gameTime);
+        public abstract Screen Update(GameTime gameTime);
+        public abstract Screen Draw(GameTime gameTime);
     }
 }

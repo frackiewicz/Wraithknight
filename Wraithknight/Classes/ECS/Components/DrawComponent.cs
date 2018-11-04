@@ -21,7 +21,7 @@ namespace Wraithknight
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new Rectangle(Point.Zero, new Point(Texture.Width, Texture.Height));
-            if (size == null) ChangeSize(16,16); else ChangeSize((Point)size);
+            if (size != null) ChangeSize((Point)size);
             if (offset == null) AutomaticOffset(); else Offset = (Point) offset;
             Rotation = rotation;
             if (tint == null) Tint = Color.White; else Tint = (Color) tint;

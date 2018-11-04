@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 #pragma warning disable CS0618 // Type or member is obsolete
 
 namespace Wraithknight
@@ -48,6 +49,10 @@ namespace Wraithknight
             _spriteBatch.Draw(sprite.Texture, sprite.DrawRec, sprite.Tint * 1);
         }
 
+        public static void Draw(String text, SpriteFont font, Vector2 location)
+        { 
+            _spriteBatch.DrawString(font, text, location, Color.Blue);
+        }
 
     }
 }

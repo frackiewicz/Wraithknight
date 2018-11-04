@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    public static class Constants //fucking useless lmao
+    interface IInteractableMenuObject
     {
-        public static Vector2 NullVector = new Vector2(0, 0);
+        void HandleInput();
     }
 }

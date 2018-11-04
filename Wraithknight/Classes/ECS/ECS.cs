@@ -138,7 +138,7 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500));
-                entity.AddBindedComponent(new DrawComponent(), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new DrawComponent(size: new Point(16,16)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16))), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());
                 entity.SetAllegiance(Allegiance.Friendly);
@@ -147,7 +147,7 @@ namespace Wraithknight
             #region objects
             else if (type == EntityType.Wall)
             {
-                entity.AddComponent(new DrawComponent(tint: Color.Blue));
+                entity.AddComponent(new DrawComponent(size: new Point(16,16), tint: Color.Blue));
                 entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16)), isImpassable: true));
             }
             #endregion
@@ -156,7 +156,7 @@ namespace Wraithknight
             {
                 float startingSpeed = 400;
                 entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: (Vector2) position, speed: speed.ChangePolarLength(startingSpeed)));
-                entity.AddBindedComponent(new DrawComponent(tint: Color.Red), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new DrawComponent(size: new Point(16,16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
                 entity.AddBindedComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
