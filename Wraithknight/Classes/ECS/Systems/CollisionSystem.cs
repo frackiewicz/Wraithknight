@@ -87,7 +87,7 @@ namespace Wraithknight
 
         #region General CD stuff
 
-        private void AlignAllPairs() //TODO talk with breunig how to handle multiple rectangle alignment
+        private void AlignAllPairs()
         {
             foreach (var pair in _moveableCollisionComponents)
             {

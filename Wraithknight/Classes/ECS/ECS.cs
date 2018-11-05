@@ -139,7 +139,7 @@ namespace Wraithknight
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500));
                 entity.AddBindedComponent(new DrawComponent(size: new Point(16,16)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16))), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());
                 entity.SetAllegiance(Allegiance.Friendly);
             }
@@ -148,7 +148,7 @@ namespace Wraithknight
             else if (type == EntityType.Wall)
             {
                 entity.AddComponent(new DrawComponent(size: new Point(16,16), tint: Color.Blue));
-                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16)), isImpassable: true));
+                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16)), isImpassable: true, isPhysical: true));
             }
             #endregion
             #region projectiles

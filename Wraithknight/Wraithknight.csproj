@@ -51,7 +51,6 @@
     <Compile Include="Classes\Menu\ButtonWithText.cs" />
     <Compile Include="Classes\Menu\GameMenuScreen.cs" />
     <Compile Include="Classes\Legacy\Actor.cs" />
-    <Compile Include="Classes\Components\Generics\ComponentCollision.cs" />
     <Compile Include="Classes\Components\Generics\ComponentIntelligence.cs" />
     <Compile Include="Classes\ECS\Component.cs" />
     <Compile Include="Classes\ECS\BindableComponent.cs" />

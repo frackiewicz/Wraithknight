@@ -35,7 +35,7 @@ namespace Wraithknight
 
         public static float DegreeToRadian(float degree)
         {
-            return (float) Math.PI * degree / 180;
+            return (float) Math.PI * degree / 180; //Math.PI as float constant to avoid casting 
         }
         public static double DegreeToRadian(double degree)
         {

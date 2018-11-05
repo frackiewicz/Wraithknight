@@ -22,7 +22,7 @@ namespace Wraithknight
 
         public override int GetHashCode()
         {
-            return ID.GetHashCode();
+            return ID;
         }
 
         public override bool Equals(object obj)

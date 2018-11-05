@@ -63,7 +63,7 @@ namespace Wraithknight
 
         private void AlignAllPairs()
         {
-            foreach (var pair in _moveableDrawComponents) // TODO Improvements possible
+            foreach (var pair in _moveableDrawComponents) 
             {
                 pair.Draw.DrawRec.X = (int)pair.Move.Position.X;
                 pair.Draw.DrawRec.Y = (int)pair.Move.Position.Y;

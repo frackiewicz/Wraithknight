@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    class Pool //TODO this
+    class Pool
     // newsflash: oh shit
     {
         private int _activeActors;

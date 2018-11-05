@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Wraithknight //TODO structs could use some improvements
 { //You got some calculation mistakes here
     //https://www.codeproject.com/Articles/8052/Type-casting-impact-over-execution-performance-in
     public class Coord2
-    {
+    { //TODO change degrees to radian (might solve the rounding issue)
         public Polar2 Polar;
         public Vector2 Cartesian;
 
@@ -100,15 +101,11 @@ namespace Wraithknight //TODO structs could use some improvements
 
         private void AttemptToRoundCartesian() //for pretties :)
         {
-            if ((int) (Cartesian.X + 1) - 0.001 <= Cartesian.X)
-            {
-                Cartesian.X = (int) Cartesian.X + 1;
-            }
+            double n = Math.Round(Cartesian.X);
+            if (Math.Abs(Cartesian.X - n) < 0.001) Cartesian.X = (float)n;
 
-            if ((int) (Cartesian.Y + 1) - 0.001 <= Cartesian.Y)
-            {
-                Cartesian.Y = (int) Cartesian.Y + 1;
-            }
+            n = Math.Round(Cartesian.Y);
+            if (Math.Abs(Cartesian.Y - n) < 0.001) Cartesian.Y = (float)n;
         }
     }
 

@@ -129,11 +129,6 @@ namespace Wraithknight
         {
             return _previousMouseState.ScrollWheelValue;
         }
-
-        public static int GetHorizontalMouseWheel() //thefukisthis
-        {
-            return _currentMouseState.HorizontalScrollWheelValue;
-        }
         #endregion
 
         #endregion

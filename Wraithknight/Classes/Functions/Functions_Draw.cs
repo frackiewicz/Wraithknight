@@ -39,8 +39,7 @@ namespace Wraithknight
 
             if (Flags.ShowCollisionRecs)
             {
-                _spriteBatch.Draw(Assets.GetTexture("DummyTexture"), actor.Collision.CollisionRec, new Color(255, 0, 0, 50));
-                _spriteBatch.Draw(Assets.GetTexture("DummyTexture"), actor.Collision.CollisionCenter, new Color(0, 0, 0, 100));
+
             }
         }
 

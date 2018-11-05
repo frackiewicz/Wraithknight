@@ -14,7 +14,6 @@ namespace Wraithknight
 
         public DrawComponent Sprite;
         public ComponentMovement Movement;
-        public ComponentCollision Collision;
         public ComponentIntelligence Intelligence;
 
         public bool Enemy = true;
@@ -24,7 +23,6 @@ namespace Wraithknight
         {
             Sprite = new DrawComponent();
             Movement = new ComponentMovement();
-            Collision = new ComponentCollision();
             Intelligence = new ComponentIntelligence();
         }
 
@@ -34,10 +32,6 @@ namespace Wraithknight
             Movement.Position += vector;
             Sprite.DrawRec.X = (int)(Movement.Position.X + Sprite.Offset.X);
             Sprite.DrawRec.Y = (int)(Movement.Position.Y + Sprite.Offset.Y);
-            Collision.CollisionRec.X = (int)Movement.Position.X + Collision.offsetX;
-            Collision.CollisionRec.Y = (int)Movement.Position.Y + Collision.offsetY;
-            Collision.CollisionCenter.X = Collision.CollisionRec.X + Collision.CollisionRec.Width / 2;
-            Collision.CollisionCenter.Y = Collision.CollisionRec.Y + Collision.CollisionRec.Height / 2;
         }
     }
 }
