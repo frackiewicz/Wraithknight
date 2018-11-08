@@ -23,7 +23,7 @@ namespace Wraithknight
             Content.RootDirectory = "Content";
             _fpsCalculator = new FpsCalculator(0.5);
 
-            _screenManager = new ScreenManager(this);
+            _screenManager = new ScreenManager(this, _graphics);
             _soundManager = new SoundManager(this);
             #endregion
 

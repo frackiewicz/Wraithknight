@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
@@ -14,7 +15,7 @@ namespace Wraithknight
 
         public bool IsClicked = false;
 
-        public Button(DrawComponent drawComponent, Rectangle buttonRec, String buttonHandle) : base(drawComponent)
+        public Button(Vector2 position, DrawComponent drawComponent, Rectangle buttonRec, String buttonHandle) : base(position, drawComponent)
         {
             ButtonRec = buttonRec;
             ButtonHandle = buttonHandle;
@@ -31,6 +32,17 @@ namespace Wraithknight
                         InputReader.CurrentCursorPos.Y > ButtonRec.Y && InputReader.CurrentCursorPos.Y < ButtonRec.Y + ButtonRec.Height;
 
             return IsClicked;
+        }
+
+        public override void Align(Viewport viewport)
+        {
+            if (DrawOrigin == Origin.Center)
+            {
+                DrawComponent.DrawRec.X = (int)Position.X - DrawComponent.DrawRec.Width / 2;
+                DrawComponent.DrawRec.Y = (int)Position.Y - DrawComponent.DrawRec.Height / 2;
+                ButtonRec.X = (int) Position.X - DrawComponent.DrawRec.Width / 2;
+                ButtonRec.Y = (int) Position.Y - DrawComponent.DrawRec.Height / 2;
+            }
         }
     }
 }

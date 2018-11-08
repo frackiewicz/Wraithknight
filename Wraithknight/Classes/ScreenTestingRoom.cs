@@ -13,18 +13,21 @@ namespace Wraithknight
     {
         private readonly ECS _ecs;
         private readonly Camera2D _camera;
+        private GameTime _internalGameTime; //TODO refactor this to gameTime, and higher level gameTime to deltaTime
 
-        public ScreenTestingRoom(ScreenManager screenManager, GraphicsDevice graphics) : base(screenManager)
+        public ScreenTestingRoom(ScreenManager screenManager) : base(screenManager)
         {
-            _camera = new Camera2D(graphics);
+            _camera = new Camera2D(screenManager.Graphics.GraphicsDevice);
             _ecs = new ECS(_camera);
+            _internalGameTime = new GameTime();
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
         }
 
         public override Screen Update(GameTime gameTime)
         {
-            _ecs.UpdateSystems(gameTime);
-            _camera.Update(gameTime);
+            UpdateGameTime(gameTime);
+            _ecs.UpdateSystems(_internalGameTime);
+            _camera.Update(_internalGameTime);
             return this;
         }
 
@@ -88,6 +91,11 @@ namespace Wraithknight
 
             if (_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.1f;
             else if (_camera.TargetZoom > 1) _camera.TargetZoom = (int) _camera.TargetZoom;
+        }
+
+        private void UpdateGameTime(GameTime gameTime)
+        {
+            _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
         }
 
         private void OpenMenuScreen()

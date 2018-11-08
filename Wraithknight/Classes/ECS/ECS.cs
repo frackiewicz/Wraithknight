@@ -130,8 +130,9 @@ namespace Wraithknight
 
         public Entity CreateEntity(EntityType type, Vector2? position = null, Coord2 speed = null, GameTime gameTime = null) //this here needs some work
         {
-            if(position == null) position = new Vector2(0, 0);
-            if(speed == null) speed = new Coord2();
+            //this might be enough lol
+            Vector2 safePosition = position ?? new Vector2(0, 0);
+            Coord2 safeSpeed = speed ?? new Coord2();
 
             #region actors
             Entity entity = new Entity(type);
@@ -139,7 +140,7 @@ namespace Wraithknight
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500));
                 entity.AddBindedComponent(new DrawComponent(size: new Point(16,16)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point((int)safePosition.X, (int)safePosition.Y), new Point(16, 16)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());
                 entity.SetAllegiance(Allegiance.Friendly);
             }
@@ -148,16 +149,16 @@ namespace Wraithknight
             else if (type == EntityType.Wall)
             {
                 entity.AddComponent(new DrawComponent(size: new Point(16,16), tint: Color.Blue));
-                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point(0,0), new Point(16,16)), isImpassable: true, isPhysical: true));
+                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new Rectangle(new Point((int)safePosition.X, (int)safePosition.Y), new Point(16,16)), isImpassable: true, isPhysical: true));
             }
             #endregion
             #region projectiles
             else if (type == EntityType.KnightSlash)
             {
                 float startingSpeed = 400;
-                entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: (Vector2) position, speed: speed.ChangePolarLength(startingSpeed)));
+                entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed.ChangePolarLength(startingSpeed)));
                 entity.AddBindedComponent(new DrawComponent(size: new Point(16,16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point(0, 0), new Point(16, 16))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
+                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new Rectangle(new Point((int)safePosition.X, (int)safePosition.Y), new Point(16, 16))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
                 entity.AddBindedComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
                 entity.SetAllegiance(Allegiance.Friendly);

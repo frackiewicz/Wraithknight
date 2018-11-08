@@ -15,14 +15,16 @@ namespace Wraithknight
     public class ScreenManager
     {   //manages screens - loads, updates, passes input, draws, and removes screens
         private readonly GameBase _game;
+        public readonly GraphicsDeviceManager Graphics;
 
         private readonly List<Screen> _screens = new List<Screen>();
 
         public SpriteBatch SpriteBatch { get; private set; }
 
-        public ScreenManager(GameBase game)
+        public ScreenManager(GameBase game, GraphicsDeviceManager graphics) 
         {
             _game = game;
+            Graphics = graphics;
         }
 
         public void Initialize()
@@ -37,7 +39,7 @@ namespace Wraithknight
             }
             else if (Flags.BootRoutine == BootRoutine.TestingRoom)
             {
-                FlushAndLoad(new ScreenTestingRoom(this, _game.GraphicsDevice));
+                FlushAndLoad(new ScreenTestingRoom(this));
             }
             #endregion
         }
