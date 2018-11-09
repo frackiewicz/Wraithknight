@@ -37,14 +37,6 @@ namespace Wraithknight
             }
         }
 
-        public override void FinalizeUpdate(GameTime gameTime) //Yo i feel really bad about this
-        {
-            foreach (MovementComponent movement in _components)
-            {
-                
-            }
-        }
-
         public override void Reset()
         {
             _components.Clear();

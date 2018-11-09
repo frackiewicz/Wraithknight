@@ -86,8 +86,8 @@ namespace Wraithknight
             {
                 _systemSet.Add(new InputSystem(this, _camera));
                 _systemSet.Add(new HeroControlSystem(this));
-                _systemSet.Add(new MovementSystem(this));
                 _systemSet.Add(new CollisionSystem(this));
+                _systemSet.Add(new MovementSystem(this));
                 _systemSet.Add(new TimerSystem(this));
                 _systemSet.Add(new HealthSystem(this));
             }

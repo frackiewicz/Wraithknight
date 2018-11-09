@@ -32,10 +32,6 @@ namespace Wraithknight
                 Target.Add(Functions_Operators.CastComponent<T>(component));
                 component.Activate(); //do you want this?
             }
-            else
-            {
-                Console.WriteLine("Entity-" + entity.ID + " lacks " + typeof(T));
-            }
         }
 
         protected void CoupleComponent<T>(ICollection<T> Target, ICollection<Entity> entities)
@@ -44,11 +40,6 @@ namespace Wraithknight
             {
                 CoupleComponent(Target, entity);
             }
-        }
-
-        public virtual void FinalizeUpdate(GameTime gameTime)
-        {
-
         }
 
         public override int GetHashCode()

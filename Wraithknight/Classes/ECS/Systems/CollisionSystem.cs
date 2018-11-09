@@ -144,7 +144,7 @@ namespace Wraithknight
 
         #region AABB
 
-        private static float SweptAABB(Pair actor, CollisionComponent target, GameTime gameTime, out int normalX, out int normalY)
+        private static float SweptAABB(Pair actor, CollisionComponent target, GameTime gameTime, out int normalX, out int normalY) //TODO Found the problem: Collision rectangle coordinates are in Integer
         {
             float xEntryDistance, yEntryDistance;
             float xExitDistance, yExitDistance;
@@ -184,8 +184,8 @@ namespace Wraithknight
             }
             else
             {
-                xEntryTime = xEntryDistance / (actor.Movement.Speed.Cartesian.X);
-                xExitTime = xExitDistance / (actor.Movement.Speed.Cartesian.Y);
+                xEntryTime = xEntryDistance / (actor.Movement.Speed.Cartesian.X * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                xExitTime = xExitDistance / (actor.Movement.Speed.Cartesian.Y * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             if (actor.Movement.Speed.Cartesian.Y == 0.0f)
@@ -195,19 +195,19 @@ namespace Wraithknight
             }
             else
             {
-                yEntryTime = yEntryDistance / (actor.Movement.Speed.Cartesian.Y);
-                yExitTime = yExitDistance / (actor.Movement.Speed.Cartesian.Y);
+                yEntryTime = yEntryDistance / (actor.Movement.Speed.Cartesian.Y * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                yExitTime = yExitDistance / (actor.Movement.Speed.Cartesian.Y * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             #endregion
+
             float entryTime = Math.Max(xEntryTime, yEntryTime);
             float exitTime = Math.Min(xExitTime, yExitTime);
             Console.WriteLine("Distance: " + xEntryDistance);
             Console.WriteLine("Time: " + xEntryTime);
 
             #region no collision happened
-            if (entryTime > exitTime || (xEntryTime < 0.0f && yEntryTime < 0.0f) || (xEntryTime > 1.0f && yEntryTime > 1.0f))
+            if (entryTime > exitTime || xEntryTime < 0.0f && yEntryTime < 0.0f || xEntryTime > 1.0f || yEntryTime > 1.0f)
             {
-                Console.WriteLine(entryTime > exitTime);
                 normalX = 0;
                 normalY = 0;
                 return 1.0f;

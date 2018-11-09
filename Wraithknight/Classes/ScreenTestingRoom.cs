@@ -96,6 +96,7 @@ namespace Wraithknight
         private void UpdateGameTime(GameTime gameTime)
         {
             _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
+            _internalGameTime.TotalGameTime += gameTime.ElapsedGameTime;
         }
 
         private void OpenMenuScreen()

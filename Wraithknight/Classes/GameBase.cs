@@ -44,11 +44,7 @@ namespace Wraithknight
         }
         private void ConsoleTesting()
         {
-            Coord2 test = new Coord2(new Vector2(0, 500));
-            test.ChangePolarLength(1000);
-            Console.WriteLine(test.Cartesian);
-            Console.WriteLine(test.Polar.Angle);
-            Console.WriteLine(test.Polar.Length);
+            Console.WriteLine(float.PositiveInfinity);
         }
         protected override void LoadContent()
         {
