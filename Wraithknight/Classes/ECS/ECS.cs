@@ -23,7 +23,7 @@ namespace Wraithknight
 
     class ECS
     {
-        private readonly Dictionary<int ,Entity> _entityDictionary = new Dictionary<int, Entity>(); //early testing says: count should stay below 1k
+        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //early testing says: count should stay below 1k
         private readonly HashSet<System> _systemSet = new HashSet<System>(); // replace with map for direct communication? //nvm, getSystem works just fine
         private DrawSystem drawSystem; //maybe turn into Interface + List for multiple systems?
         private Camera2D _camera;

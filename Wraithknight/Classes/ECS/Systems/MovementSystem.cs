@@ -30,9 +30,9 @@ namespace Wraithknight
             {
                 if (movement.Inactive) continue;
                 movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
+                ApplySpeed(movement, gameTime);
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
-                ApplySpeed(movement, gameTime);
             }
         }
 

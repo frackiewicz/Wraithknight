@@ -57,7 +57,7 @@ namespace Wraithknight
                     //TODO bandaid problem is solveable: you dont take friction into account, or make a better algorithm to reduce redundant calculating
                     //Movement calculates its current position first, then solve collision problem and teleport onto last position
                     //that might work, i guess
-                    if (actor.Movement.IsMoving && actor.Collision != target) //TODO breunig talk about performance of collision
+                    if (actor.Movement.IsMoving && actor.Collision.Equals(target)) //TODO breunig talk about performance of collision
                     {
                         if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime);   
                         else HandleLogicalCollision(actor.Collision, target); //later remove the else
@@ -68,10 +68,9 @@ namespace Wraithknight
 
         private void BindMovementComponents()
         {
-            Component bind;
             foreach (var component in _collisionComponents)
             {
-                if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
+                if (component.Bindings.TryGetValue(typeof(MovementComponent), out var bind))
                 {
                     _moveableCollisionComponents.Add(new Pair(component, (MovementComponent)bind));
                 }

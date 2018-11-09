@@ -11,7 +11,7 @@ namespace Wraithknight
         private ECS _ecs;
 
         private readonly Dictionary<CollisionComponent, Dictionary<Type, Component>> _collisionBinds 
-            = new Dictionary<CollisionComponent, Dictionary<Type, Component>>(); //TODO Breunig talk about dictionary performance and alternatives
+            = new Dictionary<CollisionComponent, Dictionary<Type, Component>>();
 
         public CollisionLogicSubsystem(ECS ecs)
         {
