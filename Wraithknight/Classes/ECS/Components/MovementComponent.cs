@@ -153,6 +153,7 @@ namespace Wraithknight //TODO structs could use some improvements
     {
         public Direction Direction = Direction.Down;
         public Boolean IsMoving = false;
+        public Boolean HasCollided = false;
 
         public Vector2 Position;
         public Vector2 OldPosition; //I give up //IT DOESNT FUCKING WORK LMAO

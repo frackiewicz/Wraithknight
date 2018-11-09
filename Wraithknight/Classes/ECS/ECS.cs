@@ -73,7 +73,7 @@ namespace Wraithknight
         {
             if (routine == ecsBootRoutine.Testing)
             {
-                AddEntity(CreateEntity(EntityType.Hero));
+                AddEntity(CreateEntity(EntityType.Hero, position: new Vector2(-50, 0)));
                 AddEntity(CreateEntity(EntityType.Wall));
             }
         }
@@ -138,7 +138,7 @@ namespace Wraithknight
             Entity entity = new Entity(type);
             if (type == EntityType.Hero)
             {
-                entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500));
+                entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
                 entity.AddBindedComponent(new DrawComponent(size: new Point(16,16)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new Rectangle(new Point((int)safePosition.X, (int)safePosition.Y), new Point(16, 16)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());

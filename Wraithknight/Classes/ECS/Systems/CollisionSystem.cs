@@ -9,9 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    class CollisionSystem : System //handle damage and other specific behavior in other systems, this is specifically for collisions
-    //maybe link to other collision related systems here to avoid repeated calculations?
-    //How will you handle complex collision behavior? you will need to access everything... :(
+    class
+        CollisionSystem : System //handle damage and other specific behavior in other systems, this is specifically for collisions
+        //maybe link to other collision related systems here to avoid repeated calculations?
+        //How will you handle complex collision behavior? you will need to access everything... :(
     {
         private struct Pair
         {
@@ -24,6 +25,7 @@ namespace Wraithknight
                 Movement = movement;
             }
         }
+
         private HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
         private HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
 
@@ -50,17 +52,13 @@ namespace Wraithknight
             foreach (var actor in _moveableCollisionComponents)
             {
                 if (actor.Collision.Inactive) continue;
-                foreach (var target in _collisionComponents) 
+                foreach (var target in _collisionComponents)
                 {
                     if (target.Inactive) continue;
-                    //Current bandaid doesnt work on lower speeds!
-                    //TODO bandaid problem is solveable: you dont take friction into account, or make a better algorithm to reduce redundant calculating
-                    //Movement calculates its current position first, then solve collision problem and teleport onto last position
-                    //that might work, i guess
-                    if (actor.Movement.IsMoving && actor.Collision.Equals(target)) //TODO breunig talk about performance of collision
+                    if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
-                        if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime);   
-                        else HandleLogicalCollision(actor.Collision, target); //later remove the else
+                        if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime);
+                        else HandleLogicalCollision(actor.Collision, target);
                     }
                 }
             }
@@ -72,7 +70,7 @@ namespace Wraithknight
             {
                 if (component.Bindings.TryGetValue(typeof(MovementComponent), out var bind))
                 {
-                    _moveableCollisionComponents.Add(new Pair(component, (MovementComponent)bind));
+                    _moveableCollisionComponents.Add(new Pair(component, (MovementComponent) bind));
                 }
             }
         }
@@ -96,11 +94,11 @@ namespace Wraithknight
 
         private static void AlignPair(Pair pair)
         {
-            pair.Collision.CollisionRectangle.X = (int)pair.Movement.Position.X;
-            pair.Collision.CollisionRectangle.Y = (int)pair.Movement.Position.Y;
+            pair.Collision.CollisionRectangle.X = (int) pair.Movement.Position.X;
+            pair.Collision.CollisionRectangle.Y = (int) pair.Movement.Position.Y;
         }
 
-        private static void ApplyCollision(Pair pair)
+        private static void AlignMovement(Pair pair)
         {
             pair.Movement.Position.X = pair.Collision.CollisionRectangle.X;
             pair.Movement.Position.Y = pair.Collision.CollisionRectangle.Y;
@@ -115,76 +113,24 @@ namespace Wraithknight
 
         #endregion
 
-        #region AABB checking
-        private bool IsTouchingLeft(Pair actor, CollisionComponent target, GameTime gameTime)
-        {
-            return actor.Collision.CollisionRectangle.Right + actor.Movement.Speed.Cartesian.X * gameTime.ElapsedGameTime.TotalSeconds > target.CollisionRectangle.Left &&
-                   actor.Collision.CollisionRectangle.Left < target.CollisionRectangle.Left &&
-                   actor.Collision.CollisionRectangle.Bottom > target.CollisionRectangle.Top &&
-                   actor.Collision.CollisionRectangle.Top < target.CollisionRectangle.Bottom;
-        }
-
-        private bool IsTouchingRight(Pair actor, CollisionComponent target, GameTime gameTime)
-        {
-            return actor.Collision.CollisionRectangle.Left + actor.Movement.Speed.Cartesian.X * gameTime.ElapsedGameTime.TotalSeconds < target.CollisionRectangle.Right &&
-                   actor.Collision.CollisionRectangle.Right > target.CollisionRectangle.Right &&
-                   actor.Collision.CollisionRectangle.Bottom > target.CollisionRectangle.Top &&
-                   actor.Collision.CollisionRectangle.Top < target.CollisionRectangle.Bottom;
-        }
-
-        private bool IsTouchingTop(Pair actor, CollisionComponent target, GameTime gameTime)
-        {
-            return actor.Collision.CollisionRectangle.Bottom + actor.Movement.Speed.Cartesian.Y * gameTime.ElapsedGameTime.TotalSeconds > target.CollisionRectangle.Top &&
-                   actor.Collision.CollisionRectangle.Top < target.CollisionRectangle.Top &&
-                   actor.Collision.CollisionRectangle.Right > target.CollisionRectangle.Left &&
-                   actor.Collision.CollisionRectangle.Left < target.CollisionRectangle.Right;
-        }
-
-        private bool IsTouchingBottom(Pair actor, CollisionComponent target, GameTime gameTime)
-        {
-            return actor.Collision.CollisionRectangle.Top + actor.Movement.Speed.Cartesian.Y * gameTime.ElapsedGameTime.TotalSeconds < target.CollisionRectangle.Bottom &&
-                   actor.Collision.CollisionRectangle.Bottom > target.CollisionRectangle.Bottom &&
-                   actor.Collision.CollisionRectangle.Right > target.CollisionRectangle.Left &&
-                   actor.Collision.CollisionRectangle.Left < target.CollisionRectangle.Right;
-        }
-        #endregion //doesnt take friction into account
-
         #region ComplexCollisionInteractions
 
         private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime) //TODO Implement Swept CC sometime
         {
-            if (target.Behavior == CollisionBehavior.Block)
+            float entryTime = SweptAABB(actor, target, gameTime, out var normalX, out var normalY);
+            if (entryTime <= 0 || entryTime >= 1) return;
+            MoveToEntry(actor, entryTime, gameTime);
+            if (actor.Collision.Behavior == CollisionBehavior.Block)
             {
-                if ((actor.Movement.Speed.Cartesian.X > 0 && IsTouchingLeft(actor, target, gameTime)) ||
-                    (actor.Movement.Speed.Cartesian.X < 0 & IsTouchingRight(actor, target, gameTime)))
-                {
-                    if (actor.Collision.Behavior == CollisionBehavior.Block)
-                    {
-                        actor.Movement.Position.X = actor.Movement.OldPosition.X;
-                        actor.Movement.StopX();
-                    }
-                    else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
-                    {
-                        actor.Movement.Speed.ChangeX(-actor.Movement.Speed.Cartesian.X);
-                    }
-                }
-
-                if ((actor.Movement.Speed.Cartesian.Y > 0 && IsTouchingTop(actor, target, gameTime)) ||
-                    (actor.Movement.Speed.Cartesian.Y < 0 & IsTouchingBottom(actor, target, gameTime)))
-                {
-                    if (actor.Collision.Behavior == CollisionBehavior.Block)
-                    {
-                        actor.Movement.Position.Y = actor.Movement.OldPosition.Y;
-                        actor.Movement.StopY();
-                    }
-                    else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
-                    {
-                        actor.Movement.Speed.ChangeY(-actor.Movement.Speed.Cartesian.Y);
-                    }
-                }
-
-                AlignPair(actor);
+                BlockActor(actor, normalX);
+                ApplyRemainingSpeed(actor, 1 - entryTime, gameTime);
             }
+            else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
+            {
+                BounceActor(actor, normalX, normalY);
+                ApplyRemainingSpeed(actor, 1 - entryTime, gameTime);
+            }
+            AlignMovement(actor);
         }
 
         private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target)
@@ -195,6 +141,118 @@ namespace Wraithknight
         }
 
         #endregion
+
+        #region AABB
+
+        private static float SweptAABB(Pair actor, CollisionComponent target, GameTime gameTime, out int normalX, out int normalY)
+        {
+            float xEntryDistance, yEntryDistance;
+            float xExitDistance, yExitDistance;
+
+            #region calculate distances
+            if (actor.Movement.Speed.Cartesian.X > 0.0f)
+            {
+                xEntryDistance = target.CollisionRectangle.X - (actor.Collision.CollisionRectangle.X + actor.Collision.CollisionRectangle.Width);
+                xExitDistance = (target.CollisionRectangle.X + target.CollisionRectangle.Width) - actor.Collision.CollisionRectangle.X;
+            }
+            else
+            {
+                xEntryDistance = (target.CollisionRectangle.X + target.CollisionRectangle.Width) - actor.Collision.CollisionRectangle.X;
+                xExitDistance = target.CollisionRectangle.X - (actor.Collision.CollisionRectangle.X + actor.Collision.CollisionRectangle.Width);
+            }
+
+            if (actor.Movement.Speed.Cartesian.Y > 0.0f)
+            {
+                yEntryDistance = target.CollisionRectangle.Y - (actor.Collision.CollisionRectangle.Y + actor.Collision.CollisionRectangle.Height);
+                yExitDistance = (target.CollisionRectangle.Y + target.CollisionRectangle.Height) - actor.Collision.CollisionRectangle.Y;
+            }
+            else
+            {
+                yEntryDistance = (target.CollisionRectangle.Y + target.CollisionRectangle.Height) - actor.Collision.CollisionRectangle.Y;
+                yExitDistance = target.CollisionRectangle.Y - (actor.Collision.CollisionRectangle.Y + actor.Collision.CollisionRectangle.Height);
+            }
+            #endregion
+
+            float xEntryTime, yEntryTime;
+            float xExitTime, yExitTime;
+
+            #region calculate entry and exit times
+            if (actor.Movement.Speed.Cartesian.X == 0.0f)
+            {
+                xEntryTime = float.NegativeInfinity;
+                xExitTime = float.PositiveInfinity;
+            }
+            else
+            {
+                xEntryTime = xEntryDistance / (actor.Movement.Speed.Cartesian.X);
+                xExitTime = xExitDistance / (actor.Movement.Speed.Cartesian.Y);
+            }
+
+            if (actor.Movement.Speed.Cartesian.Y == 0.0f)
+            {
+                yEntryTime = float.NegativeInfinity;
+                yExitTime = float.PositiveInfinity;
+            }
+            else
+            {
+                yEntryTime = yEntryDistance / (actor.Movement.Speed.Cartesian.Y);
+                yExitTime = yExitDistance / (actor.Movement.Speed.Cartesian.Y);
+            }
+            #endregion
+            float entryTime = Math.Max(xEntryTime, yEntryTime);
+            float exitTime = Math.Min(xExitTime, yExitTime);
+            Console.WriteLine("Distance: " + xEntryDistance);
+            Console.WriteLine("Time: " + xEntryTime);
+
+            #region no collision happened
+            if (entryTime > exitTime || (xEntryTime < 0.0f && yEntryTime < 0.0f) || (xEntryTime > 1.0f && yEntryTime > 1.0f))
+            {
+                Console.WriteLine(entryTime > exitTime);
+                normalX = 0;
+                normalY = 0;
+                return 1.0f;
+            }
+            #endregion
+
+            #region set normals
+            if (xEntryTime > yEntryTime)
+            {
+                normalX = -1;
+                normalY = 1;
+            }
+            else
+            {
+                normalX = 1;
+                normalY = -1;
+            }
+            #endregion
+            return entryTime;
+        }
+
+        private static void MoveToEntry(Pair actor, float entryTime, GameTime gameTime)
+        {
+            actor.Collision.CollisionRectangle.X += (int)(actor.Movement.Speed.Cartesian.X * (entryTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
+            actor.Collision.CollisionRectangle.Y += (int)(actor.Movement.Speed.Cartesian.Y * (entryTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
+        }
+
+        private static void ApplyRemainingSpeed(Pair actor, float remainingTime, GameTime gameTime)
+
+        {
+            actor.Collision.CollisionRectangle.X += (int)(actor.Movement.Speed.Cartesian.X * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
+            actor.Collision.CollisionRectangle.Y += (int)(actor.Movement.Speed.Cartesian.Y * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
+        }
+
+        private static void BlockActor(Pair actor, int normalX)
+        {
+            if (normalX <= 0) actor.Movement.Speed.ChangeX(0);
+            else actor.Movement.Speed.ChangeY(0);
+        }
+
+        private static void BounceActor(Pair actor, int normalX, int normalY)
+        {
+            actor.Movement.Speed.ChangeX(actor.Movement.Speed.Cartesian.X * normalX);
+            actor.Movement.Speed.ChangeY(actor.Movement.Speed.Cartesian.Y * normalY);
+        }
+        #endregion
     }
-   
 }
