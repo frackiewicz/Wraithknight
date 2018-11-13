@@ -23,10 +23,11 @@ namespace Wraithknight
 
     class ECS
     {
-        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //early testing says: count should stay below 1k
-        private readonly HashSet<System> _systemSet = new HashSet<System>(); // replace with map for direct communication? //nvm, getSystem works just fine
-        private DrawSystem drawSystem; //maybe turn into Interface + List for multiple systems?
+        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>();
+        private readonly HashSet<System> _systemSet = new HashSet<System>();
+        private DrawSystem drawSystem;
         private Camera2D _camera;
+        //enum for biome
 
         public ECS(Camera2D camera)
         {
@@ -77,6 +78,8 @@ namespace Wraithknight
                 AddEntity(CreateEntity(EntityType.Wall));
             }
         }
+
+        //TODO CreateEntities from 2D array (levelmaps)
 
         private void CreateSystems(ecsBootRoutine routine)
         {
@@ -208,20 +211,50 @@ namespace Wraithknight
 
         public void PurgeTheDead() //Experimental, no idea about possible side effects //TODO Breunig talk about direct Component killing
         {
-            CleanEntities();
+            CleanEntities(CleanType.Regular);
             ResetSystems();
             RegisterAllEntities();
             GC.Collect();
         }
 
-        private void CleanEntities()
+        public void PurgeForNextLevel()
+        {
+            CleanEntities(CleanType.Hero);
+            ResetSystems();
+            RegisterAllEntities();
+            //camera?
+            GC.Collect();
+        }
+
+        private enum CleanType
+        {
+            Regular,
+            Hero
+        }
+
+        private void CleanEntities(CleanType type)
         {
             List<Entity> newList = new List<Entity>();
-            foreach (var entity in _entityDictionary.Values)
+
+            if (type == CleanType.Regular)
             {
-                if (entity.Alive)
+                foreach (var entity in _entityDictionary.Values)
                 {
-                    newList.Add(entity);
+                    if (entity.Alive)
+                    {
+                        newList.Add(entity);
+                    }
+                }
+            }
+            
+            if (type == CleanType.Hero)
+            {
+                foreach (var entity in _entityDictionary.Values)
+                {
+                    if (entity.Type == EntityType.Hero)
+                    {
+                        newList.Add(entity);
+                    }
                 }
             }
             _entityDictionary.Clear();
@@ -241,5 +274,6 @@ namespace Wraithknight
         }
 
         #endregion
+
     }
 }

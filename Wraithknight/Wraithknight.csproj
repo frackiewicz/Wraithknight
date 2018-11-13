@@ -89,6 +89,7 @@
     <Compile Include="Classes\Concepts\LevelManager.cs" />
     <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
     <Compile Include="Classes\Menu\MenuObject.cs" />
+    <Compile Include="Classes\Overrides\MyRectangle.cs" />
     <Compile Include="Classes\Program.cs" />
     <Compile Include="Classes\Concepts\LoadingText.cs" />
     <Compile Include="Classes\Concepts\LoadingTextGenerator.cs" />
