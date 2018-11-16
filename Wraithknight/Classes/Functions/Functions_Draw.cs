@@ -16,6 +16,7 @@ namespace Wraithknight
     static class Functions_Draw
     {
         private static SpriteBatch _spriteBatch;
+        private static Texture2D _dummyTexture = Assets.GetTexture("DummyTexture");
 
 
         public static void setSpriteBatch(SpriteBatch spriteBatch)
@@ -28,29 +29,33 @@ namespace Wraithknight
             _spriteBatch = null;
         }
 
-
-        public static void Draw(Actor actor)
-        {
-            Draw(actor.Sprite);
-            if (Flags.ShowDrawRecs)
-            {
-                _spriteBatch.Draw(Assets.GetTexture("DummyTexture"), actor.Sprite.DrawRec, new Color(255, 255, 255, 50));
-            }
-
-            if (Flags.ShowCollisionRecs)
-            {
-
-            }
-        }
-
         public static void Draw(DrawComponent sprite)
         {
             _spriteBatch.Draw(sprite.Texture, sprite.DrawRec, sprite.Tint * 1);
         }
 
+        public static void DrawDebug(Rectangle rectangle)
+        {
+            _spriteBatch.Draw(_dummyTexture, rectangle, Color.Coral);
+        }
+
+        public static void DrawDebug(AABB rectangle)
+        {
+            _spriteBatch.Draw(_dummyTexture, new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height), Color.Coral);
+        }
+
+        public static void DrawDebug(Vector2 point)
+        {
+            _spriteBatch.Draw(_dummyTexture, point, Color.Black);
+        }
+
         public static void Draw(String text, SpriteFont font, Vector2 location)
         { 
             _spriteBatch.DrawString(font, text, location, Color.Blue);
+        }
+        public static void Draw(String text, SpriteFont font, Vector2 location, Color color)
+        {
+            _spriteBatch.DrawString(font, text, location, color);
         }
 
     }

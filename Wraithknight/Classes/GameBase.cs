@@ -44,7 +44,7 @@ namespace Wraithknight
         }
         private void ConsoleTesting()
         {
-            Console.WriteLine(float.PositiveInfinity);
+
         }
         protected override void LoadContent()
         {

@@ -57,7 +57,7 @@ namespace Wraithknight
                     if (target.Inactive) continue;
                     if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
-                        if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime);
+                        if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime, false);
                         else HandleLogicalCollision(actor.Collision, target);
                     }
                 }
@@ -82,6 +82,11 @@ namespace Wraithknight
             _logicSubsystem.ResetSystem();
         }
 
+        public HashSet<CollisionComponent> GetCollisionComponents()
+        {
+            return _collisionComponents;
+        }
+
         #region General CD stuff
 
         private void AlignAllPairs()
@@ -94,14 +99,13 @@ namespace Wraithknight
 
         private static void AlignPair(Pair pair)
         {
-            pair.Collision.CollisionRectangle.X = (int) pair.Movement.Position.X;
-            pair.Collision.CollisionRectangle.Y = (int) pair.Movement.Position.Y;
+            pair.Collision.CollisionRectangle.SetCenter(pair.Movement.Position);
         }
 
         private static void AlignMovement(Pair pair)
         {
-            pair.Movement.Position.X = pair.Collision.CollisionRectangle.X;
-            pair.Movement.Position.Y = pair.Collision.CollisionRectangle.Y;
+            pair.Movement.Position.X = pair.Collision.CollisionRectangle.Center.X;
+            pair.Movement.Position.Y = pair.Collision.CollisionRectangle.Center.Y;
         }
 
         private void MoveEntity(Pair entity, float newX, float newY)
@@ -115,36 +119,81 @@ namespace Wraithknight
 
         #region ComplexCollisionInteractions
 
-        private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime) //TODO Implement Swept CC sometime
+        private void HandlePhysicalCollision(Pair actor, CollisionComponent target, GameTime gameTime, bool swept) //TODO Implement Swept CC sometime
         {
-            float entryTime = SweptAABB(actor, target, gameTime, out var normalX, out var normalY);
-            if (entryTime <= 0 || entryTime >= 1) return;
-            MoveToEntry(actor, entryTime, gameTime);
+            if (swept)
+            {
+                float entryTime = SweptAABB(actor, target, gameTime, out var normalX, out var normalY);
+                if (entryTime <= 0 || entryTime >= 1) return;
+                MoveToEntry(actor, entryTime, gameTime);
+                HandleCollisionBehavior(actor, normalX, normalY);
+                ApplyRemainingSpeed(actor, 1 - entryTime, gameTime);
+
+            }
+            else //TODO Blocking works fine now, figure out the problem with normals next, also Speedblocking doesnt work yet
+            {
+                if (actor.Collision.CollisionRectangle.Intersects(target.CollisionRectangle))
+                {
+                    Vector2 penetrationVector = ClosestPointOnBoundsToPoint(CalculateMinkowskiDifference(actor.Collision.CollisionRectangle, target.CollisionRectangle), Vector2.Zero);
+                    actor.Collision.CollisionRectangle -= penetrationVector;
+                    Point normals = PenetrationToNormals(penetrationVector);
+                    HandleCollisionBehavior(actor, normals.X, normals.Y);
+                }
+            }
+            
+            AlignMovement(actor);
+        }
+
+        public void DrawShit()
+        {
+            foreach (var actor in _moveableCollisionComponents)
+            {
+                if (actor.Collision.Inactive) continue;
+                foreach (var target in _collisionComponents)
+                {
+                    if (target.Inactive) continue;
+                    if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
+                    {
+                        Functions_Draw.DrawDebug(CalculateMinkowskiDifference(actor.Collision.CollisionRectangle, target.CollisionRectangle));
+                    }
+                }
+            }
+
+        }
+
+        private void HandleCollisionBehavior(Pair actor, int normalX, int normalY)
+        {
             if (actor.Collision.Behavior == CollisionBehavior.Block)
             {
                 BlockActor(actor, normalX);
-                ApplyRemainingSpeed(actor, 1 - entryTime, gameTime);
             }
             else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
             {
                 BounceActor(actor, normalX, normalY);
-                ApplyRemainingSpeed(actor, 1 - entryTime, gameTime);
             }
-            AlignMovement(actor);
         }
+
+        private Point PenetrationToNormals(Vector2 vector)
+        {
+            Point result = new Point();
+            if (vector.X < 0) result.X = -1;
+            else if (vector.X > 0) result.X = 1;
+            if (vector.Y < 0) result.Y = -1;
+            else if (vector.Y > 0) result.Y = 1;
+            return result;
+        } //TODO This has some Issues
 
         private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target)
         {
             if (actor.Allegiance == target.Allegiance) return;
             _logicSubsystem.HandleCollision(actor, target);
-            //boy thisll be hard //Update: it was.
         }
 
         #endregion
 
         #region AABB
 
-        private static float SweptAABB(Pair actor, CollisionComponent target, GameTime gameTime, out int normalX, out int normalY) //TODO Found the problem: Collision rectangle coordinates are in Integer
+        private static float SweptAABB(Pair actor, CollisionComponent target, GameTime gameTime, out int normalX, out int normalY) //TODO THIS ALGORITHM IS NOT FUNCTIONAL, TOO LAZY TO FIX IT NOW
         {
             float xEntryDistance, yEntryDistance;
             float xExitDistance, yExitDistance;
@@ -199,19 +248,22 @@ namespace Wraithknight
                 yExitTime = yExitDistance / (actor.Movement.Speed.Cartesian.Y * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             #endregion
-
+            if (xEntryTime > 1.0f) xEntryTime = -float.MaxValue;
+            if (yEntryTime > 1.0f) yEntryTime = -float.MaxValue;
             float entryTime = Math.Max(xEntryTime, yEntryTime);
             float exitTime = Math.Min(xExitTime, yExitTime);
-            Console.WriteLine("Distance: " + xEntryDistance);
-            Console.WriteLine("Time: " + xEntryTime);
+            Functions_Debugging.WriteLine("Distance: " + xEntryDistance);
+            Functions_Debugging.WriteLine("Time: " + xEntryTime);
 
             #region no collision happened
-            if (entryTime > exitTime || xEntryTime < 0.0f && yEntryTime < 0.0f || xEntryTime > 1.0f || yEntryTime > 1.0f)
+            if ((entryTime > exitTime) || (xEntryTime < 0.0f && yEntryTime < 0.0f))
             {
                 normalX = 0;
                 normalY = 0;
+                Functions_Debugging.WriteLine("No Collision");
                 return 1.0f;
             }
+            
             #endregion
 
             #region set normals
@@ -229,6 +281,41 @@ namespace Wraithknight
             return entryTime;
         }
 
+
+
+        private static AABB CalculateMinkowskiDifference(AABB actor, AABB target)
+        {
+            return new AABB(actor.X - target.Right, actor.Y - target.Bottom, actor.Width + target.Width, actor.Height + target.Height);
+        }
+
+        private static Vector2 CalculatePenetrationVector(AABB actor, Vector2 point) //primarily used for minkowski
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Vector2 ClosestPointOnBoundsToPoint(AABB actor, Vector2 point) //TODO you can do better...
+        {
+            float distance = Math.Abs(actor.Left - point.X);
+            Vector2 pointOnBounds = new Vector2(actor.Left, point.Y);
+            if (Math.Abs(actor.Right - point.X) < distance)
+            {
+                distance = Math.Abs(actor.Right - point.X);
+                pointOnBounds = new Vector2(actor.Right, point.Y);
+            }
+            if (Math.Abs(actor.Bottom - point.Y) < distance)
+            {
+                distance = Math.Abs(actor.Bottom - point.Y);
+                pointOnBounds = new Vector2(point.X, actor.Bottom);
+            }
+            if (Math.Abs(actor.Top - point.Y) < distance)
+            {
+                distance = Math.Abs(actor.Top - point.Y);
+                pointOnBounds = new Vector2(point.X, actor.Top);
+            }
+
+            return pointOnBounds;
+        }
+
         private static void MoveToEntry(Pair actor, float entryTime, GameTime gameTime)
         {
             actor.Collision.CollisionRectangle.X += (int)(actor.Movement.Speed.Cartesian.X * (entryTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
@@ -241,6 +328,7 @@ namespace Wraithknight
             actor.Collision.CollisionRectangle.X += (int)(actor.Movement.Speed.Cartesian.X * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
             actor.Collision.CollisionRectangle.Y += (int)(actor.Movement.Speed.Cartesian.Y * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
         }
+
 
         private static void BlockActor(Pair actor, int normalX)
         {

@@ -18,7 +18,7 @@ namespace Wraithknight
 
         // dev flags
         public static Boolean ShowDrawRecs = false;
-        public static Boolean ShowCollisionRecs = false;
+        public static Boolean ShowCollisionRecs = true;
         public static Boolean ShowSpriteRecs = false;
         // option flags
 

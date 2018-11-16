@@ -20,13 +20,13 @@ namespace Wraithknight
     class CollisionComponent : BindableComponent //you will have to be efficient with this one
     {
         public CollisionBehavior Behavior;
-        public Rectangle CollisionRectangle;
+        public AABB CollisionRectangle;
         public Point Offset;
 
         public bool IsImpassable;
         public bool IsPhysical;
 
-        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, Rectangle collisionRectangle = new Rectangle(), Point offset = new Point(), bool isImpassable = false, bool isPhysical = false)
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Point offset = new Point(), bool isImpassable = false, bool isPhysical = false)
         {
             Behavior = behavior;
             SetIsPhysical();

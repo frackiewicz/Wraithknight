@@ -35,7 +35,6 @@ namespace Wraithknight
         {
             if (Hero != null)
             {
-                Functions_ConsoleDebugging.DumpEntityInfo(entity);
                 Console.WriteLine("Multiple Heroes in ControlSystem. Overwriting");
             }
 

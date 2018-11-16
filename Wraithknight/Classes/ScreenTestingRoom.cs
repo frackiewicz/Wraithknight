@@ -36,6 +36,7 @@ namespace Wraithknight
             _screenManager.SpriteBatch.Begin(transformMatrix: _camera.View);
             _ecs.Draw();
             _screenManager.SpriteBatch.End();
+            DrawDebug();
             return this;
         }
 
@@ -64,6 +65,14 @@ namespace Wraithknight
             Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
             Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
             Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
+        }
+
+        public void DrawDebug()
+        {
+            _screenManager.SpriteBatch.Begin();
+            Functions_Debugging.Draw();
+            Functions_Debugging.Reset();
+            _screenManager.SpriteBatch.End();
         }
 
         private void SimpleCameraMovement(GameTime gameTime)

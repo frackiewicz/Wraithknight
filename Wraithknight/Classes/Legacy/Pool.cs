@@ -30,7 +30,6 @@ namespace Wraithknight
         {
             foreach (Actor actor in PseudoActorPool)
             {
-                Functions_Draw.Draw(actor);
             }
         }
 
