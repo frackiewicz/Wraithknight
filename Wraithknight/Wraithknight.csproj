@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Classes\Functions\Functions_Debugging.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
+    <Compile Include="Classes\Levelgeneration\LevelGenerator.cs" />
     <Compile Include="Classes\Menu\Button.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionLogicSubsystem.cs" />
     <Compile Include="Classes\Menu\ButtonWithText.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Classes\ECS\System.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionSystem.cs" />
     <Compile Include="Classes\ECS\Systems\DrawSystem.cs" />
-    <Compile Include="Classes\Concepts\Assets.cs" />
+    <Compile Include="Classes\Assets.cs" />
     <Compile Include="Classes\Camera2D.cs" />
     <Compile Include="Classes\Components\Generics\ComponentMovement.cs" />
     <Compile Include="Classes\ECS\Systems\HealthSystem.cs" />
@@ -85,8 +86,7 @@
     <Compile Include="Classes\Functions\Functions_Operators.cs" />
     <Compile Include="Classes\GameScreen.cs" />
     <Compile Include="Classes\InputReader.cs" />
-    <Compile Include="Classes\Concepts\Level.cs" />
-    <Compile Include="Classes\Concepts\LevelManager.cs" />
+    <Compile Include="Classes\Levelgeneration\Level.cs" />
     <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
     <Compile Include="Classes\Menu\MenuObject.cs" />
     <Compile Include="Classes\Overrides\AABB.cs" />
