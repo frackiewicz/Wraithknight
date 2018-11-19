@@ -11,7 +11,7 @@ namespace Wraithknight
     class DrawComponent : BindableComponent
     {
         public Texture2D Texture;
-        public Rectangle DrawRec;
+        public Rectangle DrawRec; //maybe make this an AABB?
         public Point Offset; //the offset from the collision center
         public float Rotation;
         public Color Tint;
@@ -25,7 +25,6 @@ namespace Wraithknight
             if (offset == null) AutomaticOffset(); else Offset = (Point) offset;
             Rotation = rotation;
             if (tint == null) Tint = Color.White; else Tint = (Color) tint;
-            //Texture.SetData(new Color[] { Color.Purple });
         }
         #endregion
 
@@ -44,8 +43,8 @@ namespace Wraithknight
 
         public DrawComponent AutomaticOffset()
         {
-            Offset.X = -(int) Texture.Width / 2;
-            Offset.Y = -(int) Texture.Height / 2;
+            Offset.X = -(int) DrawRec.Width / 2;
+            Offset.Y = -(int) DrawRec.Height / 2;
             return this;
         }
 

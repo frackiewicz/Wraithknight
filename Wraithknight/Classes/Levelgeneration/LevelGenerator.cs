@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
     public enum LevelPreset
     {
-        Test
+        Test,
+        Forest
     }
 
-    class LevelGenerator
+    class LevelGenerator //TODO got plenty of cleanup todo here
     {
+        public int Width;
+        public int Height;
+
+        public bool FinishAutomata;
+        public bool DoCleanup;
+        public bool RemoveEmptyRooms;
+
         public int NoisePercent;
         public int BoundsNoisePercent;
         public int BoundsReach; //distancefrombounds
@@ -21,21 +31,48 @@ namespace Wraithknight
         public int StarvationNumber;
         public int BirthNumber;
 
+        public int MinRoomPercent;
+        public int MaxRoomPercent;
+
+
+
 
         public Level GenerateLevel()
         {
-            Level level = new Level(50, 50);
+            Level level = new Level(Width, Height);
+            return GenerateLevel(level);
+        }
+
+        public Level GenerateLevel(int width, int height)
+        {
+            Level level = new Level(width, height);
             return GenerateLevel(level);
         }
 
         public Level GenerateLevel(Level level) //For now Cellular Automata
         {
-            FillLevelWithRandomNoise(level, 50);
-            FillBoundsWithRandomNoise(level, 60, 5);
-            for (int i = 0; i < 0; i++)
+            FillLevelWithRandomNoise(level, NoisePercent);
+            FillBoundsWithRandomNoise(level, BoundsNoisePercent, BoundsReach);
+
+            if(FinishAutomata)
             {
-                ApplySimpleCellularAutomata(level, StarvationNumber, BirthNumber);
+                int loopCounter = 0;
+                while (!ApplySimpleCellularAutomata(level) && loopCounter < 100)
+                {
+                    loopCounter++;
+                }
             }
+            else
+            {
+                for (int i = 0; i < AutomataCycles; i++)
+                {
+                    ApplySimpleCellularAutomata(level);
+                }
+            }
+
+            if(DoCleanup)
+            if (!MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+
             return level;
         }
 
@@ -43,13 +80,43 @@ namespace Wraithknight
         {
             if (preset == LevelPreset.Test)
             {
+                Width = 100;
+                Height = 100;
+
+                FinishAutomata = false;
+                DoCleanup = false;
+                RemoveEmptyRooms = false;
+
                 NoisePercent = 50;
+                BoundsNoisePercent = 60;
+                BoundsReach = 10;
+
+                AutomataCycles = 1;
+                StarvationNumber = 3;
+                BirthNumber = 5;
+
+                MinRoomPercent = 30;
+                MaxRoomPercent = 50;
+            }
+            if (preset == LevelPreset.Forest)
+            {
+                Width = 100;
+                Height = 100;
+
+                FinishAutomata = true;
+                DoCleanup = true;
+                RemoveEmptyRooms = true;
+
+                NoisePercent = 52;
                 BoundsNoisePercent = 60;
                 BoundsReach = 5;
 
                 AutomataCycles = 0;
                 StarvationNumber = 3;
                 BirthNumber = 5;
+
+                MinRoomPercent = 10;
+                MaxRoomPercent = 15;
             }
         }
 
@@ -84,57 +151,66 @@ namespace Wraithknight
             }
         }
 
-        public void ApplySimpleCellularAutomata(Level level, int starvationNumber, int birthNumber)
+        public bool ApplySimpleCellularAutomata(Level level)
         {
             bool[,] newWalls = new bool[level.Walls.GetLength(0), level.Walls.GetLength(1)];
-            for (int x = 0; x < level.Walls.GetLength(0); x++)
+            bool[,] oldWalls = level.Walls;
+            for (int x = 0; x < oldWalls.GetLength(0); x++)
             {
-                for (int y = 0; y < level.Walls.GetLength(1); y++)
+                for (int y = 0; y < oldWalls.GetLength(1); y++)
                 {
-                    newWalls[x, y] = level.Walls[x, y];
+                    newWalls[x, y] = oldWalls[x, y];
 
-                    int nearbyWalls = CountNearbyWalls(level, x, y, 1);
-
-                    if (newWalls[x, y])
-                    { //Cell is a wall
-                        if (nearbyWalls <= starvationNumber) newWalls[x, y] = false;
-                    }
-                    else
-                    { //Cell is not a wall
-                        if(nearbyWalls >= birthNumber) newWalls[x, y] = true;
-                    }
+                    ApplyRules(x, y, oldWalls, newWalls);
                 }
             }
+
+            bool generationFinished = AreMapsIdentical(newWalls, oldWalls);
 
             //TODO Breunig why doesnt this work v
             // level.Walls = newWalls;
 
-            for (int x = 0; x < level.Walls.GetLength(0); x++)
-            {
-                for (int y = 0; y < level.Walls.GetLength(1); y++)
-                {
-                    level.Walls[x, y] = newWalls[x, y];
-                }
+            CopyWalls(newWalls, oldWalls);
+
+            return generationFinished;
+        }
+
+        private void ApplyRules(int x, int y, bool[,] oldMap, bool[,] newMap)
+        {
+            int nearbyWalls = CountNearbyWalls(oldMap, x, y, 1);
+
+            if (newMap[x, y])
+            { //Cell is a wall
+                if (nearbyWalls <= StarvationNumber) newMap[x, y] = false;
+            }
+            else
+            { //Cell is not a wall
+                if (nearbyWalls >= BirthNumber) newMap[x, y] = true;
             }
         }
 
         private int CountNearbyWalls(Level level, int xSource, int ySource, int range)
         {
+            return CountNearbyWalls(level.Walls, xSource, ySource, range);
+        }
+
+        private int CountNearbyWalls(bool[,] map, int xSource, int ySource, int range)
+        {
             int neighbors = 0;
-            for (int x = xSource-range; x <= xSource+1; x++)
+            for (int x = xSource - range; x <= xSource + 1; x++)
             {
-                for (int y = ySource-range; y <= ySource+1; y++)
+                for (int y = ySource - range; y <= ySource + 1; y++)
                 {
                     if ((x == xSource && y == ySource))
                     {
                         continue;
                     }
 
-                    if (x < 0 || x > level.Walls.GetLength(0) - 1 || y < 0 || y > level.Walls.GetLength(1) - 1)
+                    if (x < 0 || x > map.GetLength(0) - 1 || y < 0 || y > map.GetLength(1) - 1)
                     { //out of bounds
                         neighbors++;
                     }
-                    else if (level.Walls[x, y])
+                    else if (map[x, y])
                     {
                         neighbors++;
                     }
@@ -142,5 +218,151 @@ namespace Wraithknight
             }
             return neighbors;
         }
+
+
+        private bool AreMapsIdentical(bool[,] a, bool[,] b)
+        {
+            if(a.Length != b.Length) throw new ArgumentException();
+
+            for (int x = 0; x < a.GetLength(0); x++)
+            {
+                for (int y = 0; y < a.GetLength(1); y++)
+                {
+                    if (a[x, y] != b[x, y]) return false;
+                }
+            }
+            return true;
+        }
+
+        private void CopyWalls(bool[,] source, bool[,] target)
+        {
+            for (int x = 0; x < target.GetLength(0); x++)
+            {
+                for (int y = 0; y < target.GetLength(1); y++)
+                {
+                    target[x, y] = source[x, y];
+                }
+            }
+        }
+
+
+
+        private struct Floodling
+        {
+            public bool Value; //remember to count yourself
+            public Point Source;
+            public int Count;
+
+            public Floodling(bool value, int x, int y)
+            {
+                Value = value;
+                Source = new Point(x, y);
+                Count = 0;
+            }
+
+            public Floodling(bool value, Point point)
+            {
+                Value = value;
+                Source = point;
+                Count = 0;
+            }
+        }
+
+        private bool MapCleanup(bool[,] map)
+        {
+            if (RemoveEmptyRooms) if (!RemoveSmallerRooms(map)) return false;
+
+            return true;
+        }
+
+        private bool RemoveSmallerRooms(bool[,] map)
+        {
+            bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
+            List<Floodling> rooms = new List<Floodling>();
+
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    if (!map[x, y] && !visited[x, y])
+                    {
+                        FindSimilarCluster(x, y, map, visited, rooms);
+                    }
+                }
+            }
+
+            rooms.Sort((a, b) => b.Count.CompareTo(a.Count));
+
+            float OpenPercentage = ((float) rooms[0].Count / map.Length) * 100;
+            if (OpenPercentage < MinRoomPercent || OpenPercentage > MaxRoomPercent) return false;
+
+            for (int i = 1; i < rooms.Count; i++)
+            {
+                FlipSimilarCluster(rooms[i], map, new bool[map.GetLength(0), map.GetLength(1)]);
+            }
+
+            return true;
+        }
+
+        private void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
+        {
+            Floodling floodling = new Floodling(map[x,y], x, y);
+            Stack<Point> stack = new Stack<Point>();
+            stack.Push(new Point(x,y));
+
+            Point currentCell;
+            while (stack.Count > 0)
+            {
+                currentCell = stack.Pop();
+
+                if (currentCell.X < 0 || currentCell.X > map.GetLength(0) - 1 || currentCell.Y < 0 || currentCell.Y > map.GetLength(1) - 1) continue;
+
+                if (map[currentCell.X, currentCell.Y] == floodling.Value && !visited[currentCell.X, currentCell.Y])
+                {
+                    floodling.Count++;
+                    visited[currentCell.X, currentCell.Y] = true;
+
+                    stack.Push(new Point(currentCell.X - 1, currentCell.Y));
+                    stack.Push(new Point(currentCell.X + 1, currentCell.Y));
+                    stack.Push(new Point(currentCell.X, currentCell.Y - 1));
+                    stack.Push(new Point(currentCell.X, currentCell.Y + 1));
+                }
+            }
+            floodlings.Add(floodling);
+        }
+
+        private void FlipSimilarCluster(Floodling floodling, bool[,] map, bool[,] visited)
+        {
+            Stack<Point> stack = new Stack<Point>();
+            stack.Push(new Point(floodling.Source.X, floodling.Source.Y));
+
+            Point currentCell;
+            while (stack.Count > 0)
+            {
+                currentCell = stack.Pop();
+
+                if (currentCell.X < 0 || currentCell.X > map.GetLength(0) - 1 || currentCell.Y < 0 || currentCell.Y > map.GetLength(1) - 1) continue;
+
+                if (map[currentCell.X, currentCell.Y] == floodling.Value && !visited[currentCell.X, currentCell.Y])
+                {
+                    map[currentCell.X, currentCell.Y] = !floodling.Value;
+                    visited[currentCell.X, currentCell.Y] = true;
+
+                    stack.Push(new Point(currentCell.X - 1, currentCell.Y));
+                    stack.Push(new Point(currentCell.X + 1, currentCell.Y));
+                    stack.Push(new Point(currentCell.X, currentCell.Y - 1));
+                    stack.Push(new Point(currentCell.X, currentCell.Y + 1));
+                }
+            }
+        }
     }
 }
+/*
+ * for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    
+                }
+            }
+ */

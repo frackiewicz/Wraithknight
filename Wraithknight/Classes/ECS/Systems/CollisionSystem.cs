@@ -9,10 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    class
-        CollisionSystem : System //handle damage and other specific behavior in other systems, this is specifically for collisions
-        //maybe link to other collision related systems here to avoid repeated calculations?
-        //How will you handle complex collision behavior? you will need to access everything... :(
+    class CollisionSystem : System //TODO Breunig Collision System definetly needs a performance boost
     {
         private struct Pair
         {
@@ -158,14 +155,13 @@ namespace Wraithknight
                     }
                 }
             }
-
         }
 
         private void HandleCollisionBehavior(Pair actor, int normalX, int normalY)
         {
             if (actor.Collision.Behavior == CollisionBehavior.Block)
             {
-                BlockActor(actor, normalX);
+                BlockActor(actor, normalX, normalY);
             }
             else if (actor.Collision.Behavior == CollisionBehavior.Bounce)
             {
@@ -176,10 +172,12 @@ namespace Wraithknight
         private Point PenetrationToNormals(Vector2 vector)
         {
             Point result = new Point();
+            
             if (vector.X < 0) result.X = -1;
             else if (vector.X > 0) result.X = 1;
             if (vector.Y < 0) result.Y = -1;
             else if (vector.Y > 0) result.Y = 1;
+            
             return result;
         } //TODO This has some Issues
 
@@ -323,17 +321,20 @@ namespace Wraithknight
         }
 
         private static void ApplyRemainingSpeed(Pair actor, float remainingTime, GameTime gameTime)
-
         {
             actor.Collision.CollisionRectangle.X += (int)(actor.Movement.Speed.Cartesian.X * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
             actor.Collision.CollisionRectangle.Y += (int)(actor.Movement.Speed.Cartesian.Y * (remainingTime * (float)gameTime.ElapsedGameTime.TotalSeconds));
         }
 
-
-        private static void BlockActor(Pair actor, int normalX)
+        private static void BlockActor(Pair actor, Point normals)
         {
-            if (normalX <= 0) actor.Movement.Speed.ChangeX(0);
-            else actor.Movement.Speed.ChangeY(0);
+            BlockActor(actor, normals.X, normals.Y);
+        }
+
+        private static void BlockActor(Pair actor, int normalX, int normalY)
+        {
+            if (normalX != 0) actor.Movement.Speed.ChangeX(0);
+            if (normalY != 0) actor.Movement.Speed.ChangeY(0);
         }
 
         private static void BounceActor(Pair actor, int normalX, int normalY)

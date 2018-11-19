@@ -65,8 +65,8 @@ namespace Wraithknight
         {
             foreach (var pair in _moveableDrawComponents) 
             {
-                pair.Draw.DrawRec.X = (int)pair.Move.Position.X;
-                pair.Draw.DrawRec.Y = (int)pair.Move.Position.Y;
+                pair.Draw.DrawRec.X = (int)pair.Move.Position.X + pair.Draw.Offset.X;
+                pair.Draw.DrawRec.Y = (int)pair.Move.Position.Y + pair.Draw.Offset.Y;
             }
         }
 

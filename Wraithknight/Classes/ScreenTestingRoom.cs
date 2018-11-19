@@ -27,7 +27,7 @@ namespace Wraithknight
             _internalGameTime = new GameTime();
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
             _hero = _ecs.GetHero();
-            _levelGenerator.ApplyPreset(LevelPreset.Test);
+            _levelGenerator.ApplyPreset(LevelPreset.Forest);
         }
 
         public override Screen Update(GameTime gameTime)
@@ -50,8 +50,8 @@ namespace Wraithknight
 
         public override Screen LoadContent()
         {
-            _currentLevel = _levelGenerator.GenerateLevel();
-            _ecs.ProcessLevel(_currentLevel);
+            //_currentLevel = _levelGenerator.GenerateLevel();
+            //_ecs.ProcessLevel(_currentLevel);
             return this;
         }
 
@@ -102,7 +102,7 @@ namespace Wraithknight
 
             if (InputReader.IsKeyTriggered(Keys.N))
             {
-                _levelGenerator.ApplySimpleCellularAutomata(_currentLevel, _levelGenerator.StarvationNumber, _levelGenerator.BirthNumber);
+                _levelGenerator.ApplySimpleCellularAutomata(_currentLevel);
                 _ecs.PurgeForNextLevel();
                 _ecs.ProcessLevel(_currentLevel);
             }
