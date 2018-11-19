@@ -15,12 +15,19 @@ namespace Wraithknight
         private readonly Camera2D _camera;
         private GameTime _internalGameTime; //TODO refactor this to gameTime, and higher level gameTime to deltaTime
 
+        private Entity _hero; //To make things easier, like cameramovement
+
+        private LevelGenerator _levelGenerator = new LevelGenerator();
+        private Level _currentLevel;
+
         public ScreenTestingRoom(ScreenManager screenManager) : base(screenManager)
         {
             _camera = new Camera2D(screenManager.Graphics.GraphicsDevice);
             _ecs = new ECS(_camera);
             _internalGameTime = new GameTime();
             _ecs.StartupRoutine(ecsBootRoutine.Testing);
+            _hero = _ecs.GetHero();
+            _levelGenerator.ApplyPreset(LevelPreset.Test);
         }
 
         public override Screen Update(GameTime gameTime)
@@ -35,13 +42,16 @@ namespace Wraithknight
         {
             _screenManager.SpriteBatch.Begin(transformMatrix: _camera.View);
             _ecs.Draw();
+            if (Flags.Debug) DrawDebug();
             _screenManager.SpriteBatch.End();
-            DrawDebug();
+            if(Flags.Debug) DrawDebugText();
             return this;
         }
 
         public override Screen LoadContent()
         {
+            _currentLevel = _levelGenerator.GenerateLevel();
+            _ecs.ProcessLevel(_currentLevel);
             return this;
         }
 
@@ -50,18 +60,12 @@ namespace Wraithknight
             throw new NotImplementedException();
         }
 
-        public override Screen HandleInput(GameTime gameTime)
-        {
-            if (InputReader.IsKeyTriggered(Keys.Escape)) OpenMenuScreen();
-            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleDebug();
-            SimpleCameraMovement(gameTime);
-
-
-            return this;
-        }
+        #region Debug
 
         public void ToggleDebug()
         {
+            Flags.Debug = !Flags.Debug;
+
             Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
             Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
             Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
@@ -69,38 +73,67 @@ namespace Wraithknight
 
         public void DrawDebug()
         {
+            _ecs.DrawDebug();
+        }
+
+        public void DrawDebugText()
+        {
             _screenManager.SpriteBatch.Begin();
             Functions_Debugging.Draw();
             Functions_Debugging.Reset();
             _screenManager.SpriteBatch.End();
         }
 
+        #endregion
+
+        #region Input
+
+        public override Screen HandleInput(GameTime gameTime)
+        {
+            if (InputReader.IsKeyTriggered(Keys.Escape)) OpenMenuScreen();
+            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleDebug();
+
+            if (InputReader.IsKeyTriggered(Keys.M))
+            {
+                _currentLevel = _levelGenerator.GenerateLevel();
+                _ecs.PurgeForNextLevel();
+                _ecs.ProcessLevel(_currentLevel);
+            }
+
+            if (InputReader.IsKeyTriggered(Keys.N))
+            {
+                _levelGenerator.ApplySimpleCellularAutomata(_currentLevel, _levelGenerator.StarvationNumber, _levelGenerator.BirthNumber);
+                _ecs.PurgeForNextLevel();
+                _ecs.ProcessLevel(_currentLevel);
+            }
+            SimpleCameraMovement(gameTime);
+
+            return this;
+        }
+
         private void SimpleCameraMovement(GameTime gameTime)
         {
-            if (InputReader.IsKeyPressed(Keys.Up))
+            if (InputReader.IsKeyPressed(Keys.Space)) _camera.FollowingHero = !_camera.FollowingHero; //TODO Cameramovement
+            if (!_camera.FollowingHero)
             {
-                _camera.TargetPosition.Y += 50 * (float) gameTime.ElapsedGameTime.TotalSeconds * 1/_camera.CurrentZoom;
+                if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+                if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+                if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+                if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
             }
-            if (InputReader.IsKeyPressed(Keys.Down))
-            {
-                _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            }
-            if (InputReader.IsKeyPressed(Keys.Left))
-            {
-                _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            }
-            if (InputReader.IsKeyPressed(Keys.Right))
-            {
-                _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            }
+
 
 
             if (InputReader.IsScrollingUp()) _camera.TargetZoom += 1;
             if (InputReader.IsScrollingDown()) _camera.TargetZoom -= 1;
 
-            if (_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.1f;
-            else if (_camera.TargetZoom > 1) _camera.TargetZoom = (int) _camera.TargetZoom;
+            if (_camera.TargetZoom < 0.1) _camera.TargetZoom = 0.3f;
+            else if (_camera.TargetZoom > 1) _camera.TargetZoom = (int)_camera.TargetZoom;
         }
+
+        #endregion
+
+
 
         private void UpdateGameTime(GameTime gameTime)
         {

@@ -57,13 +57,9 @@ namespace Wraithknight
         public void Draw()
         {
             drawSystem.Draw();
-            if (Flags.ShowCollisionRecs)
-            {
-                DrawDebug();
-            }
         }
 
-        private void DrawDebug()
+        public void DrawDebug()
         {
             foreach (var system in _systemSet)
             {
@@ -73,10 +69,13 @@ namespace Wraithknight
                     HashSet<CollisionComponent> collisionComponents = collision.GetCollisionComponents();
                     foreach (var collisionComponent in collisionComponents)
                     {
-                        Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle);
-                        Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
+                        if (!collisionComponent.Inactive)
+                        {
+                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle);
+                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
+                        }
                     }
-                    collision.DrawShit();
+                    collision.DrawMinkowski();
                 }
             }
         }
@@ -89,6 +88,19 @@ namespace Wraithknight
         public Entity GetEntity(int id)
         {
             return _entityDictionary[id];
+        }
+
+        public Entity GetHero()
+        {
+            foreach (var entity in _entityDictionary.Values)
+            {
+                if (entity.Type == EntityType.Hero)
+                {
+                    return entity;
+                }
+            }
+
+            return null;
         }
 
         #region Routines
@@ -173,7 +185,7 @@ namespace Wraithknight
             #region objects
             else if (type == EntityType.Wall)
             {
-                entity.AddComponent(new DrawComponent(size: new Point(16,16), tint: Color.Blue));
+                entity.AddComponent(new DrawComponent(size: new Point(16,16), drawRec: new Rectangle((int) safePosition.X, (int) safePosition.Y, 16, 16), tint: Color.Blue));
                 entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isImpassable: true, isPhysical: true));
             }
             #endregion
@@ -297,5 +309,19 @@ namespace Wraithknight
 
         #endregion
 
+        public void ProcessLevel(Level level)
+        {
+            for (int x = 0; x < level.Walls.GetLength(0); x++)
+            {
+                for (int y = 0; y < level.Walls.GetLength(1); y++)
+                {
+                    if (level.Walls[x, y])
+                    {
+                        AddEntity(CreateEntity(EntityType.Wall, new Vector2(x * 16, y * 16)));
+                    }
+                }
+            }
+            RegisterAllEntities();
+        }
     }
 }

@@ -144,7 +144,7 @@ namespace Wraithknight
             AlignMovement(actor);
         }
 
-        public void DrawShit()
+        public void DrawMinkowski()
         {
             foreach (var actor in _moveableCollisionComponents)
             {

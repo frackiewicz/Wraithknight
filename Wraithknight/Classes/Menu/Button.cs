@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    internal class Button : MenuObject, IInteractableMenuObject
+    internal class Button : MenuObject
     {
         public Rectangle ButtonRec; //the area in which the button will accept input (eg mouseclicks)
         public String ButtonHandle;
@@ -21,11 +21,6 @@ namespace Wraithknight
             ButtonHandle = buttonHandle;
         }
 
-        public void HandleInput()
-        {
-            throw new NotImplementedException();
-        }
-
         public bool HandleMouseClick()
         {
             IsClicked = InputReader.CurrentCursorPos.X > ButtonRec.X && InputReader.CurrentCursorPos.X < ButtonRec.X + ButtonRec.Width &&
@@ -36,10 +31,10 @@ namespace Wraithknight
 
         public override void Align(Viewport viewport)
         {
+            base.Align(viewport);
+
             if (DrawOrigin == Origin.Center)
             {
-                DrawComponent.DrawRec.X = (int)Position.X - DrawComponent.DrawRec.Width / 2;
-                DrawComponent.DrawRec.Y = (int)Position.Y - DrawComponent.DrawRec.Height / 2;
                 ButtonRec.X = (int) Position.X - DrawComponent.DrawRec.Width / 2;
                 ButtonRec.Y = (int) Position.Y - DrawComponent.DrawRec.Height / 2;
             }

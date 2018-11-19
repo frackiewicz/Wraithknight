@@ -8,15 +8,11 @@ namespace Wraithknight
 {
     struct Level
     {
-        public bool[][] Walls;
+        public bool[,] Walls;
 
         public Level(int x, int y)
         {
-            Walls = new bool[x][];
-            for (int i = 0; i < Walls.Length; i++)
-            {
-                Walls[i] = new bool[y];
-            }
+            Walls = new bool[x, y];
         }
     }
 }

@@ -8,13 +8,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    class MenuObject
+    class MenuObject //TODO Think of a smart way to handle positioning
     {
         public enum Origin
         {
             TopLeft,
             Center
         }
+
+        public enum Positioning
+        {
+            Absolute,
+            Center,
+
+            Top,
+            TopRight,
+            Right,
+            BottomRight,
+            Bottom,
+            BottomLeft,
+            Left,
+            TopLeft
+        }
+        /*
+         * idea:
+         * Calculate RootPosition with the Positioning enum
+         * Vector2 Position will then be the relative Position to that Root
+         * Only If "Absolute" Position will be Absolute
+         */
+
         public Vector2 Position;
 
         public DrawComponent DrawComponent;
@@ -37,7 +59,7 @@ namespace Wraithknight
         {
             if (DrawOrigin == Origin.Center)
             {
-                DrawComponent.DrawRec.X = (int) Position.X - DrawComponent.DrawRec.Width / 2;
+                DrawComponent.DrawRec.X = (int)Position.X - DrawComponent.DrawRec.Width / 2;
                 DrawComponent.DrawRec.Y = (int)Position.Y - DrawComponent.DrawRec.Height / 2;
             }
         }

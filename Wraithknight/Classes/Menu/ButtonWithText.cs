@@ -13,25 +13,25 @@ namespace Wraithknight
         //TODO enum for dynamic text placement //left, right, center, top, combinations etc
         public String Text;
         public SpriteFont Font;
-        public Vector2 Offset;
+        public Vector2 TextOffset;
         public bool CenteredText;
-        public Vector2 Location;
-        public Color Color;
+        public Vector2 TextLocation;
+        public Color TextColor;
 
-        public ButtonWithText(Vector2 position, DrawComponent drawComponent, Rectangle buttonRec, String buttonHandle, String text, SpriteFont font, Vector2 offset, Color? color = null, bool centeredText = true) : base(position, drawComponent, buttonRec, buttonHandle)
+        public ButtonWithText(Vector2 position, DrawComponent drawComponent, Rectangle buttonRec, String buttonHandle, String text, SpriteFont font, Vector2 textOffset, Color? color = null, bool centeredText = true) : base(position, drawComponent, buttonRec, buttonHandle)
         {
             Text = text;
             Font = font;
             CenteredText = centeredText;
             SetLocation(font, text);
-            Offset = offset;
-            Color = color ?? Color.White;
+            TextOffset = textOffset;
+            TextColor = color ?? Color.White;
         }
 
         public override void Draw()
         {
             Functions_Draw.Draw(DrawComponent);
-            Functions_Draw.Draw(Text, Font, Location);
+            Functions_Draw.Draw(Text, Font, TextLocation);
         }
 
         public override void Align(Viewport viewport)
@@ -42,8 +42,8 @@ namespace Wraithknight
 
         private void SetLocation(SpriteFont font, String text)
         {
-            if (CenteredText) Location = new Vector2(DrawComponent.DrawRec.X + DrawComponent.DrawRec.Width/2 - font.MeasureString(text).X/2 + Offset.X, DrawComponent.DrawRec.Y + DrawComponent.DrawRec.Height / 2 - font.MeasureString(text).Y / 2 + Offset.Y);
-            else Location = new Vector2(DrawComponent.DrawRec.X + Offset.X, DrawComponent.DrawRec.Y + Offset.Y);
+            if (CenteredText) TextLocation = new Vector2(DrawComponent.DrawRec.X + DrawComponent.DrawRec.Width/2 - font.MeasureString(text).X/2 + TextOffset.X, DrawComponent.DrawRec.Y + DrawComponent.DrawRec.Height / 2 - font.MeasureString(text).Y / 2 + TextOffset.Y);
+            else TextLocation = new Vector2(DrawComponent.DrawRec.X + TextOffset.X, DrawComponent.DrawRec.Y + TextOffset.Y);
         }
     }
 }

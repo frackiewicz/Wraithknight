@@ -20,6 +20,8 @@ namespace Wraithknight
         public static Boolean ShowDrawRecs = false;
         public static Boolean ShowCollisionRecs = true;
         public static Boolean ShowSpriteRecs = false;
+
+        public static Boolean Debug = false;
         // option flags
 
         // cheat flags

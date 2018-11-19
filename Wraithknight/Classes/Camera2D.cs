@@ -15,6 +15,8 @@ namespace Wraithknight{
     {
         public static GraphicsDevice Graphics;
 
+        public bool FollowingHero = false;
+
         public Matrix MatRotation = Matrix.CreateRotationZ(0.0f);
         public Matrix MatZoom;
         public Vector3 TranslateCenter;
