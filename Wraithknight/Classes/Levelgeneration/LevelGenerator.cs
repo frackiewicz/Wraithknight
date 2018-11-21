@@ -72,6 +72,7 @@ namespace Wraithknight
 
             if(DoCleanup)
             if (!MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+            SetRandomHeroSpawn(level.Walls, level.Data);
 
             return level;
         }
@@ -120,7 +121,7 @@ namespace Wraithknight
             }
         }
 
-        private void FillLevelWithRandomNoise(Level level, int percentWalls)
+        private static void FillLevelWithRandomNoise(Level level, int percentWalls)
         {
             Random random = new Random();
             for (int x = 0; x < level.Walls.GetLength(0); x++)
@@ -135,7 +136,7 @@ namespace Wraithknight
             }
         }
 
-        private void FillBoundsWithRandomNoise(Level level, int percentWalls, int distanceFromBounds)
+        private static void FillBoundsWithRandomNoise(Level level, int percentWalls, int distanceFromBounds)
         {
             Random random = new Random();
             for (int x = 0; x < level.Walls.GetLength(0); x++)
@@ -194,7 +195,7 @@ namespace Wraithknight
             return CountNearbyWalls(level.Walls, xSource, ySource, range);
         }
 
-        private int CountNearbyWalls(bool[,] map, int xSource, int ySource, int range)
+        private static int CountNearbyWalls(bool[,] map, int xSource, int ySource, int range)
         {
             int neighbors = 0;
             for (int x = xSource - range; x <= xSource + 1; x++)
@@ -220,7 +221,7 @@ namespace Wraithknight
         }
 
 
-        private bool AreMapsIdentical(bool[,] a, bool[,] b)
+        private static bool AreMapsIdentical(bool[,] a, bool[,] b)
         {
             if(a.Length != b.Length) throw new ArgumentException();
 
@@ -234,7 +235,7 @@ namespace Wraithknight
             return true;
         }
 
-        private void CopyWalls(bool[,] source, bool[,] target)
+        private static void CopyWalls(bool[,] source, bool[,] target)
         {
             for (int x = 0; x < target.GetLength(0); x++)
             {
@@ -304,7 +305,7 @@ namespace Wraithknight
             return true;
         }
 
-        private void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
+        private static void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
         {
             Floodling floodling = new Floodling(map[x,y], x, y);
             Stack<Point> stack = new Stack<Point>();
@@ -331,7 +332,7 @@ namespace Wraithknight
             floodlings.Add(floodling);
         }
 
-        private void FlipSimilarCluster(Floodling floodling, bool[,] map, bool[,] visited)
+        private static void FlipSimilarCluster(Floodling floodling, bool[,] map, bool[,] visited)
         {
             Stack<Point> stack = new Stack<Point>();
             stack.Push(new Point(floodling.Source.X, floodling.Source.Y));
@@ -354,6 +355,23 @@ namespace Wraithknight
                     stack.Push(new Point(currentCell.X, currentCell.Y + 1));
                 }
             }
+        }
+
+        private static void SetRandomHeroSpawn(bool[,] walls, LevelData[,] data)
+        {
+            Point point = GetRandomPoint(walls);
+            while (walls[point.X, point.Y])
+            {
+                point = GetRandomPoint(walls);
+            }
+
+            data[point.X, point.Y] = LevelData.HeroSpawn;
+        }
+
+        private static Point GetRandomPoint<T>(T[,] array) 
+        {
+            Random random = new Random();
+            return new Point(random.Next(0, array.GetLength(0)), random.Next(0, array.GetLength(1)));
         }
     }
 }

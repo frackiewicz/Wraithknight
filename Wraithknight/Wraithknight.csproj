@@ -84,7 +84,6 @@
     <Compile Include="Classes\GameBase.cs" />
     <Compile Include="Classes\Functions\Functions_Draw.cs" />
     <Compile Include="Classes\Functions\Functions_Operators.cs" />
-    <Compile Include="Classes\GameScreen.cs" />
     <Compile Include="Classes\InputReader.cs" />
     <Compile Include="Classes\Levelgeneration\Level.cs" />
     <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
@@ -99,7 +98,7 @@
     <Compile Include="Classes\Screen.cs" />
     <Compile Include="Classes\ScreenManager.cs" />
     <Compile Include="Classes\SoundManager.cs" />
-    <Compile Include="Classes\ScreenTestingRoom.cs" />
+    <Compile Include="Classes\ScreenGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -15,16 +15,19 @@ namespace Wraithknight
         public Point Offset; //the offset from the collision center
         public float Rotation;
         public Color Tint;
+        public float LayerDepth;
 
         #region Constructors
-        public DrawComponent(Texture2D texture = null, Rectangle? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null)
+        public DrawComponent(Texture2D texture = null, Rectangle? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth?
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new Rectangle(Point.Zero, new Point(Texture.Width, Texture.Height));
             if (size != null) ChangeSize((Point)size);
             if (offset == null) AutomaticOffset(); else Offset = (Point) offset;
+            ApplyOffset();
             Rotation = rotation;
             if (tint == null) Tint = Color.White; else Tint = (Color) tint;
+            LayerDepth = layerDepth;
         }
         #endregion
 
@@ -46,6 +49,12 @@ namespace Wraithknight
             Offset.X = -(int) DrawRec.Width / 2;
             Offset.Y = -(int) DrawRec.Height / 2;
             return this;
+        }
+
+        public void ApplyOffset()
+        {
+            DrawRec.X += Offset.X;
+            DrawRec.Y += Offset.Y;
         }
 
         public DrawComponent ChangeTint(Color tint)

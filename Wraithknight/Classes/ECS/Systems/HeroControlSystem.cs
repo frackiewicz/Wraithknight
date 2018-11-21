@@ -46,6 +46,7 @@ namespace Wraithknight
 
         public override void Update(GameTime gameTime)
         {
+            if (Hero == null) return;
             if (!Hero.Alive) return;
             _movement.Acceleration.X = _input.MovementDirection.X * _movement.AccelerationBase;
             _movement.Acceleration.Y = _input.MovementDirection.Y * _movement.AccelerationBase;

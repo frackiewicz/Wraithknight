@@ -39,7 +39,7 @@ namespace Wraithknight
             }
             else if (Flags.BootRoutine == BootRoutine.TestingRoom)
             {
-                FlushAndLoad(new ScreenTestingRoom(this));
+                FlushAndLoad(new ScreenGame(this));
             }
             #endregion
         }

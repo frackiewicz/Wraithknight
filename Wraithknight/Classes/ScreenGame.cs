@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
-    class ScreenTestingRoom : Screen
+    class ScreenGame : Screen
     {
         private readonly ECS _ecs;
         private readonly Camera2D _camera;
@@ -20,12 +20,13 @@ namespace Wraithknight
         private LevelGenerator _levelGenerator = new LevelGenerator();
         private Level _currentLevel;
 
-        public ScreenTestingRoom(ScreenManager screenManager) : base(screenManager)
+        public ScreenGame(ScreenManager screenManager) : base(screenManager)
         {
             _camera = new Camera2D(screenManager.Graphics.GraphicsDevice);
+            _camera.FollowingHero = true;
             _ecs = new ECS(_camera);
             _internalGameTime = new GameTime();
-            _ecs.StartupRoutine(ecsBootRoutine.Testing);
+            _ecs.StartupRoutine(ecsBootRoutine.Presenting);
             _hero = _ecs.GetHero();
             _levelGenerator.ApplyPreset(LevelPreset.Forest);
         }
@@ -40,7 +41,7 @@ namespace Wraithknight
 
         public override Screen Draw(GameTime gameTime)
         {
-            _screenManager.SpriteBatch.Begin(transformMatrix: _camera.View);
+            _screenManager.SpriteBatch.Begin(SpriteSortMode.BackToFront, transformMatrix: _camera.View, samplerState: SamplerState.PointClamp);
             _ecs.Draw();
             if (Flags.Debug) DrawDebug();
             _screenManager.SpriteBatch.End();
@@ -98,6 +99,8 @@ namespace Wraithknight
                 _currentLevel = _levelGenerator.GenerateLevel();
                 _ecs.PurgeForNextLevel();
                 _ecs.ProcessLevel(_currentLevel);
+                _hero = _ecs.GetHero();
+
             }
 
             if (InputReader.IsKeyTriggered(Keys.N))
@@ -120,6 +123,15 @@ namespace Wraithknight
                 if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
                 if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
                 if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            }
+            else
+            {
+                if(_hero != null && _hero.Components.TryGetValue(typeof(DrawComponent), out var component)) //TODO Fluid Cameramovement
+                {
+                    DrawComponent heroMovement = component as DrawComponent;
+                    _camera.TargetPosition.X = heroMovement.DrawRec.Center.X;
+                    _camera.TargetPosition.Y = heroMovement.DrawRec.Center.Y;
+                }
             }
 
 

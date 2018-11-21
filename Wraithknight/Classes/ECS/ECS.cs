@@ -5,19 +5,22 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
     internal enum ecsBootRoutine
     {
-        Testing
+        Testing,
+        Presenting
     }
 
     internal enum EntityType
     {
         Hero,
         Wall,
+        Floor,
         KnightSlash
     }
 
@@ -26,7 +29,9 @@ namespace Wraithknight
         private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>();
         private readonly HashSet<System> _systemSet = new HashSet<System>();
         private DrawSystem drawSystem;
-        private Camera2D _camera;
+        private readonly Camera2D _camera;
+        private readonly Random _random = new Random();
+
         //enum for biome
 
         public ECS(Camera2D camera)
@@ -119,15 +124,12 @@ namespace Wraithknight
         {
             drawSystem = new DrawSystem(this);
 
-            if (routine == ecsBootRoutine.Testing)
-            {
-                _systemSet.Add(new InputSystem(this, _camera));
-                _systemSet.Add(new HeroControlSystem(this));
-                _systemSet.Add(new CollisionSystem(this));
-                _systemSet.Add(new MovementSystem(this));
-                _systemSet.Add(new TimerSystem(this));
-                _systemSet.Add(new HealthSystem(this));
-            }
+            _systemSet.Add(new InputSystem(this, _camera));
+            _systemSet.Add(new HeroControlSystem(this));
+            _systemSet.Add(new CollisionSystem(this));
+            _systemSet.Add(new MovementSystem(this));
+            _systemSet.Add(new TimerSystem(this));
+            _systemSet.Add(new HealthSystem(this));
 
             _systemSet.Add(drawSystem); //add last for "true data"
         }
@@ -176,7 +178,7 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
-                entity.AddBindedComponent(new DrawComponent(size: new Point(16,16)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new Rectangle(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());
                 entity.SetAllegiance(Allegiance.Friendly);
@@ -185,8 +187,44 @@ namespace Wraithknight
             #region objects
             else if (type == EntityType.Wall)
             {
-                entity.AddComponent(new DrawComponent(size: new Point(16,16), drawRec: new Rectangle((int) safePosition.X, (int) safePosition.Y, 16, 16), tint: Color.Blue));
+                DrawComponent drawComponent;
+                int rnd = _random.Next(0, 100);
+                if (rnd <= 20)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("tree32"), new Rectangle((int) safePosition.X, (int) safePosition.Y, 32, 32), offset: new Point(-8, -16));
+                }
+                else
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("tanne16"), new Rectangle((int) safePosition.X, (int) safePosition.Y, 16, 32), offset: new Point(0, -16));
+                }
+                entity.AddComponent(drawComponent);
                 entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isImpassable: true, isPhysical: true));
+            }
+            else if (type == EntityType.Floor)
+            {
+                DrawComponent drawComponent;
+                int rnd = _random.Next(0, 100);
+                if (rnd <= 20)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                }
+                else if (rnd <= 40)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                }
+                else if (rnd <= 60)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                }
+                else if (rnd <= 80)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                }
+                else
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_5"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                }
+                entity.AddComponent(drawComponent);
             }
             #endregion
             #region projectiles
@@ -315,9 +353,15 @@ namespace Wraithknight
             {
                 for (int y = 0; y < level.Walls.GetLength(1); y++)
                 {
+                    AddEntity(CreateEntity(EntityType.Floor, new Vector2(x * level.TileWidth, y * level.TileHeight)));
                     if (level.Walls[x, y])
                     {
-                        AddEntity(CreateEntity(EntityType.Wall, new Vector2(x * 16, y * 16)));
+                        AddEntity(CreateEntity(EntityType.Wall, new Vector2(x * level.TileWidth, y * level.TileHeight)));
+                    }
+
+                    if (level.Data[x, y] == LevelData.HeroSpawn)
+                    {
+                        AddEntity(CreateEntity(EntityType.Hero, new Vector2(x * level.TileWidth, y * level.TileHeight)));
                     }
                 }
             }
