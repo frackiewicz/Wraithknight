@@ -12,6 +12,7 @@ namespace Wraithknight
     class ScreenGame : Screen
     {
         private readonly ECS _ecs;
+        private readonly DebugDrawer _debugDrawer;
         private readonly Camera2D _camera;
         private GameTime _internalGameTime; //TODO refactor this to gameTime, and higher level gameTime to deltaTime
 
@@ -24,11 +25,14 @@ namespace Wraithknight
         {
             _camera = new Camera2D(screenManager.Graphics.GraphicsDevice);
             _camera.FollowingHero = true;
+
             _ecs = new ECS(_camera);
-            _internalGameTime = new GameTime();
             _ecs.StartupRoutine(ecsBootRoutine.Presenting);
+            _debugDrawer = new DebugDrawer(_ecs);
+
             _hero = _ecs.GetHero();
             _levelGenerator.ApplyPreset(LevelPreset.Forest);
+            _internalGameTime = new GameTime();
         }
 
         public override Screen Update(GameTime gameTime)
@@ -43,7 +47,7 @@ namespace Wraithknight
         {
             _screenManager.SpriteBatch.Begin(SpriteSortMode.BackToFront, transformMatrix: _camera.View, samplerState: SamplerState.PointClamp);
             _ecs.Draw();
-            if (Flags.Debug) DrawDebug();
+            if (Flags.Debug) _debugDrawer.Draw();
             _screenManager.SpriteBatch.End();
             if(Flags.Debug) DrawDebugText();
             return this;
@@ -72,12 +76,7 @@ namespace Wraithknight
             Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
         }
 
-        public void DrawDebug()
-        {
-            _ecs.DrawDebug();
-        }
-
-        public void DrawDebugText()
+        public void DrawDebugText() //TODO move into debugdrawer?
         {
             _screenManager.SpriteBatch.Begin();
             Functions_Debugging.Draw();

@@ -64,27 +64,6 @@ namespace Wraithknight
             drawSystem.Draw();
         }
 
-        public void DrawDebug()
-        {
-            foreach (var system in _systemSet)
-            {
-                if (system.GetType() == typeof(CollisionSystem))
-                {
-                    CollisionSystem collision = system as CollisionSystem;
-                    HashSet<CollisionComponent> collisionComponents = collision.GetCollisionComponents();
-                    foreach (var collisionComponent in collisionComponents)
-                    {
-                        if (!collisionComponent.Inactive)
-                        {
-                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle);
-                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
-                        }
-                    }
-                    collision.DrawMinkowski();
-                }
-            }
-        }
-
         public T GetSystem<T>()
         {
             return Functions_Operators.CastSystem<T>(_systemSet.FirstOrDefault(system => system.GetType() == typeof(T)));
@@ -204,11 +183,11 @@ namespace Wraithknight
             {
                 DrawComponent drawComponent;
                 int rnd = _random.Next(0, 100);
-                if (rnd <= 20)
+                if (rnd <= 10)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
-                else if (rnd <= 40)
+                else if (rnd <= 15)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
@@ -216,7 +195,7 @@ namespace Wraithknight
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
-                else if (rnd <= 80)
+                else if (rnd <= 65)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
@@ -291,7 +270,7 @@ namespace Wraithknight
 
         public void PurgeForNextLevel()
         {
-            CleanEntities(CleanType.Hero);
+            CleanEntities(CleanType.Full);
             ResetSystems();
             RegisterAllEntities();
             //camera?
@@ -301,7 +280,8 @@ namespace Wraithknight
         private enum CleanType
         {
             Regular,
-            Hero
+            Hero,
+            Full
         }
 
         private void CleanEntities(CleanType type)
