@@ -21,7 +21,7 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
     }
 
     //Seems to be functional for now
-    public static class Functions_Debugging //TODO Real ugly lmao
+    public static class Functions_DebugWriter //TODO Real ugly lmao
     {
         private static List<Message> _messages = new List<Message>();
         private static int _textCount = 0;

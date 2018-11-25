@@ -46,8 +46,10 @@ namespace Wraithknight
         public override Screen Draw(GameTime gameTime)
         {
             _screenManager.SpriteBatch.Begin(SpriteSortMode.BackToFront, transformMatrix: _camera.View, samplerState: SamplerState.PointClamp);
+
             _ecs.Draw();
             if (Flags.Debug) _debugDrawer.Draw();
+
             _screenManager.SpriteBatch.End();
             if(Flags.Debug) DrawDebugText();
             return this;
@@ -91,8 +93,7 @@ namespace Wraithknight
             if (Flags.ShowDebuggingText)
             {
                 _screenManager.SpriteBatch.Begin();
-                Functions_Debugging.Draw();
-
+                Functions_DebugWriter.Draw();
                 _screenManager.SpriteBatch.End();
             }
         }

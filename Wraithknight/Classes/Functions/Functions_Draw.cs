@@ -42,7 +42,7 @@ namespace Wraithknight
 
         public static void Draw(DrawComponent sprite)
         {
-            _spriteBatch.Draw(sprite.Texture, position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y), scale: MakeVector2(sprite.Texture.Width/sprite.DrawRec.Width, sprite.Texture.Height/sprite.DrawRec.Height), color: sprite.Tint * 1, layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Y);
+            _spriteBatch.Draw(sprite.Texture, position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y), scale: MakeVector2(sprite.DrawRec.Width / sprite.Texture.Width, sprite.DrawRec.Height / sprite.Texture.Height), color: sprite.Tint * 1, layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Y);
         }
 
         #region Debug

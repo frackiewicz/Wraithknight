@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
@@ -15,9 +16,12 @@ namespace Wraithknight
         private CollisionSystem _collisionSystem;
         private HashSet<CollisionComponent> _collisionComponents;
 
+        private HashSet<MovementComponent> _movementComponents;
+
         public DebugDrawer(ECS ecs)
         {
             Ecs = ecs;
+            RegisterSystems();
         }
 
         public void Draw()
@@ -34,6 +38,16 @@ namespace Wraithknight
                 }
                 //collision.DrawMinkowski();
             }
+            if (Flags.ShowMovementCenters)
+            {
+                foreach (var movementComponent in _movementComponents)
+                {
+                    if (!movementComponent.Inactive)
+                    {
+                        Functions_Draw.DrawDebug(movementComponent.Position, Color.Yellow);
+                    }
+                }
+            }
         }
 
         public void RegisterSystems()
@@ -41,6 +55,7 @@ namespace Wraithknight
             _drawSystem = Ecs.GetSystem<DrawSystem>();
             _collisionSystem = Ecs.GetSystem<CollisionSystem>();
             _collisionComponents = _collisionSystem.GetCollisionComponents();
+            _movementComponents = Ecs.GetSystem<MovementSystem>().GetMovementComponents();
         }
     }
 }

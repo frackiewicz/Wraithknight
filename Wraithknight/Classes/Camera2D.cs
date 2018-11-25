@@ -87,10 +87,10 @@ namespace Wraithknight{
         {  
             UpdateVariables();
 
-            Functions_Debugging.WriteLine("X     : " + CullRec.X);
-            Functions_Debugging.WriteLine("Y     : " + CullRec.Y);
-            Functions_Debugging.WriteLine("Width : " + CullRec.Width);
-            Functions_Debugging.WriteLine("Height: " + CullRec.Height);
+            Functions_DebugWriter.WriteLine("X     : " + CullRec.X);
+            Functions_DebugWriter.WriteLine("Y     : " + CullRec.Y);
+            Functions_DebugWriter.WriteLine("Width : " + CullRec.Width);
+            Functions_DebugWriter.WriteLine("Height: " + CullRec.Height);
 
             MoveToTargetPos(gameTime);
             HandelZoom(gameTime);

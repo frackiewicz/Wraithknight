@@ -64,39 +64,6 @@ namespace Wraithknight
             drawSystem.Draw();
         }
 
-        public void DrawDebug()
-        {
-            foreach (var system in _systemSet)
-            {
-                if (Flags.ShowCollisionRecs && system.GetType() == typeof(CollisionSystem))
-                {
-                    CollisionSystem collision = system as CollisionSystem;
-                    HashSet<CollisionComponent> collisionComponents = collision.GetCollisionComponents();
-                    foreach (var collisionComponent in collisionComponents)
-                    {
-                        if (!collisionComponent.Inactive)
-                        {
-                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle);
-                            //Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
-                        }
-                    }
-                    //collision.DrawMinkowski();
-                }
-                if (Flags.ShowMovementCenters && system.GetType() == typeof(MovementSystem))
-                {
-                    MovementSystem movement = system as MovementSystem;
-                    HashSet<MovementComponent> movementComponents = movement.GetMovementComponents();
-                    foreach (var movementComponent in movementComponents)
-                    {
-                        if (!movementComponent.Inactive)
-                        {
-                            Functions_Draw.DrawDebug(movementComponent.Position, Color.Yellow);
-                        }
-                    }
-                }
-            }
-        }
-
         public T GetSystem<T>()
         {
             return Functions_Operators.CastSystem<T>(_systemSet.FirstOrDefault(system => system.GetType() == typeof(T)));

@@ -26,7 +26,11 @@ namespace Wraithknight
         private readonly HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
         private readonly HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
 
+        private CollisionComponent[,] _walls;
+
         private readonly CollisionLogicSubsystem _logicSubsystem;
+
+        #region General System Stuff
 
         public CollisionSystem(ECS ecs) : base(ecs)
         {
@@ -41,6 +45,31 @@ namespace Wraithknight
             BindMovementComponents();
             _logicSubsystem.RegisterComponents(entities);
         }
+
+        private void BindMovementComponents()
+        {
+            foreach (var component in _collisionComponents)
+            {
+                if (component.Bindings.TryGetValue(typeof(MovementComponent), out var bind))
+                {
+                    _moveableCollisionComponents.Add(new Pair(component, (MovementComponent)bind));
+                }
+            }
+        }
+
+        public override void Reset()
+        {
+            _moveableCollisionComponents.Clear();
+            _collisionComponents.Clear();
+            _logicSubsystem.ResetSystem();
+        }
+
+        public HashSet<CollisionComponent> GetCollisionComponents()
+        {
+            return _collisionComponents;
+        }
+
+        #endregion
 
         public override void Update(GameTime gameTime)
         {
@@ -61,28 +90,7 @@ namespace Wraithknight
             }
         }
 
-        private void BindMovementComponents()
-        {
-            foreach (var component in _collisionComponents)
-            {
-                if (component.Bindings.TryGetValue(typeof(MovementComponent), out var bind))
-                {
-                    _moveableCollisionComponents.Add(new Pair(component, (MovementComponent) bind));
-                }
-            }
-        }
-
-        public override void Reset()
-        {
-            _moveableCollisionComponents.Clear();
-            _collisionComponents.Clear();
-            _logicSubsystem.ResetSystem();
-        }
-
-        public HashSet<CollisionComponent> GetCollisionComponents()
-        {
-            return _collisionComponents;
-        }
+        
 
         #region General CD stuff
 
@@ -250,15 +258,15 @@ namespace Wraithknight
             if (yEntryTime > 1.0f) yEntryTime = -float.MaxValue;
             float entryTime = Math.Max(xEntryTime, yEntryTime);
             float exitTime = Math.Min(xExitTime, yExitTime);
-            Functions_Debugging.WriteLine("Distance: " + xEntryDistance);
-            Functions_Debugging.WriteLine("Time: " + xEntryTime);
+            Functions_DebugWriter.WriteLine("Distance: " + xEntryDistance);
+            Functions_DebugWriter.WriteLine("Time: " + xEntryTime);
 
             #region no collision happened
             if ((entryTime > exitTime) || (xEntryTime < 0.0f && yEntryTime < 0.0f))
             {
                 normalX = 0;
                 normalY = 0;
-                Functions_Debugging.WriteLine("No Collision");
+                Functions_DebugWriter.WriteLine("No Collision");
                 return 1.0f;
             }
             
