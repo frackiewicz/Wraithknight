@@ -63,13 +63,23 @@ namespace Wraithknight
 
         #region Debug
 
-        public void ToggleDebug()
+        public void ToggleAllDebug()
         {
-            Flags.Debug = !Flags.Debug;
-
-            Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
-            Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
-            Flags.ShowSpriteRecs = !Flags.ShowSpriteRecs;
+            if (Flags.Debug)
+            {
+                Flags.ShowDrawRecs = false;
+                Flags.ShowCollisionRecs = false;
+                Flags.ShowDebuggingText = false;
+                Flags.ShowMovementCenters = false;
+            }
+            else
+            {
+                Flags.ShowDrawRecs = true;
+                Flags.ShowCollisionRecs = true;
+                Flags.ShowDebuggingText = true;
+                Flags.ShowMovementCenters = true;
+            }
+            
         }
 
         public void DrawDebug()
@@ -79,10 +89,13 @@ namespace Wraithknight
 
         public void DrawDebugText()
         {
-            _screenManager.SpriteBatch.Begin();
-            Functions_Debugging.Draw();
-            Functions_Debugging.Reset();
-            _screenManager.SpriteBatch.End();
+            if (Flags.ShowDebuggingText)
+            {
+                _screenManager.SpriteBatch.Begin();
+                Functions_Debugging.Draw();
+
+                _screenManager.SpriteBatch.End();
+            }
         }
 
         #endregion
@@ -92,7 +105,13 @@ namespace Wraithknight
         public override Screen HandleInput(GameTime gameTime)
         {
             if (InputReader.IsKeyTriggered(Keys.Escape)) OpenMenuScreen();
-            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleDebug();
+            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleAllDebug();
+            if (InputReader.IsKeyTriggered(Keys.F2)) Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
+            if (InputReader.IsKeyTriggered(Keys.F3)) Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
+            if (InputReader.IsKeyTriggered(Keys.F4)) Flags.ShowDebuggingText = !Flags.ShowDebuggingText;
+            if (InputReader.IsKeyTriggered(Keys.F5)) Flags.ShowMovementCenters = !Flags.ShowMovementCenters;
+            if (InputReader.IsKeyPressed(Keys.F10)) Functions_Draw.Draw("Error", Assets.GetFont("Test"), new Vector2(100, 100));
+
 
             if (InputReader.IsKeyTriggered(Keys.M))
             {
@@ -100,7 +119,6 @@ namespace Wraithknight
                 _ecs.PurgeForNextLevel();
                 _ecs.ProcessLevel(_currentLevel);
                 _hero = _ecs.GetHero();
-
             }
 
             if (InputReader.IsKeyTriggered(Keys.N))

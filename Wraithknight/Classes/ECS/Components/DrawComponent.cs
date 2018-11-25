@@ -11,17 +11,17 @@ namespace Wraithknight
     class DrawComponent : BindableComponent
     {
         public Texture2D Texture;
-        public Rectangle DrawRec; //maybe make this an AABB?
+        public AABB DrawRec; //maybe make this an AABB?
         public Point Offset; //the offset from the collision center
         public float Rotation;
         public Color Tint;
         public float LayerDepth;
 
         #region Constructors
-        public DrawComponent(Texture2D texture = null, Rectangle? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth?
+        public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Point? size = null, Point? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth?
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
-            DrawRec = drawRec ?? new Rectangle(Point.Zero, new Point(Texture.Width, Texture.Height));
+            DrawRec = drawRec ?? new AABB(0, 0, Texture.Width, Texture.Height);
             if (size != null) ChangeSize((Point)size);
             if (offset == null) AutomaticOffset(); else Offset = (Point) offset;
             ApplyOffset();

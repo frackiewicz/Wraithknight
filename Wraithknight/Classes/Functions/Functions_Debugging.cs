@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Wraithknight
+namespace Wraithknight //TODO ABSOLUTE SHITE
 {
-    struct Message
+    class Message
     {
         public String Text;
         public Color Color;
@@ -19,43 +19,58 @@ namespace Wraithknight
             Color = color;
         }
     }
+
+    //Seems to be functional for now
     public static class Functions_Debugging //TODO Real ugly lmao
     {
         private static List<Message> _messages = new List<Message>();
-        private static Stopwatch timer = new Stopwatch(); //slowdown time instead?
-
+        private static int _textCount = 0;
 
         public static void WriteLine(String text)
         {
-            _messages.Add(new Message(text, Color.White));
+            WriteLine(text, Color.White);
         }
 
         public static void WriteLine(String text, Color color)
         {
-            _messages.Add(new Message(text, color));
+            if (!Flags.ShowDebuggingText) return;
+            if (_textCount >= _messages.Count)
+            {
+                _messages.Add(new Message(text, Color.White));
+            }
+            else
+            {
+                _messages[_textCount].Text = text;
+                _messages[_textCount].Color = Color.White;
+            }
+            _textCount++;
         }
+
+
+        private static Vector2 pos = new Vector2(50, 50);
 
         public static void Draw()
         {
-            Vector2 pos = new Vector2(50,50);
-            foreach (var message in _messages)
+            for (int i = 0; i < _textCount; i++)
             {
                 try
                 {
-                    Functions_Draw.Draw(message.Text, Assets.GetFont("Test"), pos);
+                    Functions_Draw.Draw(_messages[i].Text, Assets.GetFont("Test"), pos);
                 }
                 catch (Exception e)
                 {
                     Functions_Draw.Draw("Error", Assets.GetFont("Test"), pos);
-
                 }
                 pos.Y += 25;
             }
+            Reset();
         }
 
         public static void Reset()
         {
-            _messages.Clear();
+            _textCount = 0;
+            pos.X = 50;
+            pos.Y = 50;
         }
     }
 }

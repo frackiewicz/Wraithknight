@@ -26,7 +26,7 @@ namespace Wraithknight
 
     class ECS
     {
-        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>();
+        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //TODO Breunig, a way to move hero to #1 spot? Performance to avoid long enumerations
         private readonly HashSet<System> _systemSet = new HashSet<System>();
         private DrawSystem drawSystem;
         private readonly Camera2D _camera;
@@ -68,7 +68,7 @@ namespace Wraithknight
         {
             foreach (var system in _systemSet)
             {
-                if (system.GetType() == typeof(CollisionSystem))
+                if (Flags.ShowCollisionRecs && system.GetType() == typeof(CollisionSystem))
                 {
                     CollisionSystem collision = system as CollisionSystem;
                     HashSet<CollisionComponent> collisionComponents = collision.GetCollisionComponents();
@@ -77,10 +77,23 @@ namespace Wraithknight
                         if (!collisionComponent.Inactive)
                         {
                             Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle);
-                            Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
+                            //Functions_Draw.DrawDebug(collisionComponent.CollisionRectangle.Center);
                         }
                     }
-                    collision.DrawMinkowski();
+                    //collision.DrawMinkowski();
+                }
+                if (Flags.ShowMovementCenters && system.GetType() == typeof(MovementSystem))
+                {
+                    MovementSystem movement = system as MovementSystem;
+                    HashSet<MovementComponent> movementComponents = movement.GetMovementComponents();
+                    foreach (var movementComponent in movementComponents)
+                    {
+                        if (!movementComponent.Inactive)
+                        {
+                            Functions_Draw.DrawDebug(movementComponent.Position, Color.Yellow);
+                        }
+                    }
+                    //collision.DrawMinkowski();
                 }
             }
         }
@@ -122,7 +135,7 @@ namespace Wraithknight
 
         private void CreateSystems(ecsBootRoutine routine)
         {
-            drawSystem = new DrawSystem(this);
+            drawSystem = new DrawSystem(this, _camera);
 
             _systemSet.Add(new InputSystem(this, _camera));
             _systemSet.Add(new HeroControlSystem(this));
@@ -178,8 +191,8 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
-                entity.AddBindedComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new Rectangle(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new InputComponent());
                 entity.SetAllegiance(Allegiance.Friendly);
             }
@@ -191,11 +204,11 @@ namespace Wraithknight
                 int rnd = _random.Next(0, 100);
                 if (rnd <= 20)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("tree32"), new Rectangle((int) safePosition.X, (int) safePosition.Y, 32, 32), offset: new Point(-8, -16));
+                    drawComponent = new DrawComponent(Assets.GetTexture("tree32"), new AABB((int) safePosition.X, (int) safePosition.Y, 32, 32), offset: new Point(-8, -16));
                 }
                 else
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("tanne16"), new Rectangle((int) safePosition.X, (int) safePosition.Y, 16, 32), offset: new Point(0, -16));
+                    drawComponent = new DrawComponent(Assets.GetTexture("tanne16"), new AABB((int) safePosition.X, (int) safePosition.Y, 16, 32), offset: new Point(0, -16));
                 }
                 entity.AddComponent(drawComponent);
                 entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isImpassable: true, isPhysical: true));
@@ -206,23 +219,23 @@ namespace Wraithknight
                 int rnd = _random.Next(0, 100);
                 if (rnd <= 20)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
                 else if (rnd <= 40)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
                 else if (rnd <= 60)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
                 else if (rnd <= 80)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
                 else
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_5"), new Rectangle((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("32_5"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
                 entity.AddComponent(drawComponent);
             }
@@ -233,7 +246,7 @@ namespace Wraithknight
                 float startingSpeed = 400;
                 entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed.ChangePolarLength(startingSpeed)));
                 entity.AddBindedComponent(new DrawComponent(size: new Point(16,16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16)), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
+                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8,8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
                 entity.AddBindedComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
                 entity.SetAllegiance(Allegiance.Friendly);
@@ -354,15 +367,24 @@ namespace Wraithknight
                 for (int y = 0; y < level.Walls.GetLength(1); y++)
                 {
                     AddEntity(CreateEntity(EntityType.Floor, new Vector2(x * level.TileWidth, y * level.TileHeight)));
+                    #region Walls
                     if (level.Walls[x, y])
                     {
                         AddEntity(CreateEntity(EntityType.Wall, new Vector2(x * level.TileWidth, y * level.TileHeight)));
                     }
+                    #endregion
 
+                    #region MapData
                     if (level.Data[x, y] == LevelData.HeroSpawn)
                     {
-                        AddEntity(CreateEntity(EntityType.Hero, new Vector2(x * level.TileWidth, y * level.TileHeight)));
+                        Entity hero = GetHero();
+                        if(hero == null) AddEntity(CreateEntity(EntityType.Hero, new Vector2(x * level.TileWidth + level.TileWidth/2, y * level.TileHeight + level.TileHeight/2)));
+                        else
+                        {
+                            
+                        }
                     }
+                    #endregion
                 }
             }
             RegisterAllEntities();

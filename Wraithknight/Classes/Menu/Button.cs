@@ -35,8 +35,8 @@ namespace Wraithknight
 
             if (DrawOrigin == Origin.Center)
             {
-                ButtonRec.X = (int) Position.X - DrawComponent.DrawRec.Width / 2;
-                ButtonRec.Y = (int) Position.Y - DrawComponent.DrawRec.Height / 2;
+                ButtonRec.X = (int) (Position.X - DrawComponent.DrawRec.Width / 2);
+                ButtonRec.Y = (int) (Position.Y - DrawComponent.DrawRec.Height / 2);
             }
         }
     }

@@ -18,30 +18,38 @@ namespace Wraithknight{
         public bool FollowingHero = false;
 
         public Matrix MatRotation = Matrix.CreateRotationZ(0.0f);
-        public Matrix MatZoom;
         public Vector3 TranslateCenter;
         public Vector3 TranslateBody;
         public Matrix View;
 
-        public Vector2 Delta;
+        public Vector2 DeltaPosition;
         public float Distance;
+
+        public Matrix MatZoom;
+
+        public Matrix Projection;
+
+        //To be kind on the GC
+        private Vector3 _vector3Helper;
+        private Point _calculatedPoint;
+
+        internal AABB CullRec = new AABB();
 
         public float CurrentZoom = 1.0f;
         public float TargetZoom = 1.0f;
         public float ZoomSpeed = 1f;
 
-        public float Speed = 10f; //how fast the camera moves
+        public float CameraSpeed = 10f;
         public Vector2 CurrentPosition;
         public Vector2 TargetPosition;
 
-        public Matrix Projection;
-        Vector3 _; Point _t;
+
 
         public Camera2D(GraphicsDevice graphics)
         {
-            Camera2D.Graphics = graphics;
+            Graphics = graphics;
             View = Matrix.Identity;
-            TranslateCenter.Z = 0; //these two values dont change on a 2D camera
+            TranslateCenter.Z = 0;
             TranslateBody.Z = 0;
             CurrentPosition = Vector2.Zero; //initially the camera is at 0,0
             TargetPosition = Vector2.Zero;
@@ -49,11 +57,18 @@ namespace Wraithknight{
         }
 
         public Point ConvertScreenToWorld(int x, int y)
-        {   //converts screen position to world position
+        {   
             Projection = Matrix.CreateOrthographicOffCenter(0f, Graphics.Viewport.Width, Graphics.Viewport.Height, 0f, 0f, 1f);
-            _.X = x; _.Y = y; _.Z = 0;
-            _ = Graphics.Viewport.Unproject(_, Projection, View, Matrix.Identity);
-            _t.X = (int)_.X; _t.Y = (int)_.Y; return _t;
+
+            _vector3Helper.X = x;
+            _vector3Helper.Y = y;
+            _vector3Helper.Z = 0;
+
+            _vector3Helper = Graphics.Viewport.Unproject(_vector3Helper, Projection, View, Matrix.Identity);
+
+            _calculatedPoint.X = (int)_vector3Helper.X;
+            _calculatedPoint.Y = (int)_vector3Helper.Y;
+            return _calculatedPoint;
         }
 
         public Point ConvertScreenToWorld(Point point)
@@ -63,27 +78,23 @@ namespace Wraithknight{
         public Point ConvertWorldToScreen(int x, int y)
         {   //converts world position to screen position
             Projection = Matrix.CreateOrthographicOffCenter(0f, Graphics.Viewport.Width, Graphics.Viewport.Height, 0f, 0f, 1f);
-            _.X = x; _.Y = y; _.Z = 0;
-            _ = Graphics.Viewport.Project(_, Projection, View, Matrix.Identity);
-            _t.X = (int)_.X; _t.Y = (int)_.Y; return _t;
+            _vector3Helper.X = x; _vector3Helper.Y = y; _vector3Helper.Z = 0;
+            _vector3Helper = Graphics.Viewport.Project(_vector3Helper, Projection, View, Matrix.Identity);
+            _calculatedPoint.X = (int)_vector3Helper.X; _calculatedPoint.Y = (int)_vector3Helper.Y; return _calculatedPoint;
         }
 
         public void Update(GameTime gameTime)
-        {   //move the camera to the target position, match the target zoom
-            Delta = TargetPosition - CurrentPosition;
-            Distance = Delta.Length();
-            //if camera is very close to target, then snap it to target
-            if (Distance < 1) { CurrentPosition = TargetPosition; }
-            else //camera is not close and should move according to speed
-            { CurrentPosition += Delta * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds; }
-            //round current position down to whole number - this prevents tearing/artifacting of sprites
-            if (CurrentZoom != TargetZoom)
-            {   //gradually match the zoom
-                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; } //TODO doesnt zoom as fluently as id like
-                if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds; }
-                if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float) gameTime.ElapsedGameTime.TotalSeconds; }
-                 
-            }
+        {  
+            UpdateVariables();
+
+            Functions_Debugging.WriteLine("X     : " + CullRec.X);
+            Functions_Debugging.WriteLine("Y     : " + CullRec.Y);
+            Functions_Debugging.WriteLine("Width : " + CullRec.Width);
+            Functions_Debugging.WriteLine("Height: " + CullRec.Height);
+
+            MoveToTargetPos(gameTime);
+            HandelZoom(gameTime);
+
             SetView();
         }
 
@@ -102,6 +113,41 @@ namespace Wraithknight{
                    MatRotation *
                    MatZoom *
                    Matrix.CreateTranslation(TranslateCenter);
+        }
+
+        private void UpdateVariables()
+        {
+            DeltaPosition = TargetPosition - CurrentPosition;
+            Distance = DeltaPosition.Length();
+
+            SetCullRectangle();
+        }
+
+        private void SetCullRectangle()
+        {
+            ConvertScreenToWorld(0, 0);
+            CullRec.X = _calculatedPoint.X - 16;
+            CullRec.Y = _calculatedPoint.Y - 16;
+            CullRec.Width = (int)((Graphics.Viewport.Width * 1 / CurrentZoom) + 32);
+            CullRec.Height = (int)((Graphics.Viewport.Height * 1 / CurrentZoom) + 32);
+        }
+
+        private void MoveToTargetPos(GameTime gameTime) 
+        {
+            if (Distance < 0.001f) { CurrentPosition = TargetPosition; }
+            else
+            { CurrentPosition += DeltaPosition * CameraSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds; }
+        }
+
+        private void HandelZoom(GameTime gameTime)
+        {
+            if (CurrentZoom != TargetZoom)
+            {   //gradually match the zoom
+                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; } //TODO doesnt zoom as fluently as id like
+                if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
+                if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
+
+            }
         }
     }
 }

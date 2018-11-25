@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    internal struct AABB
+    internal struct AABB //float alternative to Rectangle
     {
         public Vector2 Center;
         public Vector2 Extents; //Width+Height
@@ -23,15 +23,22 @@ namespace Wraithknight
             get => Center.Y - Extents.Y;
             set => Center.Y = value + Extents.Y;
         }
-        public float Width => Extents.X*2;  //int recommended
-        public float Height => Extents.Y*2; //int recommended
 
+        public float Width //int recommended
+        {
+            get => Extents.X * 2;
+            set => Extents.X = value / 2;
+        }  
+        public float Height //int recommended
+        {
+            get => Extents.Y * 2;
+            set => Extents.Y = value / 2;
+        }
         public float Left => X;
         public float Right => Center.X + Extents.X;
         public float Top => Y;
         public float Bottom => Center.Y + Extents.Y;
 
-        
 
         public AABB(Vector2 center, Vector2 extents)
         {
@@ -39,6 +46,7 @@ namespace Wraithknight
             Extents = extents;
         }
 
+        //uses topleft as spawn
         public AABB(float x, float y, float width, float height)
         {
             Center = new Vector2(x + width/2, y + height/2);

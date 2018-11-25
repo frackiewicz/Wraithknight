@@ -42,6 +42,11 @@ namespace Wraithknight
             _components.Clear();
         }
 
+        public HashSet<MovementComponent> GetMovementComponents()
+        {
+            return _components;
+        }
+
         private void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
             if (movement.Speed.Polar.Length > 0 && movement.Acceleration.Equals(Vector2.Zero))

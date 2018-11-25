@@ -7,6 +7,21 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
+    /*
+     * Idea:
+     * To avoid AlignAll Iteration
+     *
+     * make Pair into a class
+     * MovementComponent defaultvalue is null
+     * if MovementComponent is set, Align
+     * then Draw
+     */
+
+    /*
+     * Idea:
+     * Figure out a System to avoid Texture swapping
+     * Maybe a 2D drawComponents Collection where components with the same Texture are packed together
+     */
     class DrawSystem : System
     {
         private struct Pair
@@ -20,15 +35,18 @@ namespace Wraithknight
                 Move = move;
             }
         }
+
         private readonly HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
         private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>(); //TODO Breunig HashSet way more efficient than list, why?
+        private readonly Camera2D _camera;
 
-        public DrawSystem(ECS ecs) : base(ecs)
+        public DrawSystem(ECS ecs, Camera2D camera) : base(ecs)
         {
             _ecs = ecs;
+            _camera = camera;
         }
 
-        public override void RegisterComponents(ICollection<Entity> entities) //modified version of CoupleComponent to allow pairing //Ugly as fuck
+        public override void RegisterComponents(ICollection<Entity> entities)
         {
             CoupleComponent(_drawComponents, entities);
             BindMovementComponents();
@@ -45,7 +63,10 @@ namespace Wraithknight
             foreach (var component in _drawComponents)
             {
                 if (component.Inactive) continue;
-                Functions_Draw.Draw(component);
+                if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
+                {
+                    Functions_Draw.Draw(component);
+                }
             }
         }
 

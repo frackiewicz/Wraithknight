@@ -18,6 +18,17 @@ namespace Wraithknight
         private static SpriteBatch _spriteBatch;
         private static Texture2D _dummyTexture = Assets.GetTexture("DummyTexture");
 
+        #region GC helpers
+
+        //TODO Breunig, Alternatives?
+        private static Vector2 _Vector2 = new Vector2();
+        private static Vector2 MakeVector2(float x, float y)
+        {
+            _Vector2.X = x;
+            _Vector2.Y = y;
+            return _Vector2;
+        }
+        #endregion
 
         public static void setSpriteBatch(SpriteBatch spriteBatch)
         {
@@ -31,8 +42,10 @@ namespace Wraithknight
 
         public static void Draw(DrawComponent sprite)
         {
-            _spriteBatch.Draw(sprite.Texture, destinationRectangle: sprite.DrawRec, color: sprite.Tint * 1, layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Y);
+            _spriteBatch.Draw(sprite.Texture, position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y), scale: MakeVector2(sprite.Texture.Width/sprite.DrawRec.Width, sprite.Texture.Height/sprite.DrawRec.Height), color: sprite.Tint * 1, layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Y);
         }
+
+        #region Debug
 
         public static void DrawDebug(Rectangle rectangle)
         {
@@ -48,15 +61,22 @@ namespace Wraithknight
         {
             _spriteBatch.Draw(_dummyTexture, point, Color.Black);
         }
+        public static void DrawDebug(Vector2 point, Color color)
+        {
+            _spriteBatch.Draw(_dummyTexture, point, color);
+        }
 
         public static void Draw(String text, SpriteFont font, Vector2 location)
-        { 
+        {
             _spriteBatch.DrawString(font, text, location, Color.Blue);
         }
         public static void Draw(String text, SpriteFont font, Vector2 location, Color color)
         {
             _spriteBatch.DrawString(font, text, location, color);
         }
+
+        #endregion
+
 
     }
 }
