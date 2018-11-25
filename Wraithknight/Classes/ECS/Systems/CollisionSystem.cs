@@ -23,10 +23,10 @@ namespace Wraithknight
             }
         }
 
-        private HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
-        private HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
+        private readonly HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
+        private readonly HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
 
-        private CollisionLogicSubsystem _logicSubsystem;
+        private readonly CollisionLogicSubsystem _logicSubsystem;
 
         public CollisionSystem(ECS ecs) : base(ecs)
         {

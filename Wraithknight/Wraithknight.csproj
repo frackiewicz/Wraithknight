@@ -45,6 +45,7 @@
     <StartupObject>Wraithknight.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\DebugDrawer.cs" />
     <Compile Include="Classes\Functions\Functions_Debugging.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
     <Compile Include="Classes\Levelgeneration\LevelGenerator.cs" />
