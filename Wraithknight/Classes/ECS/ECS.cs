@@ -183,19 +183,19 @@ namespace Wraithknight
             {
                 DrawComponent drawComponent;
                 int rnd = _random.Next(0, 100);
-                if (rnd <= 10)
+                if (rnd <= 3)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
-                else if (rnd <= 15)
+                else if (rnd <= 6)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
-                else if (rnd <= 60)
+                else if (rnd <= 9)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
-                else if (rnd <= 65)
+                else if (rnd <= 15)
                 {
                     drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
                 }
