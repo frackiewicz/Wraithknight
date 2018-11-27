@@ -23,16 +23,17 @@ namespace Wraithknight
         public AABB CollisionRectangle;
         public Point Offset;
 
-        public bool IsImpassable;
+        public bool IsWall; //Should use coordinate efficiency
         public bool IsPhysical;
 
-        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Point offset = new Point(), bool isImpassable = false, bool isPhysical = false)
+
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Point offset = new Point(), bool isWall = false, bool isPhysical = false)
         {
             Behavior = behavior;
             SetIsPhysical();
             CollisionRectangle = collisionRectangle;
             Offset = offset;
-            IsImpassable = isImpassable;
+            IsWall = isWall;
             IsPhysical = isPhysical;
         }
 

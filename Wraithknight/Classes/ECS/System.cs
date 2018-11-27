@@ -25,20 +25,20 @@ namespace Wraithknight
             _ecs = ecs;
         }
 
-        protected void CoupleComponent<T>(ICollection<T> Target, Entity entity) //Add boolean to entity if it has multiples of same component types
+        protected void CoupleComponent<T>(ICollection<T> target, Entity entity) //Add boolean to entity if it has multiples of same component types
         {
             if (entity.Components.TryGetValue(typeof(T), out var component))
             {
-                Target.Add(Functions_Operators.CastComponent<T>(component));
+                target.Add(Functions_Operators.CastComponent<T>(component));
                 component.Activate(); //do you want this?
             }
         }
 
-        protected void CoupleComponent<T>(ICollection<T> Target, ICollection<Entity> entities)
+        protected void CoupleComponent<T>(ICollection<T> target, ICollection<Entity> entities)
         {
             foreach (var entity in entities)
             {
-                CoupleComponent(Target, entity);
+                CoupleComponent(target, entity);
             }
         }
 

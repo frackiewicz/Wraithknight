@@ -177,7 +177,7 @@ namespace Wraithknight
                     drawComponent = new DrawComponent(Assets.GetTexture("tanne16"), new AABB((int) safePosition.X, (int) safePosition.Y, 16, 32), offset: new Point(0, -16));
                 }
                 entity.AddComponent(drawComponent);
-                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isImpassable: true, isPhysical: true));
+                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isWall: true, isPhysical: true));
             }
             else if (type == EntityType.Floor)
             {
@@ -355,6 +355,12 @@ namespace Wraithknight
                 }
             }
             RegisterAllEntities();
+            RegisterLevel(level);
+        }
+
+        private void RegisterLevel(Level level)
+        {
+            GetSystem<CollisionSystem>().RegisterLevel(level);
         }
     }
 }

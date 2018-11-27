@@ -11,7 +11,7 @@ namespace Wraithknight
         Nothing,
         HeroSpawn
     }
-    struct Level
+    class Level
     {
         public bool[,] Walls;
         public LevelData[,] Data;

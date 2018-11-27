@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
@@ -36,7 +37,7 @@ namespace Wraithknight
             }
         }
 
-        private readonly HashSet<DrawComponent> _drawComponents = new HashSet<DrawComponent>();
+        private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>(); //to avoid texture swapping, hows the impact on movementbinding?
         private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>(); //TODO Breunig HashSet way more efficient than list, why?
         private readonly Camera2D _camera;
 
@@ -48,7 +49,7 @@ namespace Wraithknight
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
-            CoupleComponent(_drawComponents, entities);
+            CoupleDrawComponents(entities);
             BindMovementComponents();
         }
 
@@ -59,13 +60,31 @@ namespace Wraithknight
 
         public void Draw()
         {
-            AlignAllPairs();
-            foreach (var component in _drawComponents)
+            AlignAllPairs(); 
+            foreach (var batch in _sortedDrawComponents.Values)
             {
-                if (component.Inactive) continue;
-                if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
+                foreach (var component in batch)
                 {
-                    Functions_Draw.Draw(component);
+                    if (component.Inactive) continue;
+                    if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
+                    {
+                        Functions_Draw.Draw(component);
+                    }
+                }
+            }
+        }
+
+        private void CoupleDrawComponents(ICollection<Entity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.Components.TryGetValue(typeof(DrawComponent), out var component))
+                {
+                    DrawComponent drawComponent = component as DrawComponent;
+
+                    if (!_sortedDrawComponents.ContainsKey(drawComponent.Texture)) _sortedDrawComponents.Add(drawComponent.Texture, new HashSet<DrawComponent>());
+                    _sortedDrawComponents[drawComponent.Texture].Add(drawComponent);
+                    component.Activate(); //do you want this?
                 }
             }
         }
@@ -73,13 +92,17 @@ namespace Wraithknight
         private void BindMovementComponents()
         {
             Component bind;
-            foreach (var component in _drawComponents)
+            foreach (var batch in _sortedDrawComponents.Values)
             {
-                if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
+                foreach (var component in batch)
                 {
-                    _moveableDrawComponents.Add(new Pair(component, bind as MovementComponent));
+                    if (component.Bindings.TryGetValue(typeof(MovementComponent), out bind))
+                    {
+                        _moveableDrawComponents.Add(new Pair(component, bind as MovementComponent));
+                    }
                 }
             }
+            
         }
 
         private void AlignAllPairs()
@@ -88,14 +111,13 @@ namespace Wraithknight
             {
                 pair.Draw.DrawRec.X = pair.Move.Position.X - pair.Draw.DrawRec.Width / 2 + pair.Draw.Offset.X;
                 pair.Draw.DrawRec.Y = pair.Move.Position.Y - pair.Draw.DrawRec.Height / 2 + pair.Draw.Offset.Y;
-
             }
         }
 
         public override void Reset()
         {
             _moveableDrawComponents.Clear();
-            _drawComponents.Clear();
+            _sortedDrawComponents.Clear();
         }
 
         
