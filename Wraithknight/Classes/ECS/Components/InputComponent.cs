@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Wraithknight
 {
-    class InputComponent : Component //IDEA: make this bindable? might allow for some fun stuff
+    class InputComponent : BindableComponent
     {
         /*
         public KeyboardState PreviousKeyboardState;
@@ -25,6 +25,8 @@ namespace Wraithknight
         public GamePadState CurrentGamePadState;
         */
 
+        public readonly bool UserInput;
+
         public Vector2 MovementDirection = new Vector2(0, 0); //WASD
         public bool PrimaryAttack = false; //LMB
         public bool SecondaryAttack = false; //RMB
@@ -32,5 +34,10 @@ namespace Wraithknight
         public bool Action = false; //F
         public bool Blink = false; //Shift
         public Point CursorPoint = new Point();
+
+        public InputComponent(bool userInput)
+        {
+            UserInput = userInput;
+        }
     }
 }

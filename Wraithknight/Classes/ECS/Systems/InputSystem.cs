@@ -28,31 +28,10 @@ namespace Wraithknight
             foreach (var component in _components) //TODO cleanup?
             {
                 if(component.Inactive) continue;
-                component.MovementDirection.X = 0;
-                component.MovementDirection.Y = 0;
-                if (InputReader.IsKeyPressed(Keys.W))
+                if (component.UserInput)
                 {
-                    component.MovementDirection.Y = -1;
+                    ReadInput(component);
                 }
-                if (InputReader.IsKeyPressed(Keys.A))
-                {
-                    component.MovementDirection.X = -1;
-                }
-                if (InputReader.IsKeyPressed(Keys.S))
-                {
-                    component.MovementDirection.Y = 1;
-                }
-                if (InputReader.IsKeyPressed(Keys.D))
-                {
-                    component.MovementDirection.X = 1;
-                }
-
-                component.PrimaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.LMB);
-                component.SecondaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.RMB);
-                component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
-                component.Action = InputReader.IsKeyTriggered(Keys.F);
-                component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
-                component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
             }
         }
 
@@ -61,6 +40,33 @@ namespace Wraithknight
             _components.Clear();
         }
 
+        private void ReadInput(InputComponent component)
+        {
+            component.MovementDirection.X = 0;
+            component.MovementDirection.Y = 0;
+            if (InputReader.IsKeyPressed(Keys.W))
+            {
+                component.MovementDirection.Y = -1;
+            }
+            if (InputReader.IsKeyPressed(Keys.A))
+            {
+                component.MovementDirection.X = -1;
+            }
+            if (InputReader.IsKeyPressed(Keys.S))
+            {
+                component.MovementDirection.Y = 1;
+            }
+            if (InputReader.IsKeyPressed(Keys.D))
+            {
+                component.MovementDirection.X = 1;
+            }
 
+            component.PrimaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.LMB);
+            component.SecondaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.RMB);
+            component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
+            component.Action = InputReader.IsKeyTriggered(Keys.F);
+            component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
+            component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
+        }
     }
 }

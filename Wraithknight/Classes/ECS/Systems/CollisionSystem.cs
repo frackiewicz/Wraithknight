@@ -11,7 +11,7 @@ namespace Wraithknight
 {
     class CollisionSystem : System //TODO Breunig Collision System definetly needs a performance boost
     {
-        private struct Pair
+        private struct Pair //TODO do you still need this? you got bindable collisionComponents
         {
             public readonly CollisionComponent Collision;
             public readonly MovementComponent Movement;
@@ -45,6 +45,7 @@ namespace Wraithknight
             CoupleComponent(_collisionComponents, entities);
             BindMovementComponents();
             _logicSubsystem.RegisterComponents(entities);
+            if(_level != null) MapWalls();
         }
 
         private void BindMovementComponents()
@@ -121,20 +122,25 @@ namespace Wraithknight
             _wallCollisions = new CollisionComponent[level.Walls.GetLength(0),level.Walls.GetLength(1)];
 
             //Filter _collisionComponents for walls and put them into the array
-            List<CollisionComponent> tempList = new List<CollisionComponent>();
+            MapWalls();
+        }
+
+        private void MapWalls()
+        {
+            List<CollisionComponent> newCollisionComponents = new List<CollisionComponent>();
             foreach (var collisionComponent in _collisionComponents)
             {
                 if (collisionComponent.IsWall)
                 {
-                    _wallCollisions[(int) (collisionComponent.CollisionRectangle.X / level.TileWidth), (int) (collisionComponent.CollisionRectangle.Y / level.TileHeight)] = collisionComponent;
+                    _wallCollisions[(int)(collisionComponent.CollisionRectangle.X / _level.TileWidth), (int)(collisionComponent.CollisionRectangle.Y / _level.TileHeight)] = collisionComponent;
                 }
                 else
                 {
-                    tempList.Add(collisionComponent);
+                    newCollisionComponents.Add(collisionComponent);
                 }
             }
             _collisionComponents.Clear();
-            foreach (var collisionComponent in tempList)
+            foreach (var collisionComponent in newCollisionComponents)
             {
                 _collisionComponents.Add(collisionComponent);
             }

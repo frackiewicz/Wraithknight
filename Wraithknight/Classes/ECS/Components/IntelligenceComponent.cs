@@ -13,7 +13,7 @@ namespace Wraithknight
         Follow,
         Move
     }
-    internal struct IntelligenceOrder
+    internal struct IntelligenceOrder //maybe bind this to Input?
     {
         public EntityType Target;
         public int Range;
@@ -25,7 +25,7 @@ namespace Wraithknight
             Target = target;
             Range = range;
             Order = order;
-            Priority = priority;
+            Priority = priority; 
         }
     }
     class IntelligenceComponent : Component
@@ -36,7 +36,6 @@ namespace Wraithknight
         {
             if (Orders == null) Orders = list;
             else Orders.AddRange(list);
-
         }
 
     }
