@@ -22,6 +22,7 @@ namespace Wraithknight
         
         //Enemies
         Forest_Knight,
+        Wolf,
 
         //Objects
         Wall,
@@ -123,7 +124,7 @@ namespace Wraithknight
 
         #region EntityManagement
 
-        public Entity CreateEntity(EntityType type, Vector2? position = null, Coord2 speed = null, GameTime gameTime = null) //TODO Problem with Drawrecs
+        public Entity CreateEntity(EntityType type, Vector2? position = null, Coord2 speed = null, GameTime gameTime = null) //TODO Breunig, how to handle default values?
         {
             //this might be enough lol
             Vector2 safePosition = position ?? new Vector2(0, 0);

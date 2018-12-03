@@ -10,21 +10,6 @@ namespace Wraithknight
 {
     class InputComponent : BindableComponent
     {
-        /*
-        public KeyboardState PreviousKeyboardState;
-        public KeyboardState CurrentKeyboardState;
-
-        public MouseState PreviousMouseState;
-        public MouseState CurrentMouseState;
-        public Point PreviousCursorPos;
-        public Point CurrentCursorPos;
-
-
-        public GamePadCapabilities GamePadCapabilities;
-        public GamePadState PreviousGamePadState;
-        public GamePadState CurrentGamePadState;
-        */
-
         public readonly bool UserInput;
 
         public Vector2 MovementDirection = new Vector2(0, 0); //WASD

@@ -27,11 +27,9 @@ namespace Wraithknight
         {
             foreach (var component in _components) //TODO cleanup?
             {
-                if(component.Inactive) continue;
-                if (component.UserInput)
-                {
-                    ReadInput(component);
-                }
+                if (component.Inactive) continue;
+                if (component.UserInput) ReadInput(component);
+                HandleInputLogic(component, gameTime);
             }
         }
 
@@ -68,5 +66,49 @@ namespace Wraithknight
             component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
             component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
         }
+
+        #region Logic
+
+        private void HandleInputLogic(InputComponent component, GameTime gameTime)
+        {
+            MovementLogic(component);
+            AttackLogic(component, gameTime);
+        }
+
+        private void AttackLogic(InputComponent input, GameTime gameTime)
+        {
+            if (input.PrimaryAttack || input.SecondaryAttack)
+            {
+                if (input.MultiBindings.TryGetValue(typeof(AttackComponent), out var attackBindings))
+                {
+                    foreach (var binding in attackBindings)
+                    {
+                        AttackComponent attack = binding as AttackComponent;
+
+                        if ((input.PrimaryAttack && attack.Type == AttackType.Primary) || (input.SecondaryAttack && attack.Type == AttackType.Secondary)) // && same attackState 
+                        {
+                            _ecs.RegisterEntity(_ecs.CreateEntity(
+                                          attack.Projectile, 
+                                position: attack.SourcePos, 
+                                speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), 
+                                gameTime: gameTime));
+                        }
+                    }
+                }
+            }
+        }
+
+        private void MovementLogic(InputComponent input)
+        {
+            if (input.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
+            {
+                MovementComponent movement = binding as MovementComponent;
+
+                movement.Acceleration.X = input.MovementDirection.X * movement.AccelerationBase;
+                movement.Acceleration.Y = input.MovementDirection.Y * movement.AccelerationBase;
+            }
+        }
+
+        #endregion
     }
 }

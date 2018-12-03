@@ -12,7 +12,7 @@ namespace Wraithknight
         public bool Alive = true; //used for garbage collection
         public Allegiance Allegiance;
         public EntityType Type;
-        public Dictionary<Type, Component> Components = new Dictionary<Type, Component>(); //no multiples of same type possible
+        public Dictionary<Type, Component> Components = new Dictionary<Type, Component>(); //TODO breunig, no multiples of same type possible
 
         public Entity(EntityType type, Allegiance allegiance = Allegiance.Neutral) 
         {
