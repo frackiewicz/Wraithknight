@@ -52,7 +52,7 @@ namespace Wraithknight
             _movement.Acceleration.Y = _input.MovementDirection.Y * _movement.AccelerationBase;
             if (_input.PrimaryAttack)
             {
-                _ecs.RegisterEntity(_ecs.CreateEntity(EntityType.KnightSlash, position: _movement.Position, speed: new Coord2(new Vector2(_input.CursorPoint.X - _movement.Position.X, _input.CursorPoint.Y - _movement.Position.Y)), gameTime: gameTime));
+                _ecs.RegisterEntity(_ecs.CreateEntity(EntityType.HeroKnightSlashWeak, position: _movement.Position, speed: new Coord2(new Vector2(_input.CursorPoint.X - _movement.Position.X, _input.CursorPoint.Y - _movement.Position.Y)), gameTime: gameTime));
             }
         }
 

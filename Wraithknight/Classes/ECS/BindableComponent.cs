@@ -22,7 +22,8 @@ namespace Wraithknight
 
         public BindableComponent AddBinding(Component component) //TODO Breunig, maybe add a filter by type here to redirect to MultiBindings
         {
-            Bindings.Add(component.GetType(), component);
+            if (component.MultiBinding) AddMultiBinding(component);
+            else Bindings.Add(component.GetType(), component);
             return this;
         }
 

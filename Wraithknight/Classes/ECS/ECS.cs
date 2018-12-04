@@ -29,7 +29,8 @@ namespace Wraithknight
         Floor,
 
         //Projectiles
-        KnightSlash
+        HeroKnightSlashWeak,
+        HeroKnightSlashStrong
     }
 
     class ECS
@@ -112,7 +113,7 @@ namespace Wraithknight
             drawSystem = new DrawSystem(this, _camera);
 
             _systemSet.Add(new InputSystem(this, _camera));
-            _systemSet.Add(new HeroControlSystem(this));
+            //_systemSet.Add(new HeroControlSystem(this));
             _systemSet.Add(new CollisionSystem(this));
             _systemSet.Add(new MovementSystem(this));
             _systemSet.Add(new TimerSystem(this));
@@ -135,9 +136,11 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
-                entity.AddBindedComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
-                entity.AddComponent(new InputComponent(true));
+                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400));
+                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, 800));
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.MultiComponents[typeof(AttackComponent)][0], entity.MultiComponents[typeof(AttackComponent)][1] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
                 entity.SetAllegiance(Allegiance.Friendly);
             }
             #endregion
@@ -185,14 +188,22 @@ namespace Wraithknight
             }
             #endregion
             #region projectiles
-            else if (type == EntityType.KnightSlash)
+            else if (type == EntityType.HeroKnightSlashWeak)
             {
-                float startingSpeed = 400;
-                entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed.ChangePolarLength(startingSpeed)));
-                entity.AddBindedComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindedComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
+                entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed));
+                entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
-                entity.AddBindedComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
+                entity.AddBindableComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
+                entity.SetAllegiance(Allegiance.Friendly);
+            }
+            else if (type == EntityType.HeroKnightSlashStrong)
+            {
+                entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 200, position: safePosition, speed: safeSpeed));
+                entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
+                entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 2000));
+                entity.AddBindableComponent(new ProjectileComponent(power: 20, damage: 10, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
                 entity.SetAllegiance(Allegiance.Friendly);
             }
             #endregion

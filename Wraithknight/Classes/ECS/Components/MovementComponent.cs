@@ -155,7 +155,7 @@ namespace Wraithknight //TODO structs could use some improvements
         public Boolean IsMoving = false;
         public Boolean HasCollided = false;
 
-        public Vector2 Position;
+        public Vector2 Position; //maybe make a wrapper class so you can pass the reference for alignment
         public Vector2 OldPosition; //I give up //IT DOESNT FUCKING WORK LMAO
 
         public Coord2 Speed;

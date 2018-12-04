@@ -13,7 +13,7 @@ namespace Wraithknight
         Secondary
     }
 
-    class AttackComponent : Component
+    class AttackComponent : Component //Maybe take a more State based approach
     {
         public EntityType Projectile;
         public AttackType Type;
@@ -21,8 +21,9 @@ namespace Wraithknight
         public int StartSpeed;
         public int AttackState; //for switching equipment?
 
-        AttackComponent(EntityType projectile, AttackType type, Vector2 sourcePos, int startSpeed = 0, int attackState = 0)
+        public AttackComponent(EntityType projectile, AttackType type, Vector2 sourcePos, int startSpeed = 0, int attackState = 0)
         {
+            MultiBinding = true;
             Projectile = projectile;
             Type = type;
             SourcePos = sourcePos;

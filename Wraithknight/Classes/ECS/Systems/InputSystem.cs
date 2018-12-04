@@ -18,6 +18,7 @@ namespace Wraithknight
             _ecs = ecs;
             _camera = camera;
         }
+
         public override void RegisterComponents(ICollection<Entity> entities)
         {
             CoupleComponent(_components, entities);
@@ -46,14 +47,17 @@ namespace Wraithknight
             {
                 component.MovementDirection.Y = -1;
             }
+
             if (InputReader.IsKeyPressed(Keys.A))
             {
                 component.MovementDirection.X = -1;
             }
+
             if (InputReader.IsKeyPressed(Keys.S))
             {
                 component.MovementDirection.Y = 1;
             }
+
             if (InputReader.IsKeyPressed(Keys.D))
             {
                 component.MovementDirection.X = 1;
@@ -77,25 +81,35 @@ namespace Wraithknight
 
         private void AttackLogic(InputComponent input, GameTime gameTime)
         {
-            if (input.PrimaryAttack || input.SecondaryAttack)
+            if ((input.PrimaryAttack || input.SecondaryAttack) && input.MultiBindings.TryGetValue(typeof(AttackComponent), out var attackBindings))
             {
-                if (input.MultiBindings.TryGetValue(typeof(AttackComponent), out var attackBindings))
+                foreach (var binding in attackBindings)
                 {
-                    foreach (var binding in attackBindings)
-                    {
-                        AttackComponent attack = binding as AttackComponent;
+                    AttackComponent attack = binding as AttackComponent;
 
-                        if ((input.PrimaryAttack && attack.Type == AttackType.Primary) || (input.SecondaryAttack && attack.Type == AttackType.Secondary)) // && same attackState 
+                    if (AttackTriggered(input, attack)) // && same attackState 
+                    {
+                        if (input.Bindings.TryGetValue(typeof(MovementComponent), out var bindinga)) //TODO I dont like how I handled Alignment here, maybe talk to Breunig
                         {
-                            _ecs.RegisterEntity(_ecs.CreateEntity(
-                                          attack.Projectile, 
-                                position: attack.SourcePos, 
-                                speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), 
-                                gameTime: gameTime));
+                            MovementComponent movement = bindinga as MovementComponent;
+
+                            attack.SourcePos.X = movement.Position.X;
+                            attack.SourcePos.Y = movement.Position.Y;
                         }
+
+                        _ecs.RegisterEntity(_ecs.CreateEntity(
+                            attack.Projectile,
+                            position: attack.SourcePos,
+                            speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed),
+                            gameTime: gameTime));
                     }
                 }
             }
+        }
+
+        private bool AttackTriggered(InputComponent input, AttackComponent attack)
+        {
+            return input.PrimaryAttack && attack.Type == AttackType.Primary || input.SecondaryAttack && attack.Type == AttackType.Secondary;
         }
 
         private void MovementLogic(InputComponent input)

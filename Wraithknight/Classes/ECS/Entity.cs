@@ -12,7 +12,8 @@ namespace Wraithknight
         public bool Alive = true; //used for garbage collection
         public Allegiance Allegiance;
         public EntityType Type;
-        public Dictionary<Type, Component> Components = new Dictionary<Type, Component>(); //TODO breunig, no multiples of same type possible
+        public Dictionary<Type, Component> Components = new Dictionary<Type, Component>();
+        public Dictionary<Type, List<Component>> MultiComponents = new Dictionary<Type, List<Component>>(); //for multiples?
 
         public Entity(EntityType type, Allegiance allegiance = Allegiance.Neutral) 
         {
@@ -28,19 +29,44 @@ namespace Wraithknight
 
         public void AddComponent(Component component)
         {
-            Components.Add(component.GetType(), component);
+            if (component.MultiBinding) AddMultiComponent(component);
+            else Components.Add(component.GetType(), component);
         }
 
-        public void AddBindedComponent(BindableComponent component, Component bind)
+        public void AddBindableComponent(BindableComponent component, Component bind)
         {
             component.AddBinding(bind);
             AddComponent(component);
         }
 
-        public Component GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead
+        public void AddBindableComponent(BindableComponent component, ICollection<Component> binds)
+        {
+            foreach (var bind in binds)
+            {
+                component.AddBinding(bind);
+            }
+            AddComponent(component);
+        }
+
+        public void AddMultiComponent(Component component) //only difference here is the data structure, you will differentiate manually
+        {
+            if (MultiComponents.TryGetValue(component.GetType(), out var list))
+            {
+                list.Add(component);
+            }
+            else
+            {
+                MultiComponents.Add(component.GetType(), new List<Component>());
+                AddMultiComponent(component);
+            }
+        }
+
+        //Add MultiBindedComponent if necessary
+
+        public T GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead
         {
             Components.TryGetValue(typeof(T), out var value);
-            return value;
+            return (T)(object)value;
         }
 
         public override int GetHashCode()

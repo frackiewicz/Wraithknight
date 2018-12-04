@@ -13,6 +13,7 @@ namespace Wraithknight
 
         public readonly int ID = IDcount++;
 
+        public bool MultiBinding = false;
         public bool Inactive { get; protected set; } = true;
         public int RootID;
         public Allegiance Allegiance; //RootAllegiance

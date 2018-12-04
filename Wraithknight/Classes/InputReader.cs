@@ -82,8 +82,8 @@ namespace Wraithknight
         {
             if (button == MouseButtons.LMB)
             {
-                return _currentMouseState.LeftButton == ButtonState.Pressed && 
-                       _previousMouseState.RightButton == ButtonState.Released;
+                return _currentMouseState.LeftButton == ButtonState.Pressed &&
+                       _previousMouseState.LeftButton == ButtonState.Released;
             }
 
             if (button == MouseButtons.RMB)
