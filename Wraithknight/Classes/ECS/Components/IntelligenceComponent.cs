@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
@@ -18,24 +19,28 @@ namespace Wraithknight
         public EntityType Target;
         public int Range;
         public OrderType Order;
-        public int Priority;
+        public int Priority; //higher = more important
+        public int UpdateCooldownMilliseconds;
 
-        IntelligenceOrder(EntityType target, int range, OrderType order, int priority)
+        IntelligenceOrder(EntityType target, int range, OrderType order, int priority, int updateCooldownMilliseconds)
         {
             Target = target;
             Range = range;
             Order = order;
-            Priority = priority; 
+            Priority = priority;
+            UpdateCooldownMilliseconds = updateCooldownMilliseconds;
         }
     }
-    class IntelligenceComponent : Component
+    class IntelligenceComponent : BindableComponent //TODO bind to Input
     {
         public List<IntelligenceOrder> Orders = new List<IntelligenceOrder>();
+        public int UpdateCooldownMilliseconds = 0;
+        public Vector2 Pos; //use this as a source Node
 
-        public IntelligenceComponent(List<IntelligenceOrder> list)
+        public IntelligenceComponent(List<IntelligenceOrder> orders)
         {
-            if (Orders == null) Orders = list;
-            else Orders.AddRange(list);
+            Orders.AddRange(orders);
+            Orders.Sort((a, b) => b.Priority.CompareTo(a.Priority));
         }
 
     }

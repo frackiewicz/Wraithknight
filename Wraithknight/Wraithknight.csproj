@@ -49,6 +49,8 @@
     <Compile Include="Classes\ECS\Components\AttackComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceNode.cs" />
+    <Compile Include="Classes\ECS\Systems\AlignmentSystem.cs" />
+    <Compile Include="Classes\ECS\Systems\IntelligenceSystem.cs" />
     <Compile Include="Classes\Functions\Functions_DebugWriter.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
     <Compile Include="Classes\Levelgeneration\LevelGenerator.cs" />

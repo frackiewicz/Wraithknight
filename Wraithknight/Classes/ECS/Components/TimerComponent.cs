@@ -13,7 +13,7 @@ namespace Wraithknight
         Flag
     }
 
-    class TimerComponent : Component
+    class TimerComponent : Component //TODO Breunig, Calculate Timers differently?
     {
         public TimerType Type;
         public GameTime CurrentTime;
