@@ -10,9 +10,9 @@ namespace Wraithknight
     class IntelligenceNode : Component
     {
         public EntityType Type;
-        public Vector2 Pos;
+        public Vector2Ref Pos;
 
-        IntelligenceNode(EntityType type, Vector2 pos)
+        public IntelligenceNode(EntityType type, Vector2Ref pos)
         {
             Type = type;
             Pos = pos;

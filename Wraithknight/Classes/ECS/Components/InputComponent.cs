@@ -18,7 +18,7 @@ namespace Wraithknight
         public bool SwitchWeapons = false; //Space
         public bool Action = false; //F
         public bool Blink = false; //Shift
-        public Point CursorPoint = new Point();
+        public Point CursorPoint = new Point(); //Should this really be a point?
 
         public InputComponent(bool userInput)
         {

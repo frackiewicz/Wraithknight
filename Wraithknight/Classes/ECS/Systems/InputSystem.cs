@@ -92,14 +92,11 @@ namespace Wraithknight
                         if (input.Bindings.TryGetValue(typeof(MovementComponent), out var bindinga)) //TODO I dont like how I handled Alignment here, maybe talk to Breunig
                         {
                             MovementComponent movement = bindinga as MovementComponent;
-
-                            attack.SourcePos.X = movement.Position.X;
-                            attack.SourcePos.Y = movement.Position.Y;
                         }
 
                         _ecs.RegisterEntity(_ecs.CreateEntity(
                             attack.Projectile,
-                            position: attack.SourcePos,
+                            position: new Vector2Ref(attack.SourcePos),
                             speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed),
                             gameTime: gameTime));
                     }

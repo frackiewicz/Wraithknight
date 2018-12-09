@@ -51,6 +51,15 @@ namespace Wraithknight //TODO structs could use some improvements
             return this;
         }
 
+        public Coord2 SetVector2(Vector2 vector)
+        {
+            Cartesian.X = vector.X;
+            Cartesian.Y = vector.Y;
+            ChangePolarFromCartesian(Cartesian);
+            AttemptToRoundCartesian();
+            return this;
+        }
+
         public Coord2 AddPolar2(Polar2 polar)
         {
             ChangePolarFromCartesian(Polar.InCartesian() + polar.InCartesian());
@@ -155,8 +164,8 @@ namespace Wraithknight //TODO structs could use some improvements
         public Boolean IsMoving = false;
         public Boolean HasCollided = false;
 
-        public Vector2 Position; //maybe make a wrapper class so you can pass the reference for alignment
-        public Vector2 OldPosition; //I give up //IT DOESNT FUCKING WORK LMAO
+        public Vector2Ref Position; //maybe make a wrapper class so you can pass the reference for alignment
+        public Vector2 OldPosition;
 
         public Coord2 Speed;
         public Vector2 Acceleration;
@@ -165,7 +174,7 @@ namespace Wraithknight //TODO structs could use some improvements
         public float MaxSpeed = 0.0f;
         public float Friction = 0.0f;
 
-        public MovementComponent(Vector2 position = new Vector2(), Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f)
+        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f)
         {
             Position = position;
             Speed = speed ?? new Coord2();

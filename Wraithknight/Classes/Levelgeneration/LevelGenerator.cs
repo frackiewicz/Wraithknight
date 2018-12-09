@@ -73,6 +73,7 @@ namespace Wraithknight
             if(DoCleanup)
             if (!MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
             SetRandomHeroSpawn(level.Walls, level.Data);
+            SetRandomEnemySpawn(level.Walls, level.Data);
 
             return level;
         }
@@ -360,12 +361,23 @@ namespace Wraithknight
         private static void SetRandomHeroSpawn(bool[,] walls, LevelData[,] data)
         {
             Point point = GetRandomPoint(walls);
-            while (walls[point.X, point.Y])
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
             {
                 point = GetRandomPoint(walls);
             }
 
             data[point.X, point.Y] = LevelData.HeroSpawn;
+        }
+
+        private static void SetRandomEnemySpawn(bool[,] walls, LevelData[,] data)
+        {
+            Point point = GetRandomPoint(walls);
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+            {
+                point = GetRandomPoint(walls);
+            }
+
+            data[point.X, point.Y] = LevelData.EnemySpawn;
         }
 
         private static Point GetRandomPoint<T>(T[,] array) 

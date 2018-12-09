@@ -9,7 +9,8 @@ namespace Wraithknight
     enum LevelData
     {
         Nothing,
-        HeroSpawn
+        HeroSpawn,
+        EnemySpawn
     }
     class Level
     {

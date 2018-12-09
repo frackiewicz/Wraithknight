@@ -101,8 +101,8 @@ namespace Wraithknight
         {
             if (routine == ecsBootRoutine.Testing)
             {
-                AddEntity(CreateEntity(EntityType.Hero, position: new Vector2(100, 0)));
-                AddEntity(CreateEntity(EntityType.Wall, position: new Vector2(200, 0)));
+                AddEntity(CreateEntity(EntityType.Hero, position: new Vector2Ref(new Vector2(100, 0))));
+                AddEntity(CreateEntity(EntityType.Wall, position: new Vector2Ref(new Vector2(200, 0))));
             }
         }
 
@@ -118,6 +118,7 @@ namespace Wraithknight
             _systemSet.Add(new MovementSystem(this));
             _systemSet.Add(new TimerSystem(this));
             _systemSet.Add(new HealthSystem(this));
+            _systemSet.Add(new IntelligenceSystem(this));
 
             _systemSet.Add(drawSystem); //add last for "true data"
         }
@@ -125,23 +126,40 @@ namespace Wraithknight
 
         #region EntityManagement
 
-        public Entity CreateEntity(EntityType type, Vector2? position = null, Coord2 speed = null, GameTime gameTime = null) //TODO Breunig, how to handle default values?
+        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null) //TODO Breunig, how to handle default values?
         {
             //this might be enough lol
-            Vector2 safePosition = position ?? new Vector2(0, 0);
+            Vector2Ref safePosition = position ?? new Vector2Ref();
             Coord2 safeSpeed = speed ?? new Coord2();
 
-            #region actors
             Entity entity = new Entity(type);
+
+            #region actors
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
                 entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400));
                 entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, 800));
+                entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.MultiComponents[typeof(AttackComponent)][0], entity.MultiComponents[typeof(AttackComponent)][1] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
                 entity.SetAllegiance(Allegiance.Friendly);
+            }
+
+            if (type == EntityType.Forest_Knight)
+            {
+                entity.AddComponent(new MovementComponent(accelerationBase: 400, maxSpeed: 100, friction: 300, position: safePosition));
+                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300));
+                entity.AddComponent(new HealthComponent(20));
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.MultiComponents[typeof(AttackComponent)][0] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
+                List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000));
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250 ));
+                entity.AddBindableComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
+                entity.SetAllegiance(Allegiance.Enemy);
             }
             #endregion
             #region objects
@@ -352,11 +370,11 @@ namespace Wraithknight
             {
                 for (int y = 0; y < level.Walls.GetLength(1); y++)
                 {
-                    AddEntity(CreateEntity(EntityType.Floor, new Vector2(x * level.TileWidth, y * level.TileHeight)));
+                    AddEntity(CreateEntity(EntityType.Floor, new Vector2Ref(x * level.TileWidth, y * level.TileHeight)));
                     #region Walls
                     if (level.Walls[x, y])
                     {
-                        AddEntity(CreateEntity(EntityType.Wall, new Vector2(x * level.TileWidth, y * level.TileHeight)));
+                        AddEntity(CreateEntity(EntityType.Wall, new Vector2Ref(x * level.TileWidth, y * level.TileHeight)));
                     }
                     #endregion
 
@@ -364,11 +382,12 @@ namespace Wraithknight
                     if (level.Data[x, y] == LevelData.HeroSpawn)
                     {
                         Entity hero = GetHero();
-                        if(hero == null) AddEntity(CreateEntity(EntityType.Hero, new Vector2(x * level.TileWidth + level.TileWidth/2, y * level.TileHeight + level.TileHeight/2)));
-                        else
-                        {
-                            
-                        }
+                        if(hero == null) AddEntity(CreateEntity(EntityType.Hero, new Vector2Ref(x * level.TileWidth + level.TileWidth/2, y * level.TileHeight + level.TileHeight/2)));
+                    }
+
+                    if (level.Data[x, y] == LevelData.EnemySpawn)
+                    {
+                        AddEntity(CreateEntity(EntityType.Forest_Knight, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
                     }
                     #endregion
                 }

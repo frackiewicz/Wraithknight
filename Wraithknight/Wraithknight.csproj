@@ -49,7 +49,6 @@
     <Compile Include="Classes\ECS\Components\AttackComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceNode.cs" />
-    <Compile Include="Classes\ECS\Systems\AlignmentSystem.cs" />
     <Compile Include="Classes\ECS\Systems\IntelligenceSystem.cs" />
     <Compile Include="Classes\Functions\Functions_DebugWriter.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
@@ -80,7 +79,6 @@
     <Compile Include="Classes\ECS\Systems\HeroControlSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
-    <Compile Include="Classes\ECS\Systems\ProjectileSystem.cs" />
     <Compile Include="Classes\ECS\Systems\TimerSystem.cs" />
     <Compile Include="Classes\Enumerators.cs" />
     <Compile Include="Classes\Flags.cs" />
@@ -94,6 +92,7 @@
     <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
     <Compile Include="Classes\Menu\MenuObject.cs" />
     <Compile Include="Classes\Overrides\AABB.cs" />
+    <Compile Include="Classes\Overrides\Vector2ref.cs" />
     <Compile Include="Classes\Program.cs" />
     <Compile Include="Classes\Concepts\LoadingText.cs" />
     <Compile Include="Classes\Concepts\LoadingTextGenerator.cs" />

@@ -12,12 +12,13 @@ namespace Wraithknight
     {
         Block,
         Disappear,
+        DisappearOnWall,
         Bounce,
         Stick,
         Pass //useful for sticky floors, event triggers etc
     }
 
-    class CollisionComponent : BindableComponent //you will have to be efficient with this one
+    class CollisionComponent : BindableComponent //TODO implement PositionRef here?
     {
         public CollisionBehavior Behavior;
         public AABB CollisionRectangle;

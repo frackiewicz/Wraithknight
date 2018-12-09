@@ -17,11 +17,12 @@ namespace Wraithknight
     {
         public EntityType Projectile;
         public AttackType Type;
-        public Vector2 SourcePos; //how this?
+        public Vector2Ref SourcePos; //how this?
         public int StartSpeed;
         public int AttackState; //for switching equipment?
+        public double AttackCooldownMilliseconds;
 
-        public AttackComponent(EntityType projectile, AttackType type, Vector2 sourcePos, int startSpeed = 0, int attackState = 0)
+        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, int startSpeed = 0, int attackState = 0, double attackCooldownMilliseconds = 0)
         {
             MultiBinding = true;
             Projectile = projectile;
@@ -29,6 +30,7 @@ namespace Wraithknight
             SourcePos = sourcePos;
             StartSpeed = startSpeed;
             AttackState = attackState;
+            AttackCooldownMilliseconds = attackCooldownMilliseconds;
         }
     }
 }
