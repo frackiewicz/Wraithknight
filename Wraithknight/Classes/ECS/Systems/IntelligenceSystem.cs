@@ -107,8 +107,8 @@ namespace Wraithknight
         private Coord2 _polar = new Coord2();
         private Vector2 VectorDirection(Vector2Ref actor, Vector2Ref target)
         {
-            _polar.ChangeX(actor.X - target.X);
-            _polar.ChangeY(actor.Y - target.Y);
+            _polar.ChangeX(target.X - actor.X);
+            _polar.ChangeY(target.Y - actor.Y);
             _polar.ChangePolarLength(1);
             return _polar.Cartesian;
         }

@@ -17,7 +17,7 @@ namespace Wraithknight
     {
         public EntityType Projectile;
         public AttackType Type;
-        public Vector2Ref SourcePos; //how this?
+        public Vector2Ref SourcePos;
         public int StartSpeed;
         public int AttackState; //for switching equipment?
         public double AttackCooldownMilliseconds;
