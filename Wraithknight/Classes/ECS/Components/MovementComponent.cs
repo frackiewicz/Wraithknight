@@ -43,6 +43,14 @@ namespace Wraithknight //TODO structs could use some improvements
             return this;
         }
 
+        public Coord2 ChangePolarLength(double newLength)
+        {
+            Polar.Length = newLength;
+            ChangeCartesianFromPolar(Polar);
+            AttemptToRoundCartesian();
+            return this;
+        }
+
         public Coord2 AddVector2(Vector2 vector)
         {
             Cartesian += vector;
@@ -87,7 +95,7 @@ namespace Wraithknight //TODO structs could use some improvements
         #region Conversions
         public static Vector2 CartesianFromPolar(Polar2 polar)
         {
-            return new Vector2((float) (polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle - 90f))), (float) (polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle - 90f))));
+            return new Vector2((float) (polar.Length * Math.Cos(polar.Angle)), (float) (polar.Length * Math.Sin(polar.Angle)));
         }
 
         public static Polar2 PolarFromCartesian(Vector2 cartesian)
@@ -97,8 +105,8 @@ namespace Wraithknight //TODO structs could use some improvements
 
         private void ChangeCartesianFromPolar(Polar2 polar) //Make public?
         {
-            Cartesian.X = (float)(polar.Length * Math.Cos(Functions_Math.DegreeToRadian(polar.Angle - 90f)));
-            Cartesian.Y = (float)(polar.Length * Math.Sin(Functions_Math.DegreeToRadian(polar.Angle - 90f)));
+            Cartesian.X = (float)(polar.Length * Math.Cos(polar.Angle));
+            Cartesian.Y = (float)(polar.Length * Math.Sin(polar.Angle));
         }
 
         private void ChangePolarFromCartesian(Vector2 cartesian)
@@ -120,8 +128,8 @@ namespace Wraithknight //TODO structs could use some improvements
 
     public class Polar2
     {
-        public float Length;
-        public float Angle;
+        public double Length;
+        public double Angle;
 
         public Polar2(Polar2 polar)
         {
@@ -146,21 +154,20 @@ namespace Wraithknight //TODO structs could use some improvements
             Length = (float)Math.Sqrt(Math.Pow(cartesian.Y, 2) + Math.Pow(cartesian.X, 2));
         }
 
-        public void ChangeAngleFromCartesian(Vector2 cartesian)
+        public void ChangeAngleFromCartesian(Vector2 cartesian) //TODO angle should be given in radian instead
         {
-            Angle = (float)Functions_Math.RadianToDegree(Math.Atan2(cartesian.Y, cartesian.X)) + 90f;
-
+            Angle = Math.Atan2(cartesian.Y, cartesian.X);
         }
 
         public Vector2 InCartesian() 
         {
-            return Coord2.CartesianFromPolar(this);//to reduce redundance
+            return Coord2.CartesianFromPolar(this);
         }
     }
 
     class MovementComponent : Component
     {
-        public Direction Direction = Direction.Down;
+        public Direction Direction => GetDirection();
         public Boolean IsMoving = false;
         public Boolean HasCollided = false;
 
@@ -173,10 +180,10 @@ namespace Wraithknight //TODO structs could use some improvements
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
         public float Friction = 0.0f;
-        public bool FrictionWhileMoving;
+        public bool FrictionWhileAccelerating;
 
 
-        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileMoving = false)
+        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileAccelerating = false)
         {
             Position = position;
             Speed = speed ?? new Coord2();
@@ -184,40 +191,12 @@ namespace Wraithknight //TODO structs could use some improvements
             AccelerationBase = accelerationBase;
             MaxSpeed = maxSpeed;
             Friction = friction;
-            FrictionWhileMoving = frictionWhileMoving;
+            FrictionWhileAccelerating = frictionWhileAccelerating;
         }
 
-        public MovementComponent StopX()
+        private Direction GetDirection() //TODO Start off here next
         {
-            Speed.ChangeX(0);
-            Acceleration.X = 0;
-            return this;
+            return Direction.Down;
         }
-
-        public MovementComponent StopY()
-        {
-            Speed.ChangeY(0);
-            Acceleration.Y = 0;
-            return this;
-        }
-
-        public MovementComponent ChangeAccelerationBase(float value)
-        {
-            AccelerationBase = value;
-            return this;
-        }
-
-        public MovementComponent ChangeMaxSpeed(float value)
-        {
-            MaxSpeed = value;
-            return this;
-        }
-
-        public MovementComponent ChangeFriction(float value)
-        {
-            Friction = value;
-            return this;
-        }
-
     }
 }

@@ -51,7 +51,7 @@ namespace Wraithknight
 
         private void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
-            if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileMoving || movement.Acceleration.Equals(Vector2.Zero)))
+            if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileAccelerating || movement.Acceleration.Equals(Vector2.Zero)))
             {
                 if (movement.Speed.Polar.Length - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds < 0 )
                 {
