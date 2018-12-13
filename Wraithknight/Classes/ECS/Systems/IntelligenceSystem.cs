@@ -45,20 +45,33 @@ namespace Wraithknight
 
         private void ProcessOrders(IntelligenceComponent intelligence)
         {
+            bool orderExecuted = false;
             foreach (var order in intelligence.Orders)
             {
+                if (orderExecuted && order.Reset)
+                {
+                    ResetOrderInputs(intelligence, order);
+                    continue;
+                }
+
                 foreach (var node in _nodes)
                 {
                     if (node.Inactive) continue;
                     if (order.Target == node.Type && Vector2.Distance(intelligence.Pos, node.Pos) <= order.Range)
                     {
                         ExecuteOrder(intelligence, order, node);
-                        return;
+                        orderExecuted = true;
+                        break;
                     }
+                }
+
+                if (!orderExecuted && order.Reset)
+                {
+                    ResetOrderInputs(intelligence, order);
                 }
             }
 
-            ResetInputs(intelligence);
+            if (!orderExecuted) ResetInputs(intelligence);
         }
 
         private void ExecuteOrder(IntelligenceComponent intelligence, IntelligenceOrder order, IntelligenceNode node)
@@ -66,25 +79,36 @@ namespace Wraithknight
             InputComponent input = null;
             if(intelligence.Bindings.TryGetValue(typeof(InputComponent), out var binding)) input = binding as InputComponent;
 
-            intelligence.State = order.Order;
+            intelligence.State = order.Type;
 
 
-            if (order.Order == OrderType.Attack1 || order.Order == OrderType.Attack2)
+            if (order.Type == OrderType.Attack1 || order.Type == OrderType.Attack2)
             {
                 input.CursorPoint = node.Pos;
                 intelligence.TargetPos = node.Pos;
-                if (order.Order == OrderType.Attack1) input.PrimaryAttack = true;
-                if (order.Order == OrderType.Attack2) input.SecondaryAttack = true;
+                if (order.Type == OrderType.Attack1) input.PrimaryAttack = true;
+                if (order.Type == OrderType.Attack2) input.SecondaryAttack = true;
             }
 
-            if (order.Order == OrderType.Follow || order.Order == OrderType.Move)
+            if (order.Type == OrderType.Follow || order.Type == OrderType.Move)
             {
                 input.MovementDirection = VectorDirection(intelligence.Pos, node.Pos);
-                if (order.Order == OrderType.Follow) intelligence.TargetPos = node.Pos;
-                if (order.Order == OrderType.Move) intelligence.TargetPos = new Vector2Ref(node.Pos);
+                if (order.Type == OrderType.Follow) intelligence.TargetPos = node.Pos;
+                if (order.Type == OrderType.Move) intelligence.TargetPos = new Vector2Ref(node.Pos);
             }
 
             intelligence.UpdateCooldownMilliseconds = order.UpdateCooldownMilliseconds;
+        }
+
+        private void ResetOrderInputs(IntelligenceComponent intelligence, IntelligenceOrder order)
+        {
+            InputComponent input = null;
+            if (intelligence.Bindings.TryGetValue(typeof(InputComponent), out var binding)) input = binding as InputComponent;
+
+            if (order.Type == OrderType.Attack1) input.PrimaryAttack = false;
+            if (order.Type == OrderType.Attack2) input.SecondaryAttack = false;
+            if (order.Type == OrderType.Follow || order.Type == OrderType.Move) input.MovementDirection = Vector2.Zero;
+
         }
 
         private void ResetInputs(IntelligenceComponent intelligence)

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Xna.Framework;
 
 namespace Wraithknight
@@ -19,17 +21,19 @@ namespace Wraithknight
     {
         public EntityType Target;
         public int Range;
-        public OrderType Order;
+        public OrderType Type;
         public int Priority; //higher = more important
         public int UpdateCooldownMilliseconds;
+        public bool Reset; //onNotExecuted
 
-        public IntelligenceOrder(EntityType target, int range, OrderType order, int priority, int updateCooldownMilliseconds)
+        public IntelligenceOrder(EntityType target, int range, OrderType type, int priority, int updateCooldownMilliseconds, bool reset)
         {
             Target = target;
             Range = range;
-            Order = order;
+            Type = type;
             Priority = priority;
             UpdateCooldownMilliseconds = updateCooldownMilliseconds;
+            Reset = reset;
         }
     }
     class IntelligenceComponent : BindableComponent //TODO bind to Input

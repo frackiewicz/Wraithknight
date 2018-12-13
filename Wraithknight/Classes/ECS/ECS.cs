@@ -126,7 +126,7 @@ namespace Wraithknight
 
         #region EntityManagement
 
-        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null) //TODO Breunig, how to handle default values?
+        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral) //TODO Breunig, how to handle default values?
         {
             //this might be enough lol
             Vector2Ref safePosition = position ?? new Vector2Ref();
@@ -138,26 +138,32 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
-                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400));
-                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, 800));
+                entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
+                {
+                    new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400, 0, 500),
+                    new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, 800, 0, 1000)
+                }));
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.MultiComponents[typeof(AttackComponent)][0], entity.MultiComponents[typeof(AttackComponent)][1] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
+                entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
                 entity.SetAllegiance(Allegiance.Friendly);
             }
 
             if (type == EntityType.Forest_Knight)
             {
                 entity.AddComponent(new MovementComponent(accelerationBase: 400, maxSpeed: 100, friction: 300, position: safePosition));
-                entity.AddComponent(new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300));
+                entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
+                {
+                    new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300, 0, 1500)
+                }));
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.MultiComponents[typeof(AttackComponent)][0] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
+                entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
                 List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
-                orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000));
-                orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250 ));
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                 entity.AddBindableComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
                 entity.SetAllegiance(Allegiance.Enemy);
             }

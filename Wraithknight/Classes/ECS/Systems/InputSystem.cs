@@ -63,8 +63,8 @@ namespace Wraithknight
                 component.MovementDirection.X = 1;
             }
 
-            component.PrimaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.LMB);
-            component.SecondaryAttack = InputReader.IsMouseButtonTriggered(MouseButtons.RMB);
+            component.PrimaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.LMB);
+            component.SecondaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.RMB);
             component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
             component.Action = InputReader.IsKeyTriggered(Keys.F);
             component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
@@ -79,26 +79,22 @@ namespace Wraithknight
             AttackLogic(component, gameTime);
         }
 
+        #region Attack
+
         private void AttackLogic(InputComponent input, GameTime gameTime)
         {
-            if ((input.PrimaryAttack || input.SecondaryAttack) && input.MultiBindings.TryGetValue(typeof(AttackComponent), out var attackBindings))
+            if ((input.PrimaryAttack || input.SecondaryAttack) && input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
-                foreach (var binding in attackBindings)
-                {
-                    AttackComponent attack = binding as AttackComponent;
+                AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
+                attackBehavior.RemainingAttackCooldownMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
 
+                if (attackBehavior.RemainingAttackCooldownMilliseconds >= 0) return;
+                foreach (var attack in attackBehavior.AttackComponents)
+                {
                     if (AttackTriggered(input, attack)) // && same attackState 
                     {
-                        if (input.Bindings.TryGetValue(typeof(MovementComponent), out var bindinga)) //TODO I dont like how I handled Alignment here, maybe talk to Breunig
-                        {
-                            MovementComponent movement = bindinga as MovementComponent;
-                        }
-
-                        _ecs.RegisterEntity(_ecs.CreateEntity(
-                            attack.Projectile,
-                            position: new Vector2Ref(attack.SourcePos),
-                            speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed),
-                            gameTime: gameTime));
+                        ExecuteAttack(input, attackBehavior, attack, gameTime);
+                        break;
                     }
                 }
             }
@@ -108,6 +104,16 @@ namespace Wraithknight
         {
             return input.PrimaryAttack && attack.Type == AttackType.Primary || input.SecondaryAttack && attack.Type == AttackType.Secondary;
         }
+
+        private void ExecuteAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
+        {
+            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime));
+            attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
+        }
+
+        #endregion
+
+        #region Movement
 
         private void MovementLogic(InputComponent input)
         {
@@ -119,6 +125,8 @@ namespace Wraithknight
                 movement.Acceleration.Y = input.MovementDirection.Y * movement.AccelerationBase;
             }
         }
+
+        #endregion
 
         #endregion
     }
