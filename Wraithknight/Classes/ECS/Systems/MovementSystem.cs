@@ -30,8 +30,10 @@ namespace Wraithknight
             {
                 if (movement.Inactive) continue;
                 movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
+
                 if (movement.HasCollided) movement.HasCollided = false;
                 else ApplySpeed(movement, gameTime);
+
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
             }
@@ -49,7 +51,7 @@ namespace Wraithknight
 
         private void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
-            if (movement.Speed.Polar.Length > 0 && movement.Acceleration.Equals(Vector2.Zero))
+            if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileMoving || movement.Acceleration.Equals(Vector2.Zero)))
             {
                 if (movement.Speed.Polar.Length - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds < 0 )
                 {

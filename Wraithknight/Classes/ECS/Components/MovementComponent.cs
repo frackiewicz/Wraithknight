@@ -173,8 +173,10 @@ namespace Wraithknight //TODO structs could use some improvements
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
         public float Friction = 0.0f;
+        public bool FrictionWhileMoving;
 
-        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f)
+
+        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileMoving = false)
         {
             Position = position;
             Speed = speed ?? new Coord2();
@@ -182,6 +184,7 @@ namespace Wraithknight //TODO structs could use some improvements
             AccelerationBase = accelerationBase;
             MaxSpeed = maxSpeed;
             Friction = friction;
+            FrictionWhileMoving = frictionWhileMoving;
         }
 
         public MovementComponent StopX()

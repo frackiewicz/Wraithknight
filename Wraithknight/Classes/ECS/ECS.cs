@@ -113,7 +113,6 @@ namespace Wraithknight
             drawSystem = new DrawSystem(this, _camera);
 
             _systemSet.Add(new InputSystem(this, _camera));
-            //_systemSet.Add(new HeroControlSystem(this));
             _systemSet.Add(new CollisionSystem(this));
             _systemSet.Add(new MovementSystem(this));
             _systemSet.Add(new TimerSystem(this));
@@ -153,10 +152,10 @@ namespace Wraithknight
             if (type == EntityType.Forest_Knight)
             {
                 entity.SetAllegiance(Allegiance.Enemy);
-                entity.AddComponent(new MovementComponent(accelerationBase: 400, maxSpeed: 100, friction: 300, position: safePosition));
+                entity.AddComponent(new MovementComponent(accelerationBase: 250, maxSpeed: 100, friction: 300, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
-                    new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300, 0, 1500)
+                    new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300, 0, 1500, 2000)
                 }));
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);

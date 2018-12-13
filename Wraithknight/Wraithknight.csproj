@@ -77,7 +77,6 @@
     <Compile Include="Classes\Camera2D.cs" />
     <Compile Include="Classes\Components\Generics\ComponentMovement.cs" />
     <Compile Include="Classes\ECS\Systems\HealthSystem.cs" />
-    <Compile Include="Classes\ECS\Systems\HeroControlSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
     <Compile Include="Classes\ECS\Systems\TimerSystem.cs" />

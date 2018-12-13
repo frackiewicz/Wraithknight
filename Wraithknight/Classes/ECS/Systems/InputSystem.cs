@@ -81,23 +81,77 @@ namespace Wraithknight
 
         #region Attack
 
-        private void AttackLogic(InputComponent input, GameTime gameTime)
+        private void AttackLogic(InputComponent input, GameTime gameTime) //TODO Breunig, maybe move all this down into another class? I dont like how cluttered all this is
         {
             if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
                 AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
-                attackBehavior.RemainingAttackCooldownMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (HasDelayedAttack(attackBehavior))
+                {
+                    input.MovementDirection = Vector2.Zero;
+                    CountdownRemainingAttackDelay(attackBehavior, gameTime);
+                    TryExecuteDelayedAttack(input, attackBehavior, gameTime);
+                    return;
+                }
+                if (IsInAttackCooldown(attackBehavior))
+                {
+                    CountdownRemainingAttackCooldown(attackBehavior, gameTime);
+                }
 
                 if (!(input.PrimaryAttack || input.SecondaryAttack)) return;
-                if (attackBehavior.RemainingAttackCooldownMilliseconds >= 0) return;
+                if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
 
-                foreach (var attack in attackBehavior.AttackComponents)
+                FindAndExecuteAttack(input, attackBehavior, gameTime);
+            }
+        }
+
+        private bool HasDelayedAttack(AttackBehaviorComponent attackBehavior)
+        {
+            return attackBehavior.DelayedAttack != null;
+        }
+
+        private void CountdownRemainingAttackDelay(AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        {
+            attackBehavior.RemainingAttackDelayMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
+
+        }
+
+        private void TryExecuteDelayedAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        {
+            if (attackBehavior.RemainingAttackDelayMilliseconds <= 0)
+            {
+                ExecuteAttack(input, attackBehavior, attackBehavior.DelayedAttack, gameTime);
+            }
+        }
+
+        private bool IsInAttackCooldown(AttackBehaviorComponent attackBehavior)
+        {
+            return attackBehavior.RemainingAttackCooldownMilliseconds > 0;
+        }
+
+        private void CountdownRemainingAttackCooldown(AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        {
+            attackBehavior.RemainingAttackCooldownMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
+
+        }
+
+
+
+        private void FindAndExecuteAttack(InputComponent input , AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        {
+            foreach (var attack in attackBehavior.AttackComponents)
+            {
+                if (AttackTriggered(input, attack)) // && same attackState 
                 {
-                    if (AttackTriggered(input, attack)) // && same attackState 
+                    if (attack.AttackCooldownMilliseconds > 0) //dont like this here
                     {
-                        ExecuteAttack(input, attackBehavior, attack, gameTime);
+                        attackBehavior.RemainingAttackDelayMilliseconds = attack.AttackDelayMilliseconds;
+                        attackBehavior.DelayedAttack = attack;
                         break;
                     }
+                    ExecuteAttack(input, attackBehavior, attack, gameTime);
+                    break;
                 }
             }
         }
@@ -111,6 +165,7 @@ namespace Wraithknight
         {
             _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
+            attackBehavior.DelayedAttack = null;
         }
 
         #endregion
