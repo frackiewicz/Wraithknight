@@ -69,6 +69,9 @@ namespace Wraithknight
             _screenManager.Draw(gameTime);
             UpdateFps(gameTime);
             base.Draw(gameTime);
+            Functions_DebugWriter.WriteLine(InputReader.IsMouseButtonPressed(MouseButtons.LMB).ToString());
+            Functions_DebugWriter.WriteLine(InputReader.IsMouseButtonPressed(MouseButtons.RMB).ToString());
+
         }
 
         private void CheckForEmergencyExit()

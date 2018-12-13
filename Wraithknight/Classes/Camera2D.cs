@@ -86,8 +86,6 @@ namespace Wraithknight{
         public void Update(GameTime gameTime)
         {  
             UpdateVariables();
-
-            Functions_DebugWriter.WriteLine(CurrentZoom.ToString());
             
             MoveToTargetPos(gameTime);
             HandelZoom(gameTime);

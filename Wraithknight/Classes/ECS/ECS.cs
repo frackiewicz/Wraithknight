@@ -137,6 +137,7 @@ namespace Wraithknight
             #region actors
             if (type == EntityType.Hero)
             {
+                entity.SetAllegiance(Allegiance.Friendly);
                 entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
@@ -147,11 +148,11 @@ namespace Wraithknight
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
-                entity.SetAllegiance(Allegiance.Friendly);
             }
 
             if (type == EntityType.Forest_Knight)
             {
+                entity.SetAllegiance(Allegiance.Enemy);
                 entity.AddComponent(new MovementComponent(accelerationBase: 400, maxSpeed: 100, friction: 300, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
@@ -165,7 +166,6 @@ namespace Wraithknight
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                 entity.AddBindableComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
-                entity.SetAllegiance(Allegiance.Enemy);
             }
             #endregion
             #region objects
@@ -214,24 +214,24 @@ namespace Wraithknight
             #region projectiles
             else if (type == EntityType.HeroKnightSlashWeak)
             {
+                entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed));
                 entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
                 entity.AddBindableComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
-                entity.SetAllegiance(Allegiance.Friendly);
             }
             else if (type == EntityType.HeroKnightSlashStrong)
             {
+                entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 200, position: safePosition, speed: safeSpeed));
                 entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 2000));
                 entity.AddBindableComponent(new ProjectileComponent(power: 20, damage: 10, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
-                entity.SetAllegiance(Allegiance.Friendly);
             }
             #endregion
-            SetRootIDs(entity);
+            SetRoots(entity);
             return entity;
         }
 
@@ -295,11 +295,12 @@ namespace Wraithknight
             _entityDictionary.Remove(entity.ID);
         }
 
-        private void SetRootIDs(Entity entity)
+        private void SetRoots(Entity entity)
         {
             foreach (var component in entity.Components.Values)
             {
                 component.RootID = entity.ID;
+                component.Allegiance = entity.Allegiance;
             }
         }
 

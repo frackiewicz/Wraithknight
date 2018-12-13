@@ -83,12 +83,14 @@ namespace Wraithknight
 
         private void AttackLogic(InputComponent input, GameTime gameTime)
         {
-            if ((input.PrimaryAttack || input.SecondaryAttack) && input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
+            if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
                 AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
                 attackBehavior.RemainingAttackCooldownMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
 
+                if (!(input.PrimaryAttack || input.SecondaryAttack)) return;
                 if (attackBehavior.RemainingAttackCooldownMilliseconds >= 0) return;
+
                 foreach (var attack in attackBehavior.AttackComponents)
                 {
                     if (AttackTriggered(input, attack)) // && same attackState 
@@ -107,7 +109,7 @@ namespace Wraithknight
 
         private void ExecuteAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
         {
-            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime));
+            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
         }
 

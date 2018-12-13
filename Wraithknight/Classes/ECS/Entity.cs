@@ -15,10 +15,9 @@ namespace Wraithknight
         public Dictionary<Type, Component> Components = new Dictionary<Type, Component>();
         public Dictionary<Type, List<Component>> MultiComponents = new Dictionary<Type, List<Component>>(); //for multiples?
 
-        public Entity(EntityType type, Allegiance allegiance = Allegiance.Neutral) 
+        public Entity(EntityType type) 
         {
             Type = type;
-            SetAllegiance(allegiance);
         }
 
         public Entity SetAllegiance(Allegiance allegiance)

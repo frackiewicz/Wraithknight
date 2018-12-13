@@ -42,6 +42,34 @@ namespace Wraithknight
             }
         }
 
+        #region Update
+
+        public static void Update()
+        {
+            UpdateStates();
+            UpdateMousePos();
+        }
+
+        private static void UpdateStates()
+        {
+            _previousKeyboardState = _currentKeyboardState;
+            _currentKeyboardState = Keyboard.GetState();
+
+            _previousMouseState = _currentMouseState;
+            _currentMouseState = Mouse.GetState();
+
+            _previousGamePadState = _currentGamePadState;
+            _currentGamePadState = GamePad.GetState(PlayerIndex.One);
+        }
+
+        private static void UpdateMousePos()
+        {
+            PreviousCursorPos = CurrentCursorPos;
+            CurrentCursorPos = new Point(_currentMouseState.X, _currentMouseState.Y);
+        }
+
+        #endregion
+
         #region inputHandeling
 
         #region keyboard
@@ -130,34 +158,6 @@ namespace Wraithknight
             return _previousMouseState.ScrollWheelValue;
         }
         #endregion
-
-        #endregion
-
-        #region update
-
-        public static void Update()
-        {
-            UpdateStates();
-            UpdateMousePos();
-        }
-
-        private static void UpdateStates()
-        {
-            _previousKeyboardState = _currentKeyboardState;
-            _currentKeyboardState = Keyboard.GetState();
-
-            _previousMouseState = _currentMouseState;
-            _currentMouseState = Mouse.GetState();
-
-            _previousGamePadState = _currentGamePadState;
-            _currentGamePadState = GamePad.GetState(PlayerIndex.One);
-        }
-
-        private static void UpdateMousePos()
-        {
-            PreviousCursorPos = CurrentCursorPos;
-            CurrentCursorPos = new Point(_currentMouseState.X, _currentMouseState.Y);
-        }
 
         #endregion
 
