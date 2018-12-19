@@ -70,7 +70,7 @@ namespace Wraithknight
             return box;
         }
 
-        public void SetCenter(Vector2 center) //TODO Breunig possible binding to movementcomponent?
+        public void SetCenter(Vector2 center)
         {
             Center.X = center.X;
             Center.Y = center.Y;

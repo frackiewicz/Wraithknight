@@ -81,7 +81,7 @@ namespace Wraithknight
         {
             movement.OldPosition.X = movement.Position.X;
             movement.OldPosition.Y = movement.Position.Y;
-            movement.Position += movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds; //TODO Breunig there has to be a better way
+            movement.Position += movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

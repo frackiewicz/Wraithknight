@@ -134,7 +134,7 @@ namespace Wraithknight
 
         private void SimpleCameraMovement(GameTime gameTime)
         {
-            if (InputReader.IsKeyPressed(Keys.Space)) _camera.FollowingHero = !_camera.FollowingHero; //TODO Cameramovement
+            if (InputReader.IsKeyPressed(Keys.Space)) _camera.FollowingHero = !_camera.FollowingHero;
             if (!_camera.FollowingHero)
             {
                 if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
@@ -144,7 +144,7 @@ namespace Wraithknight
             }
             else
             {
-                if(_hero != null && _hero.Components.TryGetValue(typeof(DrawComponent), out var component)) //TODO Fluid Cameramovement
+                if(_hero != null && _hero.Components.TryGetValue(typeof(DrawComponent), out var component))
                 {
                     DrawComponent heroMovement = component as DrawComponent;
                     _camera.TargetPosition.X = heroMovement.DrawRec.Center.X;

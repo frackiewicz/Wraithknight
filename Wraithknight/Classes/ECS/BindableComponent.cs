@@ -9,7 +9,7 @@ namespace Wraithknight
     abstract class BindableComponent : Component
     {
         public readonly Dictionary<Type, Component> Bindings = new Dictionary<Type, Component>(); //ONLY ALLOWS 1:1 Bindings
-        public readonly Dictionary<Type, List<Component>> MultiBindings = new Dictionary<Type, List<Component>>();
+        public readonly Dictionary<Type, List<Component>> MultiBindings = new Dictionary<Type, List<Component>>(); //Might not even need this anymore, think about it bruh
 
         public BindableComponent AddBinding(ICollection<Component> components)
         {

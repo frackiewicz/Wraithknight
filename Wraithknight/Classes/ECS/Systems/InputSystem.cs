@@ -114,7 +114,6 @@ namespace Wraithknight
         private void CountdownRemainingAttackDelay(AttackBehaviorComponent attackBehavior, GameTime gameTime)
         {
             attackBehavior.RemainingAttackDelayMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
-
         }
 
         private void TryExecuteDelayedAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)

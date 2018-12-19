@@ -49,7 +49,7 @@ namespace Wraithknight
             _collisionBinds.Clear();
         }
 
-        public void HandleCollision(CollisionComponent actor, CollisionComponent target) //TODO Breunig talk about Memory management and "out var"
+        public void HandleCollision(CollisionComponent actor, CollisionComponent target)
         {
             if (_collisionBinds.TryGetValue(actor, out var actorComponents) && _collisionBinds.TryGetValue(target, out var targetComponents))
             {

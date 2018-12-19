@@ -25,7 +25,7 @@ namespace Wraithknight
      */
     class DrawSystem : System
     {
-        private struct Pair
+        private struct Pair //TODO REMOVE THIS
         {
             public readonly DrawComponent Draw;
             public readonly MovementComponent Move;
@@ -38,7 +38,7 @@ namespace Wraithknight
         }
 
         private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>(); //to avoid texture swapping, hows the impact on movementbinding?
-        private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>(); //TODO Breunig HashSet way more efficient than list, why?
+        private readonly HashSet<Pair> _moveableDrawComponents = new HashSet<Pair>();
         private readonly Camera2D _camera;
 
         public DrawSystem(ECS ecs, Camera2D camera) : base(ecs)

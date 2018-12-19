@@ -35,8 +35,6 @@ namespace Wraithknight
         public int MaxRoomPercent;
 
 
-
-
         public Level GenerateLevel()
         {
             Level level = new Level(Width, Height);
@@ -54,24 +52,18 @@ namespace Wraithknight
             FillLevelWithRandomNoise(level, NoisePercent);
             FillBoundsWithRandomNoise(level, BoundsNoisePercent, BoundsReach);
 
-            if(FinishAutomata)
+            if (FinishAutomata) AutomataCycles = 100;
+
+            int loopCounter = 0;
+            while (!ApplySimpleCellularAutomata(level) && loopCounter < AutomataCycles)
             {
-                int loopCounter = 0;
-                while (!ApplySimpleCellularAutomata(level) && loopCounter < 100)
-                {
-                    loopCounter++;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < AutomataCycles; i++)
-                {
-                    ApplySimpleCellularAutomata(level);
-                }
+                loopCounter++;
             }
 
-            if(DoCleanup)
-            if (!MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+
+            if (DoCleanup)
+                if (!MapCleanup(level.Walls))
+                    return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
             SetRandomHeroSpawn(level.Walls, level.Data);
             SetRandomEnemySpawn(level.Walls, level.Data);
 
@@ -100,6 +92,7 @@ namespace Wraithknight
                 MinRoomPercent = 30;
                 MaxRoomPercent = 50;
             }
+
             if (preset == LevelPreset.Forest)
             {
                 Width = 100;
@@ -131,7 +124,7 @@ namespace Wraithknight
                 {
                     if (random.Next(0, 100) < percentWalls)
                     {
-                        level.Walls[x,y] = true;
+                        level.Walls[x, y] = true;
                     }
                 }
             }
@@ -144,11 +137,11 @@ namespace Wraithknight
             {
                 for (int y = 0; y < level.Walls.GetLength(1); y++)
                 {
-                    if(x <= distanceFromBounds || x >= (level.Walls.GetLength(0)) - distanceFromBounds || y <= distanceFromBounds || y >= (level.Walls.GetLength(1)) - distanceFromBounds)
-                    if (random.Next(0, 100) < percentWalls)
-                    {
-                        level.Walls[x, y] = true;
-                    }
+                    if (x <= distanceFromBounds || x >= (level.Walls.GetLength(0)) - distanceFromBounds || y <= distanceFromBounds || y >= (level.Walls.GetLength(1)) - distanceFromBounds)
+                        if (random.Next(0, 100) < percentWalls)
+                        {
+                            level.Walls[x, y] = true;
+                        }
                 }
             }
         }
@@ -170,7 +163,7 @@ namespace Wraithknight
             bool generationFinished = AreMapsIdentical(newWalls, oldWalls);
 
             //TODO Breunig why doesnt this work v
-            // level.Walls = newWalls;
+            //level.Walls = newWalls; somehow this does work, do more testing
 
             CopyWalls(newWalls, oldWalls);
 
@@ -182,11 +175,13 @@ namespace Wraithknight
             int nearbyWalls = CountNearbyWalls(oldMap, x, y, 1);
 
             if (newMap[x, y])
-            { //Cell is a wall
+            {
+                //Cell is a wall
                 if (nearbyWalls <= StarvationNumber) newMap[x, y] = false;
             }
             else
-            { //Cell is not a wall
+            {
+                //Cell is not a wall
                 if (nearbyWalls >= BirthNumber) newMap[x, y] = true;
             }
         }
@@ -209,7 +204,8 @@ namespace Wraithknight
                     }
 
                     if (x < 0 || x > map.GetLength(0) - 1 || y < 0 || y > map.GetLength(1) - 1)
-                    { //out of bounds
+                    {
+                        //out of bounds
                         neighbors++;
                     }
                     else if (map[x, y])
@@ -218,13 +214,14 @@ namespace Wraithknight
                     }
                 }
             }
+
             return neighbors;
         }
 
 
         private static bool AreMapsIdentical(bool[,] a, bool[,] b)
         {
-            if(a.Length != b.Length) throw new ArgumentException();
+            if (a.Length != b.Length) throw new ArgumentException();
 
             for (int x = 0; x < a.GetLength(0); x++)
             {
@@ -233,6 +230,7 @@ namespace Wraithknight
                     if (a[x, y] != b[x, y]) return false;
                 }
             }
+
             return true;
         }
 
@@ -246,7 +244,6 @@ namespace Wraithknight
                 }
             }
         }
-
 
 
         private struct Floodling
@@ -272,7 +269,9 @@ namespace Wraithknight
 
         private bool MapCleanup(bool[,] map)
         {
-            if (RemoveEmptyRooms) if (!RemoveSmallerRooms(map)) return false;
+            if (RemoveEmptyRooms)
+                if (!RemoveSmallerRooms(map))
+                    return false;
 
             return true;
         }
@@ -308,9 +307,9 @@ namespace Wraithknight
 
         private static void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
         {
-            Floodling floodling = new Floodling(map[x,y], x, y);
+            Floodling floodling = new Floodling(map[x, y], x, y);
             Stack<Point> stack = new Stack<Point>();
-            stack.Push(new Point(x,y));
+            stack.Push(new Point(x, y));
 
             Point currentCell;
             while (stack.Count > 0)
@@ -330,6 +329,7 @@ namespace Wraithknight
                     stack.Push(new Point(currentCell.X, currentCell.Y + 1));
                 }
             }
+
             floodlings.Add(floodling);
         }
 
@@ -380,7 +380,7 @@ namespace Wraithknight
             data[point.X, point.Y] = LevelData.EnemySpawn;
         }
 
-        private static Point GetRandomPoint<T>(T[,] array) 
+        private static Point GetRandomPoint<T>(T[,] array)
         {
             Random random = new Random();
             return new Point(random.Next(0, array.GetLength(0)), random.Next(0, array.GetLength(1)));

@@ -35,7 +35,8 @@ namespace Wraithknight
 
     class ECS
     {
-        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //TODO Breunig, a way to move hero to #1 spot? Performance to avoid long enumerations
+        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //TODO Try to somehow give Hero #1 ID to improve lookup performance
+        //TODO Also replace Dictionary with Hashtable, might improve performance slightly
         private readonly HashSet<System> _systemSet = new HashSet<System>();
         private DrawSystem drawSystem;
         private readonly Camera2D _camera;
@@ -65,7 +66,6 @@ namespace Wraithknight
             {
                 system.Update(gameTime);
             }
-            // Console.WriteLine(_entityDictionary.Count);
         }
 
         public void Draw()
@@ -83,7 +83,7 @@ namespace Wraithknight
             return _entityDictionary[id];
         }
 
-        public Entity GetHero()
+        public Entity GetHero() //TODO Maybe save Hero ID, since its always the same
         {
             foreach (var entity in _entityDictionary.Values)
             {
@@ -105,8 +105,6 @@ namespace Wraithknight
                 AddEntity(CreateEntity(EntityType.Wall, position: new Vector2Ref(new Vector2(200, 0))));
             }
         }
-
-        //TODO CreateEntities from 2D array (levelmaps)
 
         private void CreateSystems(ecsBootRoutine routine)
         {
@@ -137,7 +135,7 @@ namespace Wraithknight
             if (type == EntityType.Hero)
             {
                 entity.SetAllegiance(Allegiance.Friendly);
-                entity.AddComponent(new MovementComponent(accelerationBase: 600, maxSpeed: 200, friction: 500, position: safePosition));
+                entity.AddComponent(new MovementComponent(accelerationBase: 1000, maxSpeed: 175, friction: 650, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
                     new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400, 0, 500),
@@ -146,7 +144,7 @@ namespace Wraithknight
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
+                entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
             }
 
             if (type == EntityType.Forest_Knight)
@@ -160,7 +158,7 @@ namespace Wraithknight
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] }); //TODO Breunig, any better way to handle Multicomponents here? (i dont like the[0])
+                entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                 List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));

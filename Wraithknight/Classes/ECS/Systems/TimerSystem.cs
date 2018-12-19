@@ -26,7 +26,7 @@ namespace Wraithknight
             foreach (var timer in _timerComponents)
             {
                 if (timer.Inactive) continue;
-                if (timer.StartTimeInMilliseconds != -1 && timer.StartTimeInMilliseconds + timer.TargetLifespanInMilliseconds < gameTime.TotalGameTime.TotalMilliseconds)
+                if (timer.StartTimeInMilliseconds != -1 && timer.Over)
                 {
                     if(timer.Type == TimerType.Death)
                     _ecs.KillGameObject(timer.RootID);

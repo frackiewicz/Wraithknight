@@ -37,7 +37,7 @@ namespace Wraithknight
             Vector2 = new Vector2();
         }
 
-        public static implicit operator Vector2(Vector2Ref obj) //TODO Breunig, hows this?
+        public static implicit operator Vector2(Vector2Ref obj)
         {
             return obj.Vector2;
         }

@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace Wraithknight //TODO structs could use some improvements
-//TODO BREUNIG
-{ //You got some calculation mistakes here
-    //https://www.codeproject.com/Articles/8052/Type-casting-impact-over-execution-performance-in
+{
     public class Coord2
     { //TODO change degrees to radian (might solve the rounding issue)
         public Polar2 Polar;

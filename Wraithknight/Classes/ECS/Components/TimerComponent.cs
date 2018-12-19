@@ -18,9 +18,9 @@ namespace Wraithknight
         public TimerType Type;
         public GameTime CurrentTime;
         public double StartTimeInMilliseconds;
-        public int TargetLifespanInMilliseconds;
+        public double TargetTimeSpanMilliseconds;
 
-        public bool Over => StartTimeInMilliseconds + TargetLifespanInMilliseconds < CurrentTime.TotalGameTime.TotalMilliseconds;
+        public bool Over => TargetTimeSpanMilliseconds < CurrentTime.TotalGameTime.TotalMilliseconds;
 
         public TimerComponent(TimerType type, GameTime startTime = null,int targetLifespanInMilliseconds = 0)
         {
@@ -28,7 +28,7 @@ namespace Wraithknight
             CurrentTime = startTime;
             if (startTime != null) StartTimeInMilliseconds = startTime.TotalGameTime.TotalMilliseconds;
             else StartTimeInMilliseconds = -1;
-            TargetLifespanInMilliseconds = targetLifespanInMilliseconds;
+            TargetTimeSpanMilliseconds = StartTimeInMilliseconds + targetLifespanInMilliseconds;
         }
     }
 }

@@ -9,9 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    class CollisionSystem : System //TODO Breunig Collision System definetly needs a performance boost
+    class CollisionSystem : System
     {
-        private struct Pair //TODO do you still need this? you got bindable collisionComponents
+        private struct Pair
         {
             public readonly CollisionComponent Collision;
             public readonly MovementComponent Movement;

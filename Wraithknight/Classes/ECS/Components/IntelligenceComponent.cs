@@ -36,7 +36,7 @@ namespace Wraithknight
             Reset = reset;
         }
     }
-    class IntelligenceComponent : BindableComponent //TODO bind to Input
+    class IntelligenceComponent : BindableComponent
     {
         public List<IntelligenceOrder> Orders = new List<IntelligenceOrder>();
         public double UpdateCooldownMilliseconds = 0;
