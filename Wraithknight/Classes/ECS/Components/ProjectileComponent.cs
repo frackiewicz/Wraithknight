@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 { 
-    class ProjectileComponent : BindableComponent
+    class ProjectileComponent : Component
     {
         public int Power;
         public int Damage;

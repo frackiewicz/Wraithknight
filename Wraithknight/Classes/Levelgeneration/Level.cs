@@ -23,8 +23,8 @@ namespace Wraithknight
         {
             Walls = new bool[x, y];
             Data = new LevelData[x, y];
-            TileWidth = 16;
-            TileHeight = 16;
+            TileWidth = 32;
+            TileHeight = 32;
         }
     }
 }

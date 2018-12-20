@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -27,6 +28,7 @@ namespace Wraithknight
         //Objects
         Wall,
         Floor,
+        Mushroom,
 
         //Projectiles
         HeroKnightSlashWeak,
@@ -141,9 +143,10 @@ namespace Wraithknight
                     new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 400, 0, 500),
                     new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, 800, 0, 1000)
                 }));
+                entity.AddComponent(new HealthComponent(20));
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), offset: new Point(0, -16)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
             }
 
@@ -156,8 +159,8 @@ namespace Wraithknight
                     new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, 300, 0, 1500, 2000)
                 }));
                 entity.AddComponent(new HealthComponent(20));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 16, 32), offset: new Point(0, -5), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(8, 8)), isPhysical: true), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), offset: new Point(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                 List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
@@ -172,38 +175,64 @@ namespace Wraithknight
                 int rnd = _random.Next(0, 100);
                 if (rnd <= 20)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("tree32"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), offset: new Point(-8, -16));
+                    drawComponent = new DrawComponent(Assets.GetTexture("tree1"), new AABB(safePosition.X, safePosition.Y, 32, 64), offset: new Point(0, -32));
+                }
+                else if (rnd <= 40)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("tree2"), new AABB(safePosition.X, safePosition.Y, 32, 64), offset: new Point(0, -32));
                 }
                 else
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("tanne16"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 32), offset: new Point(0, -16));
+                    drawComponent = new DrawComponent(Assets.GetTexture("tree3"), new AABB(safePosition.X, safePosition.Y, 32, 64), offset: new Point(0, -32));
                 }
                 entity.AddComponent(drawComponent);
-                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 16, 16), isWall: true, isPhysical: true));
+                entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Block, collisionRectangle: new AABB(safePosition.X, safePosition.Y, 32, 32), isWall: true, isPhysical: true));
             }
             else if (type == EntityType.Floor)
             {
                 DrawComponent drawComponent;
                 int rnd = _random.Next(0, 100);
-                if (rnd <= 3)
+                if (rnd <= 75)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_1"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("floor1"), new AABB(safePosition.X, safePosition.Y, 32, 32), layerDepth: 0.5f);
                 }
-                else if (rnd <= 6)
+                else if (rnd <= 80)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_2"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("floor2"), new AABB(safePosition.X, safePosition.Y, 32, 32), layerDepth: 0.5f);
                 }
-                else if (rnd <= 9)
+                else if (rnd <= 85)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_3"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("floor3"), new AABB(safePosition.X, safePosition.Y, 32, 32), layerDepth: 0.5f);
                 }
-                else if (rnd <= 15)
+                else if (rnd <= 90)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_4"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("floor4"), new AABB(safePosition.X, safePosition.Y, 32, 32), layerDepth: 0.5f);
                 }
                 else
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("32_5"), new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), layerDepth: 0.5f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("floor5"), new AABB(safePosition.X, safePosition.Y, 32, 32), layerDepth: 0.5f);
+                }
+                
+                entity.AddComponent(drawComponent);
+
+                rnd = _random.Next(0, 100);
+                if (rnd <= 2)
+                {
+                    AddEntity(CreateEntity(EntityType.Mushroom, safePosition));
+                }
+            }
+            else if (type == EntityType.Mushroom)
+            {
+                DrawComponent drawComponent;
+
+                int rnd = _random.Next(0, 100);
+                if (rnd <= 50)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom1"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
+                }
+                else
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom2"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
                 }
                 entity.AddComponent(drawComponent);
             }
@@ -213,19 +242,20 @@ namespace Wraithknight
             {
                 entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 400, friction: 50, position: safePosition, speed: safeSpeed));
-                entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 3000));
-                entity.AddBindableComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
+                entity.AddBindableComponent(new DrawComponent(size: new Point(32, 32), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
+                entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true));
+                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
+
             }
             else if (type == EntityType.HeroKnightSlashStrong)
             {
                 entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 200, position: safePosition, speed: safeSpeed));
-                entity.AddBindableComponent(new DrawComponent(size: new Point(16, 16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), entity.Components[typeof(MovementComponent)]); //WRONG ORIGIN POINT
                 entity.AddComponent(new TimerComponent(TimerType.Death, startTime: gameTime, targetLifespanInMilliseconds: 2000));
-                entity.AddBindableComponent(new ProjectileComponent(power: 20, damage: 10, isPhasing: true), entity.Components[typeof(CollisionComponent)]);
+                entity.AddBindableComponent(new DrawComponent(size: new Point(32, 32), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddComponent(new ProjectileComponent(power: 20, damage: 10, isPhasing: true));
+                entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
             }
             #endregion
             SetRoots(entity);

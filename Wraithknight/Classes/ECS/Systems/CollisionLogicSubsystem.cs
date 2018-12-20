@@ -10,9 +10,6 @@ namespace Wraithknight
     {
         private ECS _ecs;
 
-        private readonly Dictionary<CollisionComponent, Dictionary<Type, Component>> _collisionBinds 
-            = new Dictionary<CollisionComponent, Dictionary<Type, Component>>();
-
         public CollisionLogicSubsystem(ECS ecs)
         {
             _ecs = ecs;
@@ -28,42 +25,24 @@ namespace Wraithknight
 
         public void RegisterComponents(Entity entity)
         {
-            RegisterBind<ProjectileComponent>(entity);
-        }
-
-        private void RegisterBind<T>(Entity entity)
-        {
-            if (entity.Components.TryGetValue(typeof(T), out var boundComponent))
-            {
-                if ((boundComponent as BindableComponent).Bindings.TryGetValue(typeof(CollisionComponent), out var bind))
-                {
-                    CollisionComponent boundCollision = bind as CollisionComponent;
-                    if (!_collisionBinds.ContainsKey(boundCollision)) _collisionBinds.Add(boundCollision, new Dictionary<Type, Component>());
-                    _collisionBinds[boundCollision].Add(typeof(T), boundComponent);
-                }
-            }
         }
 
         public void ResetSystem()
         {
-            _collisionBinds.Clear();
         }
 
         public void HandleCollision(CollisionComponent actor, CollisionComponent target)
         {
-            if (_collisionBinds.TryGetValue(actor, out var actorComponents) && _collisionBinds.TryGetValue(target, out var targetComponents))
+            if (actor.Bindings.TryGetValue(typeof(ProjectileComponent), out var actorProjectileComponent))
             {
-                if (actorComponents.TryGetValue(typeof(ProjectileComponent), out var actorProjectileComponent))
+                if (target.Bindings.TryGetValue(typeof(ProjectileComponent), out var targetProjectileComponent))
                 {
-                    if (targetComponents.TryGetValue(typeof(ProjectileComponent), out var targetProjectileComponent))
-                    {
-                        ProjectileOnProjectile(actorProjectileComponent as ProjectileComponent, targetProjectileComponent as ProjectileComponent);
-                    }
+                    ProjectileOnProjectile(actorProjectileComponent as ProjectileComponent, targetProjectileComponent as ProjectileComponent);
+                }
 
-                    if (targetComponents.TryGetValue(typeof(HealthComponent), out var targetHealthComponent))
-                    {
-                        ProjectileOnHealth(actorProjectileComponent as ProjectileComponent, targetHealthComponent as HealthComponent);
-                    }
+                if (target.Bindings.TryGetValue(typeof(HealthComponent), out var targetHealthComponent))
+                {
+                    ProjectileOnHealth(actorProjectileComponent as ProjectileComponent, targetHealthComponent as HealthComponent);
                 }
             }
         }
@@ -87,8 +66,9 @@ namespace Wraithknight
                     //Deflect
                 }
             }
-            if(actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
-            if(target.Power <= 0) _ecs.KillGameObject(target.RootID);
+
+            if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
+            if (target.Power <= 0) _ecs.KillGameObject(target.RootID);
         }
 
         private void ProjectileOnHealth(ProjectileComponent actor, HealthComponent target)
@@ -119,6 +99,7 @@ namespace Wraithknight
                     target.CurrentHealth = 0;
                 }
             }
+
             if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
             if (target.CurrentHealth <= 0) _ecs.KillGameObject(target.RootID);
             else if (!actor.IsPhasing) //projectile didnt penetrate because target survived
