@@ -28,7 +28,10 @@ namespace Wraithknight
         //Objects
         Wall,
         Floor,
+
         Mushroom,
+
+        Treestump,
 
         //Projectiles
         HeroKnightSlashWeak,
@@ -215,8 +218,8 @@ namespace Wraithknight
                 
                 entity.AddComponent(drawComponent);
 
-                rnd = _random.Next(0, 100);
-                if (rnd <= 1)
+                rnd = _random.Next(0, 1000);
+                if (rnd <= 5)
                 {
                     AddEntity(CreateEntity(EntityType.Mushroom, safePosition));
                 }
@@ -228,11 +231,26 @@ namespace Wraithknight
                 int rnd = _random.Next(0, 100);
                 if (rnd <= 50)
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom1"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom1"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.45f);
                 }
                 else
                 {
-                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom2"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
+                    drawComponent = new DrawComponent(Assets.GetTexture("mushroom2"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.45f);
+                }
+                entity.AddComponent(drawComponent);
+            }
+            else if (type == EntityType.Treestump)
+            {
+                DrawComponent drawComponent;
+
+                int rnd = _random.Next(0, 100);
+                if (rnd <= 50)
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("treestump1"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
+                }
+                else
+                {
+                    drawComponent = new DrawComponent(Assets.GetTexture("treestump1"), new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), layerDepth: 0.4f);
                 }
                 entity.AddComponent(drawComponent);
             }
@@ -412,6 +430,11 @@ namespace Wraithknight
                     if (level.Data[x, y] == LevelData.EnemySpawn)
                     {
                         AddEntity(CreateEntity(EntityType.Forest_Knight, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
+                    }
+
+                    if (level.Data[x, y] == LevelData.PathBlocker)
+                    {
+                        AddEntity(CreateEntity(EntityType.Treestump, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
                     }
                     #endregion
                 }

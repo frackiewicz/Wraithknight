@@ -61,11 +61,11 @@ namespace Wraithknight
             }
 
 
-            if (DoCleanup)
-                if (!MapCleanup(level.Walls))
-                    return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+            if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+
             SetRandomHeroSpawn(level.Walls, level.Data);
             SetRandomEnemySpawn(level.Walls, level.Data);
+            SetRandomPathBlockers(level.Walls, level.Data);
 
             return level;
         }
@@ -305,6 +305,25 @@ namespace Wraithknight
             return true;
         }
 
+        private static int CountRooms(bool[,] map)
+        {
+            bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
+            List<Floodling> rooms = new List<Floodling>();
+
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    if (!map[x, y] && !visited[x, y])
+                    {
+                        FindSimilarCluster(x, y, map, visited, rooms);
+                    }
+                }
+            }
+
+            return rooms.Count;
+        }
+
         private static void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
         {
             Floodling floodling = new Floodling(map[x, y], x, y);
@@ -378,6 +397,29 @@ namespace Wraithknight
             }
 
             data[point.X, point.Y] = LevelData.EnemySpawn;
+        }
+
+        private static void SetRandomDecoration(bool[,] walls, LevelData[,] data)
+        {
+            Point point = GetRandomPoint(walls);
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+            {
+                point = GetRandomPoint(walls);
+            }
+        }
+
+        private static void SetRandomPathBlockers(bool[,] walls, LevelData[,] data) //TODO THIS LATER
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Point point = GetRandomPoint(walls);
+                while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+                {
+                    point = GetRandomPoint(walls);
+                }
+
+                data[point.X, point.Y] = LevelData.PathBlocker;
+            }
         }
 
         private static Point GetRandomPoint<T>(T[,] array)

@@ -10,7 +10,8 @@ namespace Wraithknight
     {
         Nothing,
         HeroSpawn,
-        EnemySpawn
+        EnemySpawn,
+        PathBlocker
     }
     class Level
     {
