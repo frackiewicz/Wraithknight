@@ -28,6 +28,7 @@ namespace Wraithknight
 
         public void AddComponent(Component component)
         {
+            SetRoots(component);
             if (component.MultiBinding) AddMultiComponent(component);
             else Components.Add(component.GetType(), component);
         }
@@ -49,6 +50,7 @@ namespace Wraithknight
 
         public void AddMultiComponent(Component component) //only difference here is the data structure, you will differentiate manually
         {
+            SetRoots(component);
             if (MultiComponents.TryGetValue(component.GetType(), out var list))
             {
                 list.Add(component);
@@ -60,7 +62,11 @@ namespace Wraithknight
             }
         }
 
-        //Add MultiBindedComponent if necessary
+        private void SetRoots(Component component)
+        {
+            component.RootID = ID;
+            component.SetAllegiance(Allegiance);
+        }
 
         public T GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead
         {

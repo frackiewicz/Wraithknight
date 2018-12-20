@@ -106,7 +106,7 @@ namespace Wraithknight
                     if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
                         if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime, false);
-                        else HandleLogicalCollision(actor.Collision, target);
+                        else _logicSubsystem.HandleCollision(actor.Collision, target);
                     }
                 }
                 //check here for map
@@ -230,16 +230,6 @@ namespace Wraithknight
         }
 
 
-
-        #endregion
-
-        #region Logical
-
-        private void HandleLogicalCollision(CollisionComponent actor, CollisionComponent target)
-        {
-            if (actor.Allegiance == target.Allegiance) return;
-            _logicSubsystem.HandleCollision(actor, target);
-        }
 
         #endregion
 

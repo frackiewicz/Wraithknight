@@ -22,13 +22,13 @@ namespace Wraithknight
     {
         public CollisionBehavior Behavior;
         public AABB CollisionRectangle;
-        public Point Offset;
+        public Vector2 Offset;
 
         public bool IsWall; //Should use coordinate efficiency
         public bool IsPhysical;
 
 
-        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Point offset = new Point(), bool isWall = false, bool isPhysical = false)
+        public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Vector2 offset = new Vector2(), bool isWall = false, bool isPhysical = false)
         {
             Behavior = behavior;
             SetIsPhysical();

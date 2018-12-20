@@ -21,6 +21,8 @@ namespace Wraithknight
         public virtual void Activate() { Inactive = false; }
         public virtual void Deactivate() { Inactive = true; }
 
+        public virtual void SetAllegiance(Allegiance allegiance) { Allegiance = allegiance; }
+
         public override int GetHashCode()
         {
             return ID;

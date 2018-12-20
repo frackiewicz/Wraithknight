@@ -91,7 +91,7 @@ namespace Wraithknight
                 {
                     input.MovementDirection = Vector2.Zero;
                     CountdownRemainingAttackDelay(attackBehavior, gameTime);
-                    TryExecuteDelayedAttack(input, attackBehavior, gameTime);
+                    TrySpawnDelayedAttack(input, attackBehavior, gameTime);
                     return;
                 }
                 if (IsInAttackCooldown(attackBehavior))
@@ -113,14 +113,14 @@ namespace Wraithknight
 
         private void CountdownRemainingAttackDelay(AttackBehaviorComponent attackBehavior, GameTime gameTime)
         {
-            attackBehavior.RemainingAttackDelayMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            attackBehavior.DelayedAttack.RemainingAttackDelayMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
-        private void TryExecuteDelayedAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        private void TrySpawnDelayedAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
         {
-            if (attackBehavior.RemainingAttackDelayMilliseconds <= 0)
+            if (attackBehavior.DelayedAttack.RemainingAttackDelayMilliseconds <= 0)
             {
-                ExecuteAttack(input, attackBehavior, attackBehavior.DelayedAttack, gameTime);
+                SpawnAttack(attackBehavior.DelayedAttack.Cursor, attackBehavior, attackBehavior.DelayedAttack.Attack, gameTime);
             }
         }
 
@@ -143,12 +143,6 @@ namespace Wraithknight
             {
                 if (AttackTriggered(input, attack)) // && same attackState 
                 {
-                    if (attack.AttackCooldownMilliseconds > 0) //dont like this here
-                    {
-                        attackBehavior.RemainingAttackDelayMilliseconds = attack.AttackDelayMilliseconds;
-                        attackBehavior.DelayedAttack = attack;
-                        break;
-                    }
                     ExecuteAttack(input, attackBehavior, attack, gameTime);
                     break;
                 }
@@ -162,7 +156,16 @@ namespace Wraithknight
 
         private void ExecuteAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
         {
-            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(input.CursorPoint.X - attack.SourcePos.X, input.CursorPoint.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
+            if (attack.AttackDelayMilliseconds > 0)
+            {
+                attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, input.CursorPoint);
+            }
+            else SpawnAttack(input.CursorPoint, attackBehavior, attack, gameTime);
+        }
+
+        private void SpawnAttack(Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
+        {
+            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
             attackBehavior.DelayedAttack = null;
         }

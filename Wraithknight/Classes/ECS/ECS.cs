@@ -146,7 +146,7 @@ namespace Wraithknight
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                 entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), offset: new Point(0, -16)), entity.Components[typeof(MovementComponent)]);
-                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20,40), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
             }
 
@@ -216,7 +216,7 @@ namespace Wraithknight
                 entity.AddComponent(drawComponent);
 
                 rnd = _random.Next(0, 100);
-                if (rnd <= 2)
+                if (rnd <= 1)
                 {
                     AddEntity(CreateEntity(EntityType.Mushroom, safePosition));
                 }
@@ -258,7 +258,6 @@ namespace Wraithknight
                 entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
             }
             #endregion
-            SetRoots(entity);
             return entity;
         }
 
@@ -320,15 +319,6 @@ namespace Wraithknight
         public void TrueKillEntity(Entity entity)
         {
             _entityDictionary.Remove(entity.ID);
-        }
-
-        private void SetRoots(Entity entity)
-        {
-            foreach (var component in entity.Components.Values)
-            {
-                component.RootID = entity.ID;
-                component.Allegiance = entity.Allegiance;
-            }
         }
 
         public void PurgeTheDead() //Experimental, no idea about possible side effects //TODO Breunig talk about direct Component killing

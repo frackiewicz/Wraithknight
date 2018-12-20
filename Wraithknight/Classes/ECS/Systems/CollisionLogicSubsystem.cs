@@ -33,6 +33,7 @@ namespace Wraithknight
 
         public void HandleCollision(CollisionComponent actor, CollisionComponent target)
         {
+            if (actor.Allegiance == target.Allegiance || !actor.CollisionRectangle.Intersects(target.CollisionRectangle)) return;
             if (actor.Bindings.TryGetValue(typeof(ProjectileComponent), out var actorProjectileComponent))
             {
                 if (target.Bindings.TryGetValue(typeof(ProjectileComponent), out var targetProjectileComponent))
