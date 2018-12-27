@@ -165,7 +165,9 @@ namespace Wraithknight
 
         private void SpawnAttack(Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
         {
-            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos), speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
+            Vector2 cursorDelta = new Vector2(cursor.X, cursor.Y) - attack.SourcePos.Vector2;
+
+            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian), speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
             attackBehavior.DelayedAttack = null;
         }

@@ -24,7 +24,7 @@ namespace Wraithknight
         {
             foreach (var health in _components)
             {
-                if (health.CurrentHealth < 0)
+                if (health.IsDead)
                 {
                     _ecs.KillEntity(health.RootID);
                 }

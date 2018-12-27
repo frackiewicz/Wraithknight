@@ -57,7 +57,7 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
                 {
                     Functions_Draw.Draw(_messages[i].Text, Assets.GetFont("Test"), pos);
                 }
-                catch (Exception e)
+                catch
                 {
                     Functions_Draw.Draw("Error", Assets.GetFont("Test"), pos);
                 }

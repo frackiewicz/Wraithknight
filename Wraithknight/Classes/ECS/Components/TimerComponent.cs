@@ -17,18 +17,15 @@ namespace Wraithknight
     {
         public TimerType Type;
         public GameTime CurrentTime;
-        public double StartTimeInMilliseconds;
         public double TargetTimeSpanMilliseconds;
 
-        public bool Over => TargetTimeSpanMilliseconds < CurrentTime.TotalGameTime.TotalMilliseconds;
+        public bool Over => CurrentTime.TotalGameTime.TotalMilliseconds > TargetTimeSpanMilliseconds;
 
-        public TimerComponent(TimerType type, GameTime startTime = null,int targetLifespanInMilliseconds = 0)
+        public TimerComponent(TimerType type, GameTime currentTime, double targetLifespanInMilliseconds = 0)
         {
             Type = type;
-            CurrentTime = startTime;
-            if (startTime != null) StartTimeInMilliseconds = startTime.TotalGameTime.TotalMilliseconds;
-            else StartTimeInMilliseconds = -1;
-            TargetTimeSpanMilliseconds = StartTimeInMilliseconds + targetLifespanInMilliseconds;
+            CurrentTime = currentTime;
+            TargetTimeSpanMilliseconds = currentTime.TotalGameTime.TotalMilliseconds + targetLifespanInMilliseconds;
         }
     }
 }

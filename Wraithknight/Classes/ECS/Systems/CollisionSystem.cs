@@ -106,7 +106,7 @@ namespace Wraithknight
                     if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
                         if (actor.Collision.IsPhysical && target.IsPhysical) HandlePhysicalCollision(actor, target, gameTime, false);
-                        else _logicSubsystem.HandleCollision(actor.Collision, target);
+                        else _logicSubsystem.HandleCollision(actor.Collision, target, gameTime);
                     }
                 }
                 //check here for map

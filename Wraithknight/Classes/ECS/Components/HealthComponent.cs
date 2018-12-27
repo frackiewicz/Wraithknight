@@ -11,10 +11,12 @@ namespace Wraithknight
         public int MaxHealth;
         public int CurrentHealth;
 
-        public HealthComponent(int maxHealth = 0, int currentHealth = 0)
+        public bool IsDead => CurrentHealth <= 0;
+
+        public HealthComponent(int maxHealth, int currentHealth = -1)
         {
             MaxHealth = maxHealth;
-            CurrentHealth = currentHealth;
+            CurrentHealth = currentHealth == -1 ? MaxHealth : currentHealth;
         }
     }
 }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
     class CollisionLogicSubsystem
     {
         private ECS _ecs;
+
 
         public CollisionLogicSubsystem(ECS ecs)
         {
@@ -31,21 +33,56 @@ namespace Wraithknight
         {
         }
 
-        public void HandleCollision(CollisionComponent actor, CollisionComponent target)
+        public void HandleCollision(CollisionComponent actor, CollisionComponent target, GameTime gameTime)
         {
             if (actor.Allegiance == target.Allegiance || !actor.CollisionRectangle.Intersects(target.CollisionRectangle)) return;
-            if (actor.Bindings.TryGetValue(typeof(ProjectileComponent), out var actorProjectileComponent))
+            if (actor.Bindings.TryGetValue(typeof(ProjectileComponent), out var actorProjectileBinding))
             {
+                ProjectileComponent actorProjectileComponent = actorProjectileBinding as ProjectileComponent;
+
+
                 if (target.Bindings.TryGetValue(typeof(ProjectileComponent), out var targetProjectileComponent))
                 {
-                    ProjectileOnProjectile(actorProjectileComponent as ProjectileComponent, targetProjectileComponent as ProjectileComponent);
+                    if (HitTargetsCooldownLogic(actorProjectileComponent, target, gameTime)) return;
+                    ProjectileOnProjectile(actorProjectileComponent, targetProjectileComponent as ProjectileComponent);
                 }
 
                 if (target.Bindings.TryGetValue(typeof(HealthComponent), out var targetHealthComponent))
                 {
-                    ProjectileOnHealth(actorProjectileComponent as ProjectileComponent, targetHealthComponent as HealthComponent);
+                    if (HitTargetsCooldownLogic(actorProjectileComponent, target, gameTime)) return;
+                    ProjectileOnHealth(actorProjectileComponent, targetHealthComponent as HealthComponent);
                 }
             }
+        }
+
+        private static bool HitTargetsCooldownLogic(ProjectileComponent actor, Component target, GameTime gameTime) //TODO fuck this gives me headaches
+        {
+            if (!actor.IsPhasing) return false;
+
+            ProjectileComponent.HitTarget foundTarget = null;
+            foreach (var hitTarget in actor.HitTargets)
+            {
+                if (hitTarget.Component.Equals(target))
+                {
+                    foundTarget = hitTarget;
+                    break;
+                }
+            }
+
+            if (foundTarget == null)
+            {
+                actor.HitTargets.Add(new ProjectileComponent.HitTarget(target, true, new TimerComponent(TimerType.Flag, gameTime, actor.HitCooldownMilliseconds)));
+            }
+            else if (actor.HasHitCooldown && foundTarget.Cooldown.Over)
+            {
+                foundTarget.Cooldown = new TimerComponent(TimerType.Flag, gameTime, actor.HitCooldownMilliseconds);
+            }
+            else
+            {
+                return true; //Target was found and is on cooldown
+            }
+
+            return false;
         }
 
         private void ProjectileOnProjectile(ProjectileComponent actor, ProjectileComponent target)
@@ -108,5 +145,7 @@ namespace Wraithknight
                 _ecs.KillGameObject(actor.RootID);
             }
         }
+
+
     }
 }

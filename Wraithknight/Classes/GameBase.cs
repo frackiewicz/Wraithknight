@@ -29,6 +29,7 @@ namespace Wraithknight
 
             #region SetSettings
             IsFixedTimeStep = false; //uncap fps
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 30);
             _graphics.SynchronizeWithVerticalRetrace = false;
             IsMouseVisible = true;
             #endregion

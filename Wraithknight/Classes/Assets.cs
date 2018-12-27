@@ -14,7 +14,7 @@ namespace Wraithknight
     {
         private static ContentManager _content;
         private static GraphicsDevice _graphics;
-        private static int _loadedTextures;
+        //private static int _loadedTextures;
 
 
         private static Dictionary<String, RessourceTexture> TextureLibrary = new Dictionary<String, RessourceTexture>();
@@ -25,7 +25,7 @@ namespace Wraithknight
         {
             _content = content;
             _graphics = graphics;
-            _loadedTextures = 0;
+            //_loadedTextures = 0;
             SetDummy();
         }
 

@@ -109,8 +109,7 @@ namespace Wraithknight
         {
             foreach (var pair in _moveableDrawComponents) 
             {
-                pair.Draw.DrawRec.X = pair.Move.Position.X - pair.Draw.DrawRec.Width / 2 + pair.Draw.Offset.X;
-                pair.Draw.DrawRec.Y = pair.Move.Position.Y - pair.Draw.DrawRec.Height / 2 + pair.Draw.Offset.Y;
+                pair.Draw.DrawRec.Center = pair.Move.Position.Vector2 + pair.Draw.Offset; //TODO BREUNIG Calculations with Vector2ref change the source
             }
         }
 
