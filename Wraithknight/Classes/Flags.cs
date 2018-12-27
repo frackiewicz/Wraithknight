@@ -16,7 +16,7 @@ namespace Wraithknight
         public static BootRoutine BootRoutine = BootRoutine.TestingRoom;
 
 
-        // dev flags
+        // Dev flags
         public static Boolean ShowDrawRecs = false;
         public static Boolean ShowCollisionRecs = false;
         public static Boolean ShowDebuggingText = false;
@@ -26,10 +26,13 @@ namespace Wraithknight
         {
             get => ShowDrawRecs || ShowCollisionRecs || ShowDebuggingText || ShowMovementCenters;
         }
-    
-        // option flags
+        
+        // Logic Flags
+        public static bool FpsBelowThreshold;
 
-        // cheat flags
+        // Option flags
+
+        // Cheat flags
 
     }
 }

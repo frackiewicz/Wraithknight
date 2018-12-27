@@ -14,30 +14,29 @@ namespace Wraithknight
         private readonly ECS _ecs;
         private readonly DebugDrawer _debugDrawer;
         private readonly Camera2D _camera;
-        private GameTime _internalGameTime; //TODO refactor this to gameTime, and higher level gameTime to deltaTime
+        private GameTime _internalGameTime = new GameTime();
 
-        private Entity _hero; //To make things easier, like cameramovement
+        private Entity _hero;
 
         private LevelGenerator _levelGenerator = new LevelGenerator();
         private Level _currentLevel;
 
         public ScreenGame(ScreenManager screenManager) : base(screenManager)
         {
-            _camera = new Camera2D(screenManager.Graphics.GraphicsDevice);
-            _camera.FollowingHero = true;
+            _camera = new Camera2D(screenManager.Graphics.GraphicsDevice) {FollowingHero = true};
 
             _ecs = new ECS(_camera);
             _ecs.StartupRoutine(ecsBootRoutine.Presenting);
             _debugDrawer = new DebugDrawer(_ecs);
-
             _hero = _ecs.GetHero();
+
             _levelGenerator.ApplyPreset(LevelPreset.Forest);
-            _internalGameTime = new GameTime();
         }
 
         public override Screen Update(GameTime gameTime)
         {
             UpdateGameTime(gameTime);
+
             _ecs.UpdateSystems(_internalGameTime);
             _camera.Update(_internalGameTime);
             return this;
@@ -163,12 +162,20 @@ namespace Wraithknight
 
         #endregion
 
-
+        private readonly TimeSpan _gameTimeCull = TimeSpan.FromMilliseconds(1000.0f / 30);
 
         private void UpdateGameTime(GameTime gameTime)
         {
-            _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
-            _internalGameTime.TotalGameTime += gameTime.ElapsedGameTime;
+            if (Flags.FpsBelowThreshold)
+            {
+                _internalGameTime.ElapsedGameTime = _gameTimeCull;
+                _internalGameTime.TotalGameTime += _gameTimeCull;
+            }
+            else
+            {
+                _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
+                _internalGameTime.TotalGameTime += gameTime.ElapsedGameTime;
+            }
         }
 
         private void OpenMenuScreen()

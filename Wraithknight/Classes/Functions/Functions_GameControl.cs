@@ -19,5 +19,10 @@ namespace Wraithknight
         {
            _gameBase.Exit();
         }
+
+        public static void SetFixedTimeStep(bool value)
+        {
+            _gameBase.IsFixedTimeStep = value;
+        }
     }
 }

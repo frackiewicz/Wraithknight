@@ -13,6 +13,7 @@ namespace Wraithknight
         private readonly SoundManager _soundManager;
 
         public readonly Color ColorBackground = Color.LightGray;
+        public GameTime GameTime;
         private readonly FpsCalculator _fpsCalculator;
 
 
@@ -61,6 +62,8 @@ namespace Wraithknight
 
         protected override void Update(GameTime gameTime)
         {
+            Flags.FpsBelowThreshold = gameTime.ElapsedGameTime.Milliseconds > 1000.0f / 30;
+
             InputReader.Update();
             _screenManager.Update(gameTime);
             base.Update(gameTime);
@@ -70,15 +73,8 @@ namespace Wraithknight
             _screenManager.Draw(gameTime);
             UpdateFps(gameTime);
             base.Draw(gameTime);
-            Functions_DebugWriter.WriteLine(InputReader.IsMouseButtonPressed(MouseButtons.LMB).ToString());
-            Functions_DebugWriter.WriteLine(InputReader.IsMouseButtonPressed(MouseButtons.RMB).ToString());
-
         }
 
-        private void CheckForEmergencyExit()
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit(); //emergency exit
-        }
         private void UpdateFps(GameTime gameTime)
         {
             _fpsCalculator.Update(gameTime);
