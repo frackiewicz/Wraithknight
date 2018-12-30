@@ -49,6 +49,49 @@ namespace Wraithknight
 
         public static Vector2Ref operator +(Vector2Ref value1, Vector2 value2)
         {
+            return new Vector2Ref(value1.X + value2.X, value1.Y + value2.Y);
+        }
+        public static Vector2Ref operator +(Vector2Ref value1, Vector2Ref value2)
+        {
+            return new Vector2Ref(value1.X + value2.X, value1.Y + value2.Y);
+
+        }
+
+        public static Vector2Ref operator -(Vector2Ref value1, Vector2 value2)
+        {
+            return new Vector2Ref(value1.X - value2.X, value1.Y - value2.Y);
+        }
+        public static Vector2Ref operator -(Vector2Ref value1, Vector2Ref value2)
+        {
+            return new Vector2Ref(value1.X - value2.X, value1.Y - value2.Y);
+        }
+
+
+        public void Add(Vector2Ref value)
+        {
+            Add(value.Vector2); //4head
+        }
+        public void Add(Vector2 value)
+        {
+            this.X += value.X;
+            this.Y += value.Y;
+        }
+
+        public void Sub(Vector2Ref value)
+        {
+            Add(value.Vector2); //4head
+        }
+        public void Sub(Vector2 value)
+        {
+            this.X += value.X;
+            this.Y += value.Y;
+        }
+
+
+        //TODO Breunig
+        /*
+         * public static Vector2Ref operator +(Vector2Ref value1, Vector2 value2)
+        {
             value1.X += value2.X;
             value1.Y += value2.Y;
             return value1;
@@ -72,5 +115,6 @@ namespace Wraithknight
             value1.Y += value2.Y;
             return value1;
         }
+         */
     }
 }

@@ -148,7 +148,7 @@ namespace Wraithknight
                 }));
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), sourcePos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20,40), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
             }
@@ -162,7 +162,7 @@ namespace Wraithknight
                     new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackCooldownMilliseconds: 1500, attackDelayMilliseconds: 2000)
                 }));
                 entity.AddComponent(new HealthComponent(20));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), offset: new Vector2(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), sourcePos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                 List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
@@ -172,6 +172,7 @@ namespace Wraithknight
             }
             #endregion
             #region objects
+            //TODO If specifies Texture, Drawrec is defined after. REDUNDANCY
             else if (type == EntityType.Wall)
             {
                 DrawComponent drawComponent;

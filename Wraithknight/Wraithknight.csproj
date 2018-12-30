@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Classes\DebugDrawer.cs" />
+    <Compile Include="Classes\ECS\Components\AnimationComponent.cs" />
     <Compile Include="Classes\ECS\Components\AttackBehaviorComponent.cs" />
     <Compile Include="Classes\ECS\Components\AttackComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceComponent.cs" />
