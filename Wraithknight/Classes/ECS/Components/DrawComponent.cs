@@ -11,7 +11,7 @@ namespace Wraithknight
     class DrawComponent : BindableComponent
     {
         public Texture2D Texture;
-        public bool Animation;
+        public bool IsAnimated;
         public AABB DrawRec;
         public Vector2Ref SourcePos;
         public Vector2 Offset; //the offset from the collision center

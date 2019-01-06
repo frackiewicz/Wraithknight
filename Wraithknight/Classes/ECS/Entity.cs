@@ -11,6 +11,7 @@ namespace Wraithknight
         public readonly int ID = IDcount++;
         public bool Alive = true; //used for garbage collection
         public Allegiance Allegiance;
+        public EntityStateController EntityState;
         public EntityType Type;
         public Dictionary<Type, Component> Components = new Dictionary<Type, Component>();
         public Dictionary<Type, List<Component>> MultiComponents = new Dictionary<Type, List<Component>>(); //for multiples?
@@ -66,6 +67,7 @@ namespace Wraithknight
         {
             component.RootID = ID;
             component.SetAllegiance(Allegiance);
+            component.EntityState = EntityState;
         }
 
         public T GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead

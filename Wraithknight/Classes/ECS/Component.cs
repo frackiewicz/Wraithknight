@@ -17,6 +17,7 @@ namespace Wraithknight
         public bool Inactive { get; protected set; } = true;
         public int RootID;
         public Allegiance Allegiance; //RootAllegiance
+        public EntityStateController EntityState;
 
         public virtual void Activate() { Inactive = false; }
         public virtual void Deactivate() { Inactive = true; }

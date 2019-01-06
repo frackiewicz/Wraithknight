@@ -8,26 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    /*
-     * Idea:
-     * To avoid AlignAll Iteration
-     *
-     * make Pair into a class
-     * MovementComponent defaultvalue is null
-     * if MovementComponent is set, Align
-     * then Draw
-     */
-
-    /*
-     * Idea:
-     * Figure out a System to avoid Texture swapping
-     * Maybe a 2D drawComponents Collection where components with the same Texture are packed together
-     */
     class DrawSystem : System
     {
 
-        private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>(); //to avoid texture swapping, hows the impact on movementbinding?
+        private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>();
+        private readonly HashSet<DrawComponent> _animatedDrawComponents = new HashSet<DrawComponent>();
         private readonly Camera2D _camera;
+        private readonly DrawAnimationSubsystem _animationSubsystem = new DrawAnimationSubsystem();
 
         public DrawSystem(ECS ecs, Camera2D camera) : base(ecs)
         {
@@ -37,7 +24,25 @@ namespace Wraithknight
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
-            CoupleDrawComponents(entities);
+            foreach (var entity in entities)
+            {
+                if (entity.Components.TryGetValue(typeof(DrawComponent), out var component))
+                {
+                    DrawComponent drawComponent = component as DrawComponent;
+
+                    if (drawComponent.Bindings.TryGetValue(typeof(AnimationComponent), out var animationComponent))
+                    {
+                        drawComponent.IsAnimated = true;
+                        _animationSubsystem.RegisterAnimationComponent(animationComponent as AnimationComponent);
+                        _animatedDrawComponents.Add(drawComponent);
+                    }
+                    else
+                    {
+                        InsertIntoBatch(drawComponent);
+                    }
+                    component.Activate();
+                }
+            }
         }
 
         public override void Update(GameTime gameTime)  
@@ -46,6 +51,12 @@ namespace Wraithknight
         }
 
         public void Draw()
+        {
+            DrawBatches();
+            DrawAnimatedComponents();
+        }
+
+        private void DrawBatches()
         {
             foreach (var batch in _sortedDrawComponents.Values)
             {
@@ -61,19 +72,34 @@ namespace Wraithknight
             }
         }
 
-        private void CoupleDrawComponents(ICollection<Entity> entities)
+        private void DrawAnimatedComponents()
         {
-            foreach (var entity in entities)
+            foreach (var component in _animatedDrawComponents)
             {
-                if (entity.Components.TryGetValue(typeof(DrawComponent), out var component))
+                if (component.Inactive) continue;
+                if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
                 {
-                    DrawComponent drawComponent = component as DrawComponent;
-
-                    if (!_sortedDrawComponents.ContainsKey(drawComponent.Texture)) _sortedDrawComponents.Add(drawComponent.Texture, new HashSet<DrawComponent>());
-                    _sortedDrawComponents[drawComponent.Texture].Add(drawComponent);
-                    component.Activate();
+                    UpdatePosition(component);
+                    Functions_Draw.Draw(component);
                 }
             }
+        }
+
+        private void ReorganizeIntoBatch(DrawComponent component)
+        {
+            RemoveFromBatch(component);
+            InsertIntoBatch(component);
+        }
+
+        private void InsertIntoBatch(DrawComponent component)
+        {
+            if (!_sortedDrawComponents.ContainsKey(component.Texture)) _sortedDrawComponents.Add(component.Texture, new HashSet<DrawComponent>());
+            _sortedDrawComponents[component.Texture].Add(component);
+        }
+
+        private void RemoveFromBatch(DrawComponent component)
+        {
+            if (_sortedDrawComponents.ContainsKey(component.Texture)) _sortedDrawComponents[component.Texture].Remove(component);
         }
 
         private void UpdatePosition(DrawComponent component)
@@ -84,6 +110,7 @@ namespace Wraithknight
         public override void Reset()
         {
             _sortedDrawComponents.Clear();
+            _animatedDrawComponents.Clear();
         }
 
         

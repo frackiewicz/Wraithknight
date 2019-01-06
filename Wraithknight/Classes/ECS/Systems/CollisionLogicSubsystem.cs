@@ -9,24 +9,11 @@ namespace Wraithknight
 {
     class CollisionLogicSubsystem
     {
-        private ECS _ecs;
-
+        private readonly ECS _ecs;
 
         public CollisionLogicSubsystem(ECS ecs)
         {
             _ecs = ecs;
-        }
-
-        public void RegisterComponents(ICollection<Entity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                RegisterComponents(entity);
-            }
-        }
-
-        public void RegisterComponents(Entity entity)
-        {
         }
 
         public void ResetSystem()
