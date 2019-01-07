@@ -13,7 +13,7 @@ namespace Wraithknight
         Secondary
     }
 
-    class AttackComponent : Component //Maybe take a more State based approach
+    class AttackComponent : Component //Maybe take a more CurrentState based approach
     {
         public EntityType Projectile;
         public AttackType Type;

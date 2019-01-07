@@ -19,6 +19,8 @@ namespace Wraithknight
         public EntityState State;
         public int CurrentStatePriority;
         public Direction Direction;
+
+        public bool ReadyToChange = true; //To fixate states and put them on a timer maybe?
         public String StateIdentifier; //To coordinate with AnimationIdentifier?
 
         public void Clear()
@@ -26,7 +28,16 @@ namespace Wraithknight
             State = EntityState.Idle;
             CurrentStatePriority = 0;
             Direction = Direction.Down;
+            ReadyToChange = true;
             StateIdentifier = "";
         }
     }
+    /*
+     * Priorities:
+     *
+     * Idle = 0
+     * Moving = 1
+     * Attacking = 2
+     * Acting = 2
+     */
 }

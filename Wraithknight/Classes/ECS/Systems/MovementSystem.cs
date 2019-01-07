@@ -49,7 +49,7 @@ namespace Wraithknight
             return _components;
         }
 
-        private void ApplyInertia(MovementComponent movement, GameTime gameTime)
+        private static void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
             if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileAccelerating || movement.Acceleration.Equals(Vector2.Zero)))
             {
@@ -64,7 +64,7 @@ namespace Wraithknight
             }
         }
 
-        private void AccelerateUntilMaxSpeed(MovementComponent movement, GameTime gameTime)
+        private static void AccelerateUntilMaxSpeed(MovementComponent movement, GameTime gameTime)
         {
             movement.Speed.AddVector2(movement.Acceleration * (float) gameTime.ElapsedGameTime.TotalSeconds);
             if (movement.MaxSpeed != 0.0f) //default
@@ -77,11 +77,28 @@ namespace Wraithknight
             
         }
 
-        private void ApplySpeed(MovementComponent movement, GameTime gameTime)
+        private static void ApplySpeed(MovementComponent movement, GameTime gameTime)
         {
             movement.OldPosition.X = movement.Position.X;
             movement.OldPosition.Y = movement.Position.Y;
             movement.Position.Add(movement.Speed.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        private void SetMovementStates(MovementComponent movement)
+        {
+            EntityStateController stateController = movement.EntityState;
+            if (movement.IsMoving)
+            {
+                if (stateController.CurrentStatePriority < 1)
+                {
+                    stateController.CurrentState = EntityState.Moving;
+                }
+
+                if (stateController.CurrentState == EntityState.Moving)
+                {
+                    stateController.Direction = Direction.Down; //TODO Implement this shit
+                }
+            }
         }
     }
 }
