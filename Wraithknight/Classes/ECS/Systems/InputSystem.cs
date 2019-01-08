@@ -61,10 +61,7 @@ namespace Wraithknight
             {
                 component.MovementDirection.X = 1;
             }
-
             
-
-
             component.PrimaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.LMB);
             component.SecondaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.RMB);
             component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);

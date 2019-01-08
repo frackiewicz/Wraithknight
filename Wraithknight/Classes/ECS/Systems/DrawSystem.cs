@@ -14,7 +14,6 @@ namespace Wraithknight
         private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>();
         private readonly HashSet<DrawComponent> _animatedDrawComponents = new HashSet<DrawComponent>();
         private readonly Camera2D _camera;
-        private readonly DrawAnimationSubsystem _animationSubsystem = new DrawAnimationSubsystem();
 
         public DrawSystem(ECS ecs, Camera2D camera) : base(ecs)
         {
@@ -33,7 +32,6 @@ namespace Wraithknight
                     if (drawComponent.Bindings.TryGetValue(typeof(AnimationComponent), out var animationComponent))
                     {
                         drawComponent.IsAnimated = true;
-                        _animationSubsystem.RegisterAnimationComponent(animationComponent as AnimationComponent);
                         _animatedDrawComponents.Add(drawComponent);
                     }
                     else
