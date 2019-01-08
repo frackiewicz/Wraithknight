@@ -29,6 +29,7 @@ namespace Wraithknight
         {
             if (entity.Components.TryGetValue(typeof(T), out var component))
             {
+                //T SpecificComponent = component as T; TODO Breunig why doesnt this work
                 target.Add(Functions_Operators.CastComponent<T>(component));
                 component.Activate(); //do you want this?
             }

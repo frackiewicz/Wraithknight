@@ -43,25 +43,27 @@ namespace Wraithknight
         {
             component.MovementDirection.X = 0;
             component.MovementDirection.Y = 0;
+
             if (InputReader.IsKeyPressed(Keys.W))
             {
                 component.MovementDirection.Y = -1;
+            }
+            else if (InputReader.IsKeyPressed(Keys.S))
+            {
+                component.MovementDirection.Y = 1;
             }
 
             if (InputReader.IsKeyPressed(Keys.A))
             {
                 component.MovementDirection.X = -1;
             }
-
-            if (InputReader.IsKeyPressed(Keys.S))
-            {
-                component.MovementDirection.Y = 1;
-            }
-
-            if (InputReader.IsKeyPressed(Keys.D))
+            else if (InputReader.IsKeyPressed(Keys.D))
             {
                 component.MovementDirection.X = 1;
             }
+
+            
+
 
             component.PrimaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.LMB);
             component.SecondaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.RMB);
