@@ -26,7 +26,7 @@ namespace Wraithknight
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var component in _components) //TODO cleanup?
+            foreach (var component in _components)
             {
                 if (component.Inactive) continue;
                 if (component.UserInput) ReadInput(component);
@@ -166,7 +166,10 @@ namespace Wraithknight
         {
             Vector2 cursorDelta = new Vector2(cursor.X, cursor.Y) - attack.SourcePos.Vector2;
 
-            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian), speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), gameTime: gameTime, allegiance: attack.Allegiance));
+            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, 
+                position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian), 
+                speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), 
+                gameTime: gameTime, allegiance: attack.Allegiance));
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
             attackBehavior.DelayedAttack = null;
         }

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    internal struct AABB //float alternative to Rectangle
+    internal struct AABB //float alternative to Rectangle //TODO Vector2Ref HERE
     {
         public Vector2 Center;
         public Vector2 Extents; //Width+Height

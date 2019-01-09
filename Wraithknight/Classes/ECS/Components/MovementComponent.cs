@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Wraithknight //TODO structs could use some improvements
+namespace Wraithknight
 {
     public class Coord2
-    { //TODO change degrees to radian (might solve the rounding issue)
+    {
         public Polar2 Polar;
         public Vector2 Cartesian;
 

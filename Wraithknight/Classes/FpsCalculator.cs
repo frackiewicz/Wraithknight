@@ -9,6 +9,13 @@ namespace Wraithknight
 {
     class FpsCalculator //TODO Cleanup? Optimization?
     {
+        //TODO Ringbuffer
+        /*
+         * Explanation:
+         * CCreate a self repeating list,
+         * you calculate the sum in a fixed variable
+         * adding an element adds to the sum, removing the object at the iterator and substracting from the total sum
+         */
         private readonly List<int> _fpsForCalculation;
         private readonly double _outputIntervallSeconds;
         private double _lastDisplayTimestamp;
@@ -22,19 +29,12 @@ namespace Wraithknight
             _lastDisplayTimestamp = 0;
         }
 
-        /// <summary>
-        /// Call this Method on every Drawcall
-        /// </summary>
-        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             _lastUpdateTimestamp = gameTime.TotalGameTime.TotalSeconds;
             _fpsForCalculation.Add((int)(1/gameTime.ElapsedGameTime.TotalSeconds));
         }
 
-        /// <summary>
-        /// Use this to output the calculated FramesPerSecond
-        /// </summary>
         public int Getfps()
         {
             if (ReadyForOutput())

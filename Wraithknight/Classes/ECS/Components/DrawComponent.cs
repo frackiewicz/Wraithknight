@@ -20,7 +20,7 @@ namespace Wraithknight
         public float LayerDepth;
 
         #region Constructors
-        public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Vector2Ref sourcePos = null, Point? size = null, Vector2? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth?
+        public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Vector2Ref sourcePos = null, Point? size = null, Vector2? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth? USE CONSTANTS INSTEAD
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new AABB(0, 0, Texture.Width, Texture.Height);

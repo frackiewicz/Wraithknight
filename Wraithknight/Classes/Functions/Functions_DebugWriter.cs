@@ -24,7 +24,7 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
     public static class Functions_DebugWriter //TODO Real ugly lmao
     {
         private static List<Message> _messages = new List<Message>();
-        private static int _textCount = 0;
+        private static int _textIterator = 0;
 
         public static void WriteLine(String text)
         {
@@ -34,16 +34,16 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
         public static void WriteLine(String text, Color color)
         {
             if (!Flags.ShowDebuggingText) return;
-            if (_textCount >= _messages.Count)
+            if (_textIterator >= _messages.Count)
             {
                 _messages.Add(new Message(text, Color.White));
             }
             else
             {
-                _messages[_textCount].Text = text;
-                _messages[_textCount].Color = Color.White;
+                _messages[_textIterator].Text = text;
+                _messages[_textIterator].Color = Color.White;
             }
-            _textCount++;
+            _textIterator++;
         }
 
 
@@ -51,7 +51,7 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
 
         public static void Draw()
         {
-            for (int i = 0; i < _textCount; i++)
+            for (int i = 0; i < _textIterator; i++)
             {
                 try
                 {
@@ -68,7 +68,7 @@ namespace Wraithknight //TODO ABSOLUTE SHITE
 
         public static void Reset()
         {
-            _textCount = 0;
+            _textIterator = 0;
             pos.X = 50;
             pos.Y = 50;
         }

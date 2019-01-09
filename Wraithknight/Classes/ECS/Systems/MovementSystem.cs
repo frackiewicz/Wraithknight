@@ -91,13 +91,13 @@ namespace Wraithknight
             {
                 if (stateController.CurrentStatePriority < 1)
                 {
-                    stateController.CurrentState = EntityState.Moving;
+                    //stateController.CurrentState = EntityState.Moving;
                 }
 
-                if (stateController.CurrentState == EntityState.Moving)
+               /* if (stateController.CurrentState == EntityState.Moving)
                 {
                     stateController.Direction = Direction.Down; //TODO Implement this shit
-                }
+                } */
             }
         }
     }

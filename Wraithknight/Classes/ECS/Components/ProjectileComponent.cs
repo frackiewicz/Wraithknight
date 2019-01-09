@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 { 
-    class ProjectileComponent : Component //TODO Cleanup?
+    class ProjectileComponent : Component
     {
         public class HitTarget
         {

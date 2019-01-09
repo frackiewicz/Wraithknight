@@ -75,7 +75,7 @@ namespace Wraithknight
             base.Draw(gameTime);
         }
 
-        private void UpdateFps(GameTime gameTime)
+        private void UpdateFps(GameTime gameTime) //TODO Create Char-Array and create a string from that to avoid concat
         {
             _fpsCalculator.Update(gameTime);
             Window.Title = _fpsCalculator.Getfps() + " fps";

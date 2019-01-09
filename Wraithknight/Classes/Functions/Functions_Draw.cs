@@ -20,7 +20,6 @@ namespace Wraithknight
 
         #region GC helpers
 
-        //TODO Breunig, Alternatives?
         private static Vector2 _Vector2 = new Vector2();
         private static Vector2 MakeVector2(float x, float y)
         {

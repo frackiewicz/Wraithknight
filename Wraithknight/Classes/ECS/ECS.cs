@@ -128,7 +128,7 @@ namespace Wraithknight
 
         #region EntityManagement
 
-        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral) //TODO Breunig, how to handle default values?
+        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral)
         {
             //this might be enough lol
             Vector2Ref safePosition = position ?? new Vector2Ref();

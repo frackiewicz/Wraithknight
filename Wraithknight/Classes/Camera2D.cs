@@ -137,8 +137,8 @@ namespace Wraithknight{
         private void HandelZoom(GameTime gameTime)
         {
             if (CurrentZoom != TargetZoom)
-            {   //gradually match the zoom
-                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; } //TODO doesnt zoom as fluently as id like
+            {
+                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; }
                 if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
                 if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
 
