@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
+    /*
+     * Alright,
+     * lets use multiple statetypes over here
+     * since there are way too many combinations it would be retarded to just make a single enum for all of this
+     */
     public enum EntityState
     {
         Idle,
@@ -14,9 +19,15 @@ namespace Wraithknight
         Attacking,
         Other
     }
+
+    public enum HealthState
+    {
+        Alive,
+        TookDamage
+    }
     class EntityStateController
     {
-        public EntityState State;
+        public EntityState CurrentState;
         public int CurrentStatePriority;
         public Direction Direction;
 
@@ -25,7 +36,7 @@ namespace Wraithknight
 
         public void Clear()
         {
-            State = EntityState.Idle;
+            CurrentState = EntityState.Idle;
             CurrentStatePriority = 0;
             Direction = Direction.Down;
             ReadyToChange = true;
