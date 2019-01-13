@@ -45,16 +45,18 @@
     <StartupObject>Wraithknight.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Classes\AssetManagement\AnimationStructures.cs" />
     <Compile Include="Classes\DebugDrawer.cs" />
     <Compile Include="Classes\ECS\Components\AnimationComponent.cs" />
     <Compile Include="Classes\ECS\Components\AttackBehaviorComponent.cs" />
     <Compile Include="Classes\ECS\Components\AttackComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceComponent.cs" />
     <Compile Include="Classes\ECS\Components\IntelligenceNode.cs" />
-    <Compile Include="Classes\ECS\EntityStates.cs" />
+    <Compile Include="Classes\ECS\Components\StateComponent.cs" />
     <Compile Include="Classes\ECS\Systems\AnimationSystem.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionPhysicalSubsystem.cs" />
     <Compile Include="Classes\ECS\Systems\IntelligenceSystem.cs" />
+    <Compile Include="Classes\ECS\Systems\StateSystem.cs" />
     <Compile Include="Classes\Functions\Functions_DebugWriter.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
     <Compile Include="Classes\Levelgeneration\LevelGenerator.cs" />
@@ -62,7 +64,6 @@
     <Compile Include="Classes\ECS\Systems\CollisionLogicSubsystem.cs" />
     <Compile Include="Classes\Menu\ButtonWithText.cs" />
     <Compile Include="Classes\Menu\GameMenuScreen.cs" />
-    <Compile Include="Classes\Components\Generics\ComponentIntelligence.cs" />
     <Compile Include="Classes\ECS\Component.cs" />
     <Compile Include="Classes\ECS\BindableComponent.cs" />
     <Compile Include="Classes\ECS\Components\CollisionComponent.cs" />
@@ -77,9 +78,8 @@
     <Compile Include="Classes\ECS\System.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionSystem.cs" />
     <Compile Include="Classes\ECS\Systems\DrawSystem.cs" />
-    <Compile Include="Classes\Assets.cs" />
+    <Compile Include="Classes\AssetManagement\Assets.cs" />
     <Compile Include="Classes\Camera2D.cs" />
-    <Compile Include="Classes\Components\Generics\ComponentMovement.cs" />
     <Compile Include="Classes\ECS\Systems\HealthSystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputSystem.cs" />
     <Compile Include="Classes\ECS\Systems\MovementSystem.cs" />
@@ -166,9 +166,7 @@
     </None>
     <None Include="app.manifest" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Classes\Components\Specifics\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

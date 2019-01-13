@@ -10,12 +10,13 @@ namespace Wraithknight
 {
     class DrawSystem : System
     {
+        private readonly ECS _ecs;
 
         private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>();
         private readonly HashSet<DrawComponent> _animatedDrawComponents = new HashSet<DrawComponent>();
         private readonly Camera2D _camera;
 
-        public DrawSystem(ECS ecs, Camera2D camera) : base(ecs)
+        public DrawSystem(ECS ecs, Camera2D camera)
         {
             _ecs = ecs;
             _camera = camera;
@@ -60,12 +61,7 @@ namespace Wraithknight
             {
                 foreach (var component in batch)
                 {
-                    if (component.Inactive) continue;
-                    if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
-                    {
-                        UpdatePosition(component);
-                        Functions_Draw.Draw(component);
-                    }
+                    DrawComponent(component);
                 }
             }
         }
@@ -74,12 +70,17 @@ namespace Wraithknight
         {
             foreach (var component in _animatedDrawComponents)
             {
-                if (component.Inactive) continue;
-                if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
-                {
-                    UpdatePosition(component);
-                    Functions_Draw.Draw(component);
-                }
+                DrawComponent(component);
+            }
+        }
+
+        private void DrawComponent(DrawComponent component)
+        {
+            if (component.Inactive) return;
+            if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
+            {
+                UpdatePosition(component);
+                Functions_Draw.Draw(component);
             }
         }
 
@@ -102,7 +103,7 @@ namespace Wraithknight
 
         private void UpdatePosition(DrawComponent component)
         {
-            if(component.SourcePos != null) component.DrawRec.Center = component.SourcePos + component.Offset;
+            if(component.BoundPos != null) component.DrawRec.Center = component.BoundPos + component.Offset;
         }
 
         public override void Reset()

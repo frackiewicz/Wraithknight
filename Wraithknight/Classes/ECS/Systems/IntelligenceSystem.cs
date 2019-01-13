@@ -12,11 +12,6 @@ namespace Wraithknight
         private List<IntelligenceComponent> _components = new List<IntelligenceComponent>();
         private List<IntelligenceNode> _nodes = new List<IntelligenceNode>();
 
-        public IntelligenceSystem(ECS ecs) : base(ecs)
-        {
-
-        }
-
         public override void RegisterComponents(ICollection<Entity> entities)
         {
             CoupleComponent(_components, entities);

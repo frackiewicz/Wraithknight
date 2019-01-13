@@ -23,7 +23,7 @@ namespace Wraithknight
         
         //Enemies
         Forest_Knight,
-        Wolf,
+        Forest_Wolf,
 
         //Objects
         Wall,
@@ -40,8 +40,9 @@ namespace Wraithknight
 
     class ECS
     {
-        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>(); //TODO Try to somehow give Hero #1 ID to improve lookup performance
+        private readonly Dictionary<int, Entity> _entityDictionary = new Dictionary<int, Entity>();
         //TODO Also replace Dictionary with Hashtable, might improve performance slightly
+        private readonly List<Entity> _actors = new List<Entity>(); //this is only for debugging lol
         private readonly HashSet<System> _systemSet = new HashSet<System>();
         private DrawSystem drawSystem;
         private readonly Camera2D _camera;
@@ -115,14 +116,17 @@ namespace Wraithknight
         {
             drawSystem = new DrawSystem(this, _camera);
 
+            _systemSet.Add(new StateSystem());
+
+            _systemSet.Add(new AnimationSystem());
             _systemSet.Add(new InputSystem(this, _camera));
             _systemSet.Add(new CollisionSystem(this));
             _systemSet.Add(new MovementSystem(this));
             _systemSet.Add(new TimerSystem(this));
             _systemSet.Add(new HealthSystem(this));
-            _systemSet.Add(new IntelligenceSystem(this));
+            _systemSet.Add(new IntelligenceSystem());
 
-            _systemSet.Add(drawSystem); //add last for "true data"
+            _systemSet.Add(drawSystem);
         }
         #endregion
 
@@ -135,11 +139,12 @@ namespace Wraithknight
             Coord2 safeSpeed = speed ?? new Coord2();
 
             Entity entity = new Entity(type);
-
+            //TODO make a switch here
             #region actors
             if (type == EntityType.Hero)
             {
                 entity.SetAllegiance(Allegiance.Friendly);
+                entity.SetStateComponent();
                 entity.AddComponent(new MovementComponent(accelerationBase: 1000, maxSpeed: 175, friction: 650, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
@@ -148,7 +153,7 @@ namespace Wraithknight
                 }));
                 entity.AddComponent(new HealthComponent(20));
                 entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), sourcePos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20,40), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
             }
@@ -156,19 +161,40 @@ namespace Wraithknight
             if (type == EntityType.Forest_Knight)
             {
                 entity.SetAllegiance(Allegiance.Enemy);
+                entity.SetStateComponent();
                 entity.AddComponent(new MovementComponent(accelerationBase: 250, maxSpeed: 100, friction: 300, position: safePosition));
                 entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                 {
                     new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackCooldownMilliseconds: 1500, attackDelayMilliseconds: 2000)
                 }));
                 entity.AddComponent(new HealthComponent(20));
-                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), sourcePos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                 entity.AddBindableComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                 List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
                 orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                 entity.AddBindableComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
+            }
+
+            if (type == EntityType.Forest_Wolf)
+            {
+                entity.SetAllegiance(Allegiance.Enemy);
+                entity.SetStateComponent();
+                entity.AddComponent(new MovementComponent(accelerationBase: 1200, maxSpeed: 150, friction: 400, position: safePosition));
+                entity.AddComponent(new HealthComponent(15));
+                entity.AddBindableComponent(new DrawComponent(Assets.GetTexture("wolf"), drawRec: new AABB(0, 0, 64, 32), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, 0)), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), entity.Components[typeof(DrawComponent)]);
+                entity.AddBindableComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
+                entity.AddBindableComponent(new InputComponent(false), new List<Component>
+                {
+                    entity.Components[typeof(MovementComponent)]
+                });
+                List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 50, OrderType.Null, 1, 250, true));
+                orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
+                entity.AddBindableComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
+
             }
             #endregion
             #region objects
@@ -262,7 +288,7 @@ namespace Wraithknight
                 entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 100, friction: 200, position: safePosition, speed: safeSpeed));
                 entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
-                entity.AddBindableComponent(new DrawComponent(size: new Point(32, 32), tint: Color.Red), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, tint: Color.Red),  entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, isPhasing: true, hitCooldownMilliseconds: 200));
                 entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
 
@@ -272,11 +298,16 @@ namespace Wraithknight
                 entity.SetAllegiance(allegiance);
                 entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 2000, position: safePosition, speed: safeSpeed));
                 entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
-                entity.AddBindableComponent(new DrawComponent(size: new Point(32, 32), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                entity.AddBindableComponent(new DrawComponent(drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                 entity.AddComponent(new ProjectileComponent(power: 20, damage: 10, isPhasing: true, hitCooldownMilliseconds: 200));
                 entity.AddBindableComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
             }
             #endregion
+
+            if (type == EntityType.Hero || type == EntityType.Forest_Wolf  || type == EntityType.Forest_Knight)
+            {
+                _actors.Add(entity);
+            }
             return entity;
         }
 
@@ -340,7 +371,7 @@ namespace Wraithknight
             _entityDictionary.Remove(entity.ID);
         }
 
-        public void PurgeTheDead() //Experimental, no idea about possible side effects //TODO Breunig talk about direct Component killing
+        public void PurgeTheDead()
         {
             CleanEntities(CleanType.Regular);
             ResetSystems();
@@ -430,7 +461,7 @@ namespace Wraithknight
 
                     if (level.Data[x, y] == LevelData.EnemySpawn)
                     {
-                        AddEntity(CreateEntity(EntityType.Forest_Knight, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
+                        AddEntity(CreateEntity(EntityType.Forest_Wolf, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
                     }
 
                     if (level.Data[x, y] == LevelData.PathBlocker)

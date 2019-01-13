@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    //TODO Further Develop this
     public static class Assets
     {
         private static ContentManager _content;

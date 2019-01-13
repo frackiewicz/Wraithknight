@@ -9,9 +9,11 @@ namespace Wraithknight
 {
     class HealthSystem : System
     {
+        private readonly ECS _ecs;
+
         private HashSet<HealthComponent> _components = new HashSet<HealthComponent>();
 
-        public HealthSystem(ECS ecs) : base(ecs)
+        public HealthSystem(ECS ecs)
         {
             _ecs = ecs;
         }

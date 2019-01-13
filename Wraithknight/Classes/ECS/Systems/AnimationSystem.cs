@@ -5,16 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Wraithknight.Classes.ECS.Systems
+namespace Wraithknight
 {
     class AnimationSystem : System
     {
         private List<AnimationComponent> _animationComponents = new List<AnimationComponent>();
-
-        public AnimationSystem(Wraithknight.ECS ecs) : base(ecs)
-        {
-
-        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
@@ -26,25 +21,61 @@ namespace Wraithknight.Classes.ECS.Systems
 
         public override void Update(GameTime gameTime)
         {
-            
-            throw new NotImplementedException();
+            foreach (var component in _animationComponents)
+            {
+                if (component.State.RecentlyChanged)
+                {
+                    StartAnimation(component, component.State.CurrentState, gameTime);
+                }
+                ProcessAnimation(component, gameTime);
+                if (component.CurrentAnimation.AllowMirroring) ApplyMirroring(component);
+            }
         }
 
         public override void Reset()
         {
-            throw new NotImplementedException();
         }
 
-        private void StartAnimation(AnimationComponent component, String identifier, GameTime gameTime)
+        private static void StartAnimation(AnimationComponent component, EntityState trigger, GameTime gameTime) //for now just randomize it
+        {
+            List<Animation> animations = component.Animations.FindAll(a => a.Trigger == trigger);
+            Random random = new Random();
+            component.CurrentAnimation = animations[random.Next(0, animations.Count - 1)];
+            component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+            component.BoundDrawComponent.Texture = component.CurrentAnimation.SpriteSheet;
+        }
+        private static void StartAnimation(AnimationComponent component, String identifier, GameTime gameTime)
         {
             component.CurrentAnimation = component.Animations.Find(a => a.Identifier.Equals(identifier));
             component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
-            
+            component.BoundDrawComponent.Texture = component.CurrentAnimation.SpriteSheet;
+        }
+        private static void ReplayAnimation(AnimationComponent component, GameTime gameTime)
+        {
+            component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
         }
 
-        private void ApplyAnimationTexture(AnimationComponent component, GameTime gameTime)
+        private static void ProcessAnimation(AnimationComponent component, GameTime gameTime)
         {
-            component.BoundDrawComponent.Texture = component.CurrentAnimation.GetAnimationFrame(gameTime);
+            if (component.CurrentAnimation.Finished(gameTime))
+            {
+                if(component.CurrentAnimation.Looping) ReplayAnimation(component, gameTime);
+                else StartAnimation(component, component.CurrentAnimation.NextAnimationIdentifier, gameTime);
+            }
+
+            ApplyAnimation(component, gameTime);
+        }
+
+        private static void ApplyAnimation(AnimationComponent component, GameTime gameTime)
+        {
+            component.BoundDrawComponent.SourceRec = component.CurrentAnimation.GetSourceRec(gameTime);
+            Functions_DebugWriter.WriteLine(component.BoundDrawComponent.SourceRec.ToString());
+        }
+
+        private static void ApplyMirroring(AnimationComponent component)
+        {
+            if (component.State.Direction == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
+            else component.BoundDrawComponent.FlipHorizontally = false;
         }
     }
 }

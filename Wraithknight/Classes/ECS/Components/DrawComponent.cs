@@ -13,19 +13,25 @@ namespace Wraithknight
         public Texture2D Texture;
         public bool IsAnimated;
         public AABB DrawRec;
-        public Vector2Ref SourcePos;
+        public Vector2Ref BoundPos;
+
+        public Vector2 Scale;
+        public Rectangle SourceRec;
         public Vector2 Offset; //the offset from the collision center
+
         public float Rotation;
         public Color Tint;
         public float LayerDepth;
+        public bool FlipHorizontally;
 
         #region Constructors
-        public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Vector2Ref sourcePos = null, Point? size = null, Vector2? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth? USE CONSTANTS INSTEAD
+        public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Rectangle? sourceRec = null, Vector2Ref boundPos = null, Vector2? scale = null, Vector2? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth? USE CONSTANTS INSTEAD
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new AABB(0, 0, Texture.Width, Texture.Height);
-            SourcePos = sourcePos;
-            if (size != null) ChangeSize((Point)size);
+            SourceRec = sourceRec ?? new Rectangle(0, 0, Texture.Width, Texture.Height);
+            BoundPos = boundPos;
+            Scale = scale ?? new Vector2(1,1);
             if (offset != null) Offset = (Vector2) offset;
             ApplyOffset();
             Rotation = rotation;
@@ -33,12 +39,6 @@ namespace Wraithknight
             LayerDepth = layerDepth;
         }
         #endregion
-
-        public void ChangeSize(Point point)
-        {
-            DrawRec.Width = point.X;
-            DrawRec.Height = point.Y;
-        }
 
         public void ApplyOffset()
         {

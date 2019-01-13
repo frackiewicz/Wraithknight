@@ -16,8 +16,9 @@ namespace Wraithknight
         public bool MultiBinding = false;
         public bool Inactive { get; protected set; } = true;
         public int RootID;
+        public EntityType RootType;
         public Allegiance Allegiance; //RootAllegiance
-        public EntityStateController EntityState;
+        public StateComponent State;
 
         public virtual void Activate() { Inactive = false; }
         public virtual void Deactivate() { Inactive = true; }

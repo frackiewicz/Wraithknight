@@ -34,22 +34,19 @@ namespace Wraithknight
             if(_spriteBatch == null) _spriteBatch = spriteBatch;
         }
 
-        public static void clearSpriteBatch() //use unknown
-        {
-            _spriteBatch = null;
-        }
-
         public static void Draw(DrawComponent sprite)
         {
-            _spriteBatch.Draw(sprite.Texture, position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y), scale: MakeVector2(sprite.DrawRec.Width / sprite.Texture.Width, sprite.DrawRec.Height / sprite.Texture.Height), color: sprite.Tint * 1, layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Y);
+            _spriteBatch.Draw(
+                sprite.Texture,
+                position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y),
+                sourceRectangle: sprite.SourceRec,
+                scale: sprite.Scale,
+                color: sprite.Tint * 1,
+                layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Bottom,
+                effects: sprite.FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
         }
 
         #region Debug
-
-        public static void DrawDebug(Rectangle rectangle)
-        {
-            _spriteBatch.Draw(_dummyTexture, rectangle, Color.Coral);
-        }
 
         public static void DrawDebug(AABB rectangle)
         {

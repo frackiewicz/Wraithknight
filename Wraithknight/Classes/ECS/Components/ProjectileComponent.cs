@@ -25,16 +25,18 @@ namespace Wraithknight
         public int Power;
         public int Damage;
         public bool IsPhasing; //To allow the projectile to pass through actors, for example sword slashes should hit multiple enemies
+        public bool InfinitePower; //Touching damage? TODO missing logic
 
         public List<HitTarget> HitTargets;
         public bool HasHitCooldown;
         public double HitCooldownMilliseconds;
 
-        public ProjectileComponent(int power = 0, int damage = 0, bool isPhasing = false, double hitCooldownMilliseconds = -1)
+        public ProjectileComponent(int power = 0, int damage = 0, bool isPhasing = false, bool infinitePower = false, double hitCooldownMilliseconds = -1)
         {
             Power = power;
             Damage = damage;
             IsPhasing = isPhasing;
+            InfinitePower = infinitePower;
             if (IsPhasing)
             {
                 HitTargets = new List<HitTarget>();

@@ -10,10 +10,12 @@ namespace Wraithknight
 {
     class InputSystem : System
     {
+        private readonly ECS _ecs;
+
         private HashSet<InputComponent> _components = new HashSet<InputComponent>();
         private Camera2D _camera;
 
-        public InputSystem(ECS ecs, Camera2D camera) : base(ecs)
+        public InputSystem(ECS ecs, Camera2D camera)
         {
             _ecs = ecs;
             _camera = camera;

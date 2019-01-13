@@ -9,9 +9,11 @@ namespace Wraithknight
 {
     class TimerSystem : System
     {
+        private readonly ECS _ecs;
+
         private HashSet<TimerComponent> _timerComponents = new HashSet<TimerComponent>();
 
-        public TimerSystem(ECS ecs) : base(ecs)
+        public TimerSystem(ECS ecs)
         {
             _ecs = ecs;
         }

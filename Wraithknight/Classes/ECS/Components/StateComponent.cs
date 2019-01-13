@@ -17,21 +17,19 @@ namespace Wraithknight
         Idle,
         Moving,
         Attacking,
-        Other
+        Other,
+        None
     }
-
-    public enum HealthState
+    class StateComponent : Component
     {
-        Alive,
-        TookDamage
-    }
-    class EntityStateController
-    {
+        public EntityState PreviousState;
         public EntityState CurrentState;
         public int CurrentStatePriority;
         public Direction Direction;
+        public Direction Orientation; //TODO use this for sprite flipping
 
         public bool ReadyToChange = true; //To fixate states and put them on a timer maybe?
+        public bool RecentlyChanged;
         public String StateIdentifier; //To coordinate with AnimationIdentifier?
 
         public void Clear()
@@ -45,6 +43,7 @@ namespace Wraithknight
     }
     /*
      * Priorities:
+     * write them in code maybe?
      *
      * Idle = 0
      * Moving = 1

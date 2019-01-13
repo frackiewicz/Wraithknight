@@ -13,17 +13,11 @@ namespace Wraithknight
 
         public readonly int ID = IDcount++;
 
-        protected ECS _ecs;
 
         public abstract void RegisterComponents(ICollection<Entity> entities);
         public          void RegisterComponents(Entity entity) { RegisterComponents(new List<Entity>(){entity}); }
         public abstract void Update(GameTime gameTime);
         public abstract void Reset();
-
-        public System(ECS ecs)
-        {
-            _ecs = ecs;
-        }
 
         protected void CoupleComponent<T>(ICollection<T> target, Entity entity) //Add boolean to entity if it has multiples of same component types
         {
