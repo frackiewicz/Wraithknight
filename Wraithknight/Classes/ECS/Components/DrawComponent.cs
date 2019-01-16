@@ -24,21 +24,19 @@ namespace Wraithknight
         public float LayerDepth;
         public bool FlipHorizontally;
 
-        #region Constructors
         public DrawComponent(Texture2D texture = null, AABB? drawRec = null, Rectangle? sourceRec = null, Vector2Ref boundPos = null, Vector2? scale = null, Vector2? offset = null, float rotation = 0, Color? tint = null, float layerDepth = 0.1f) //TODO enum for layerdepth? USE CONSTANTS INSTEAD
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new AABB(0, 0, Texture.Width, Texture.Height);
             SourceRec = sourceRec ?? new Rectangle(0, 0, Texture.Width, Texture.Height);
             BoundPos = boundPos;
-            Scale = scale ?? new Vector2(1,1);
+            Scale = scale ?? new Vector2(DrawRec.Width/SourceRec.Width, DrawRec.Height/SourceRec.Height);
             if (offset != null) Offset = (Vector2) offset;
             ApplyOffset();
             Rotation = rotation;
             if (tint == null) Tint = Color.White; else Tint = (Color) tint;
             LayerDepth = layerDepth;
         }
-        #endregion
 
         public void ApplyOffset()
         {

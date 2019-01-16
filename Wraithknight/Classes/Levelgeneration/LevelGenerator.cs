@@ -161,10 +161,7 @@ namespace Wraithknight
             }
 
             bool generationFinished = AreMapsIdentical(newWalls, oldWalls);
-
-            //TODO Breunig why doesnt this work v
-            //level.Walls = newWalls; somehow this does work, do more testing
-
+            
             CopyWalls(newWalls, oldWalls);
 
             return generationFinished;
@@ -176,12 +173,10 @@ namespace Wraithknight
 
             if (newMap[x, y])
             {
-                //Cell is a wall
                 if (nearbyWalls <= StarvationNumber) newMap[x, y] = false;
             }
             else
             {
-                //Cell is not a wall
                 if (nearbyWalls >= BirthNumber) newMap[x, y] = true;
             }
         }
