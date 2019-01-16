@@ -6,24 +6,17 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    enum LevelData
-    {
-        Nothing,
-        HeroSpawn,
-        EnemySpawn,
-        PathBlocker
-    }
     class Level
     {
         public bool[,] Walls;
-        public LevelData[,] Data;
+        public EntityType[,] Data;
         public int TileWidth;
         public int TileHeight;
 
         public Level(int x, int y)
         {
             Walls = new bool[x, y];
-            Data = new LevelData[x, y];
+            Data = new EntityType[x, y];
             TileWidth = 32;
             TileHeight = 32;
         }

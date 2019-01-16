@@ -19,6 +19,7 @@ namespace Wraithknight
 
     internal enum EntityType
     {
+        Nothing, //PLACEHOLDER FOR MAPGEN
         Hero,
         
         //Enemies
@@ -454,20 +455,9 @@ namespace Wraithknight
                     #endregion
 
                     #region MapData
-                    if (level.Data[x, y] == LevelData.HeroSpawn)
+                    if (level.Data[x, y] != EntityType.Nothing)
                     {
-                        Entity hero = GetHero();
-                        if(hero == null) AddEntity(CreateEntity(EntityType.Hero, new Vector2Ref(x * level.TileWidth + level.TileWidth/2, y * level.TileHeight + level.TileHeight/2)));
-                    }
-
-                    if (level.Data[x, y] == LevelData.EnemySpawn)
-                    {
-                        AddEntity(CreateEntity(EntityType.Forest_Wolf, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
-                    }
-
-                    if (level.Data[x, y] == LevelData.PathBlocker)
-                    {
-                        AddEntity(CreateEntity(EntityType.Treestump, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
+                        AddEntity(CreateEntity(level.Data[x, y], new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
                     }
                     #endregion
                 }

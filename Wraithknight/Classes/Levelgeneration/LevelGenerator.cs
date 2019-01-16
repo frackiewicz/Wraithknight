@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -14,8 +15,22 @@ namespace Wraithknight
         Forest
     }
 
+    struct EnemySpawnBudgetData
+    {
+        public EntityType Type;
+        public int Cost;
+
+        public EnemySpawnBudgetData(EntityType type, int cost)
+        {
+            Type = type;
+            Cost = cost;
+        }
+    }
+
     class LevelGenerator //TODO got plenty of cleanup todo here
     {
+        public LevelPreset CurrentPreset;
+
         public int Width;
         public int Height;
 
@@ -33,6 +48,19 @@ namespace Wraithknight
 
         public int MinRoomPercent;
         public int MaxRoomPercent;
+
+        public int TotalEnemySpawnBudget;
+
+        public readonly Dictionary<LevelPreset, List<EnemySpawnBudgetData>> EnemySpawnBudgetValues = new Dictionary<LevelPreset, List<EnemySpawnBudgetData>>
+        {
+            {
+                LevelPreset.Forest, new List<EnemySpawnBudgetData>
+                {
+                    new EnemySpawnBudgetData(EntityType.Forest_Knight, 5),
+                    new EnemySpawnBudgetData(EntityType.Forest_Wolf, 7)
+                }
+            }
+        };
 
 
         public Level GenerateLevel()
@@ -60,12 +88,10 @@ namespace Wraithknight
                 loopCounter++;
             }
 
-
             if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
 
-            SetRandomHeroSpawn(level.Walls, level.Data);
-            SetRandomEnemySpawn(level.Walls, level.Data);
-            SetRandomPathBlockers(level.Walls, level.Data);
+            SpawnEntities(level);
+
 
             return level;
         }
@@ -74,6 +100,8 @@ namespace Wraithknight
         {
             if (preset == LevelPreset.Test)
             {
+                CurrentPreset = LevelPreset.Test;
+
                 Width = 100;
                 Height = 100;
 
@@ -91,10 +119,13 @@ namespace Wraithknight
 
                 MinRoomPercent = 30;
                 MaxRoomPercent = 50;
+                TotalEnemySpawnBudget = 25;
             }
 
             if (preset == LevelPreset.Forest)
             {
+                CurrentPreset = LevelPreset.Forest;
+
                 Width = 100;
                 Height = 100;
 
@@ -112,8 +143,11 @@ namespace Wraithknight
 
                 MinRoomPercent = 10;
                 MaxRoomPercent = 15;
+                TotalEnemySpawnBudget = 25;
             }
         }
+
+        #region MapGeneration
 
         private static void FillLevelWithRandomNoise(Level level, int percentWalls)
         {
@@ -161,7 +195,7 @@ namespace Wraithknight
             }
 
             bool generationFinished = AreMapsIdentical(newWalls, oldWalls);
-            
+
             CopyWalls(newWalls, oldWalls);
 
             return generationFinished;
@@ -240,6 +274,9 @@ namespace Wraithknight
             }
         }
 
+        #endregion
+
+        #region MapCleanup
 
         private struct Floodling
         {
@@ -372,48 +409,103 @@ namespace Wraithknight
             }
         }
 
-        private static void SetRandomHeroSpawn(bool[,] walls, LevelData[,] data)
+        #endregion
+
+        #region EntitySpawning
+
+        private void SpawnEntities(Level level)
+        {
+            bool[,] walls = level.Walls;
+            EntityType[,] data = level.Data;
+
+            SpawnPathBlockers(walls, data);
+            SpawnEnemies(walls, data);
+            SpawnHero(walls, data);
+        }
+
+        private static void SpawnHero(bool[,] walls, EntityType[,] data)
         {
             Point point = GetRandomPoint(walls);
-            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != EntityType.Nothing)
             {
                 point = GetRandomPoint(walls);
             }
 
-            data[point.X, point.Y] = LevelData.HeroSpawn;
+            data[point.X, point.Y] = EntityType.Hero;
         }
 
-        private static void SetRandomEnemySpawn(bool[,] walls, LevelData[,] data)
+        private void SpawnEnemies(bool[,] walls, EntityType[,] data)
+        {
+            int remainingEnemySpawnBudget = TotalEnemySpawnBudget;
+            List<EnemySpawnBudgetData> allowedSpawns = EnemySpawnBudgetValues[CurrentPreset].OrderBy(o => o.Cost).ToList();
+
+            Random random = new Random();
+            while (remainingEnemySpawnBudget > 0)
+            {
+                #region TryRandomSpawns
+                int randomIndex = random.Next(allowedSpawns.Count);
+                if (allowedSpawns[randomIndex].Cost < remainingEnemySpawnBudget)
+                {
+                    SpawnEnemyAtRandomLocation(walls, data, allowedSpawns[randomIndex].Type);
+                    remainingEnemySpawnBudget -= allowedSpawns[randomIndex].Cost;
+                }
+                #endregion
+
+                #region TryCheapestSpawns
+                else
+                {
+                    bool noEnemySpawned = true;
+
+                    foreach (var enemy in allowedSpawns)
+                    {
+                        if (enemy.Cost < remainingEnemySpawnBudget)
+                        {
+                            SpawnEnemyAtRandomLocation(walls, data, enemy.Type);
+                            remainingEnemySpawnBudget -= enemy.Cost;
+                            noEnemySpawned = false;
+                            break;
+                        }
+                    }
+
+                    if (noEnemySpawned) break;
+                }
+                #endregion
+            }
+        }
+
+
+        private static void SpawnEnemyAtRandomLocation(bool[,] walls, EntityType[,] data, EntityType spawnedEnemy)
         {
             Point point = GetRandomPoint(walls);
-            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != EntityType.Nothing)
             {
                 point = GetRandomPoint(walls);
             }
 
-            data[point.X, point.Y] = LevelData.EnemySpawn;
+            data[point.X, point.Y] = spawnedEnemy;
         }
 
-        private static void SetRandomDecoration(bool[,] walls, LevelData[,] data)
+
+        private static void SpawnDecorations(bool[,] walls, EntityType[,] data)
         {
             Point point = GetRandomPoint(walls);
-            while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+            while (walls[point.X, point.Y] || data[point.X, point.Y] != EntityType.Nothing)
             {
                 point = GetRandomPoint(walls);
             }
         }
 
-        private static void SetRandomPathBlockers(bool[,] walls, LevelData[,] data) //TODO THIS LATER
+        private static void SpawnPathBlockers(bool[,] walls, EntityType[,] data) //TODO THIS LATER
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++) //TODO UPPER set by preset
             {
                 Point point = GetRandomPoint(walls);
-                while (walls[point.X, point.Y] || data[point.X, point.Y] != LevelData.Nothing)
+                while (walls[point.X, point.Y] || data[point.X, point.Y] != EntityType.Nothing)
                 {
                     point = GetRandomPoint(walls);
                 }
 
-                data[point.X, point.Y] = LevelData.PathBlocker;
+                data[point.X, point.Y] = EntityType.Treestump;
             }
         }
 
@@ -422,6 +514,8 @@ namespace Wraithknight
             Random random = new Random();
             return new Point(random.Next(0, array.GetLength(0)), random.Next(0, array.GetLength(1)));
         }
+
+        #endregion
     }
 }
 /*
