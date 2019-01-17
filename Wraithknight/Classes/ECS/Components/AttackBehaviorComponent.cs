@@ -26,6 +26,7 @@ namespace Wraithknight
         public List<AttackComponent> AttackComponents = new List<AttackComponent>();
         public double RemainingAttackCooldownMilliseconds = 0;
         public DelayedAttackClass DelayedAttack;
+        public bool CurrentlyBlockingAttack;
 
         public AttackBehaviorComponent(List<AttackComponent> attackComponents)
         {

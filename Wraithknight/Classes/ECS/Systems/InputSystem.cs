@@ -12,13 +12,15 @@ namespace Wraithknight
     {
         private readonly ECS _ecs;
 
-        private HashSet<InputComponent> _components = new HashSet<InputComponent>();
+        private readonly HashSet<InputComponent> _components = new HashSet<InputComponent>();
         private Camera2D _camera;
+        private readonly InputAttackSubsystem _attackSubsystem;
 
         public InputSystem(ECS ecs, Camera2D camera)
         {
             _ecs = ecs;
             _camera = camera;
+            _attackSubsystem = new InputAttackSubsystem(ecs);
         }
 
         public override void RegisterComponents(ICollection<Entity> entities)
@@ -31,7 +33,9 @@ namespace Wraithknight
             foreach (var component in _components)
             {
                 if (component.Inactive) continue;
+                if (component.Blocked && component.BlockedTimer.Over) component.Blocked = false;
                 if (component.UserInput) ReadInput(component);
+
                 HandleInputLogic(component, gameTime);
             }
         }
@@ -43,6 +47,12 @@ namespace Wraithknight
 
         private void ReadInput(InputComponent component)
         {
+            if (component.Blocked)
+            {
+                ResetInput(component);
+                CheckBlockedTimer(component);
+                return;
+            }
             component.MovementDirection.X = 0;
             component.MovementDirection.Y = 0;
 
@@ -72,111 +82,31 @@ namespace Wraithknight
             component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
         }
 
+        private static void ResetInput(InputComponent component)
+        {
+            component.MovementDirection.X = 0;
+            component.MovementDirection.Y = 0;
+
+            component.PrimaryAttack = false;
+            component.SecondaryAttack = false;
+            component.SwitchWeapons = false;
+            component.Action = false;
+            component.Blink = false;
+        }
+
+        private static void CheckBlockedTimer(InputComponent component)
+        {
+            if (component.BlockedTimer.Over) component.Blocked = false;
+        }
+
         #region Logic
 
         private void HandleInputLogic(InputComponent component, GameTime gameTime)
         {
             MovementLogic(component);
-            AttackLogic(component, gameTime);
+            _attackSubsystem.AttackLogic(component, gameTime);
         }
-
-        #region Attack
-
-        private void AttackLogic(InputComponent input, GameTime gameTime) //TODO Breunig, maybe move all this down into another class? I dont like how cluttered all this is
-        {
-            if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
-            {
-                AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
-
-                if (HasDelayedAttack(attackBehavior))
-                {
-                    input.MovementDirection = Vector2.Zero;
-                    CountdownRemainingAttackDelay(attackBehavior, gameTime);
-                    TrySpawnDelayedAttack(input, attackBehavior, gameTime);
-                    return;
-                }
-                if (IsInAttackCooldown(attackBehavior))
-                {
-                    CountdownRemainingAttackCooldown(attackBehavior, gameTime);
-                }
-
-                if (!(input.PrimaryAttack || input.SecondaryAttack)) return;
-                if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
-
-                FindAndExecuteAttack(input, attackBehavior, gameTime);
-            }
-        }
-
-        private bool HasDelayedAttack(AttackBehaviorComponent attackBehavior)
-        {
-            return attackBehavior.DelayedAttack != null;
-        }
-
-        private void CountdownRemainingAttackDelay(AttackBehaviorComponent attackBehavior, GameTime gameTime)
-        {
-            attackBehavior.DelayedAttack.RemainingAttackDelayMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
-        }
-
-        private void TrySpawnDelayedAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
-        {
-            if (attackBehavior.DelayedAttack.RemainingAttackDelayMilliseconds <= 0)
-            {
-                SpawnAttack(attackBehavior.DelayedAttack.Cursor, attackBehavior, attackBehavior.DelayedAttack.Attack, gameTime);
-            }
-        }
-
-        private bool IsInAttackCooldown(AttackBehaviorComponent attackBehavior)
-        {
-            return attackBehavior.RemainingAttackCooldownMilliseconds > 0;
-        }
-
-        private void CountdownRemainingAttackCooldown(AttackBehaviorComponent attackBehavior, GameTime gameTime)
-        {
-            attackBehavior.RemainingAttackCooldownMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
-
-        }
-
-
-
-        private void FindAndExecuteAttack(InputComponent input , AttackBehaviorComponent attackBehavior, GameTime gameTime)
-        {
-            foreach (var attack in attackBehavior.AttackComponents)
-            {
-                if (AttackTriggered(input, attack)) // && same attackState 
-                {
-                    ExecuteAttack(input, attackBehavior, attack, gameTime);
-                    break;
-                }
-            }
-        }
-
-        private bool AttackTriggered(InputComponent input, AttackComponent attack)
-        {
-            return input.PrimaryAttack && attack.Type == AttackType.Primary || input.SecondaryAttack && attack.Type == AttackType.Secondary;
-        }
-
-        private void ExecuteAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
-        {
-            if (attack.AttackDelayMilliseconds > 0)
-            {
-                attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, input.CursorPoint);
-            }
-            else SpawnAttack(input.CursorPoint, attackBehavior, attack, gameTime);
-        }
-
-        private void SpawnAttack(Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
-        {
-            Vector2 cursorDelta = new Vector2(cursor.X, cursor.Y) - attack.SourcePos.Vector2;
-
-            _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile, 
-                position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian), 
-                speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed), 
-                gameTime: gameTime, allegiance: attack.Allegiance));
-            attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
-            attackBehavior.DelayedAttack = null;
-        }
-
-        #endregion
+       
 
         #region Movement
 

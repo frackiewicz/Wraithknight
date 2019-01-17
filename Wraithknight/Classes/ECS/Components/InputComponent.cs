@@ -11,6 +11,8 @@ namespace Wraithknight
     class InputComponent : BindableComponent
     {
         public readonly bool UserInput;
+        public bool Blocked;
+        public TimerComponent BlockedTimer = new TimerComponent(TimerType.Flag);
 
         public Vector2 MovementDirection = new Vector2(0, 0); //WASD
         public bool PrimaryAttack = false; //LMB
