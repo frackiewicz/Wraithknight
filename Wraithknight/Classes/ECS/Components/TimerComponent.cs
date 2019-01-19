@@ -24,6 +24,7 @@ namespace Wraithknight
         public TimerComponent(TimerType type)
         {
             Type = type;
+            CurrentTime = new GameTime();
         }
 
         public TimerComponent(TimerType type, GameTime currentTime, double targetLifespanInMilliseconds = 0)
@@ -33,10 +34,12 @@ namespace Wraithknight
             TargetTimeSpanMilliseconds = currentTime.TotalGameTime.TotalMilliseconds + targetLifespanInMilliseconds;
         }
 
-        public void SetTimer(GameTime currentTime, double targetLifespanInMilliseconds)
+        public void SetTimer(GameTime currentTime, double durationMilliseconds)
         {
             CurrentTime = currentTime;
-            TargetTimeSpanMilliseconds = currentTime.TotalGameTime.TotalMilliseconds + TargetTimeSpanMilliseconds;
+            TargetTimeSpanMilliseconds = CurrentTime.TotalGameTime.TotalMilliseconds + durationMilliseconds;
+            Console.WriteLine(CurrentTime.TotalGameTime.TotalMilliseconds);
+            Console.WriteLine(TargetTimeSpanMilliseconds);
         }
     }
 }

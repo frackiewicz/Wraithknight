@@ -10,6 +10,7 @@ namespace Wraithknight
     {
         public int MaxHealth;
         public int CurrentHealth;
+        public int ProcessedHealth; //TODO Replace calculations with this here so that the health system has more power over health
 
         public double InvincibilityTimeMilliseconds;
         public double RemainingInvincibilityTimeMilliseconds; //TODO Logic missing
@@ -20,6 +21,7 @@ namespace Wraithknight
         {
             MaxHealth = maxHealth;
             CurrentHealth = currentHealth == -1 ? MaxHealth : currentHealth;
+            ProcessedHealth = CurrentHealth;
             InvincibilityTimeMilliseconds = invincibilityTimeMilliseconds;
         }
     }

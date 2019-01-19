@@ -42,7 +42,6 @@ namespace Wraithknight
         public AnimationFrame GetAnimationFrame(GameTime currentTime) // This feels wrong
         {
             double elapsedMilliseconds = currentTime.TotalGameTime.TotalMilliseconds - StartTimeMilliseconds;
-            Functions_DebugWriter.WriteLine(elapsedMilliseconds.ToString());
             foreach (var animationFrame in Frames)
             {
                 elapsedMilliseconds -= animationFrame.DisplayTimeMilliseconds;

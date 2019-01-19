@@ -9,7 +9,7 @@ namespace Wraithknight
 {
     class InputAttackSubsystem
     {
-        private ECS _ecs;
+        private readonly ECS _ecs;
 
         public InputAttackSubsystem(ECS ecs)
         {
@@ -20,6 +20,8 @@ namespace Wraithknight
         {
             if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
+                Functions_DebugWriter.WriteLine(input.Blocked.ToString());
+                Functions_DebugWriter.WriteLine(input.BlockedTimer.CurrentTime.TotalGameTime.TotalMilliseconds.ToString() + " TO " + input.BlockedTimer.TargetTimeSpanMilliseconds);
                 AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
 
                 if (HasDelayedAttack(attackBehavior))
@@ -38,6 +40,8 @@ namespace Wraithknight
                 if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
 
                 FindAndStartAttack(input, attackBehavior, gameTime);
+
+
             }
         }
 

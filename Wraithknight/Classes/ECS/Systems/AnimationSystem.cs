@@ -69,7 +69,6 @@ namespace Wraithknight
         private static void ApplyAnimation(AnimationComponent component, GameTime gameTime)
         {
             component.BoundDrawComponent.SourceRec = component.CurrentAnimation.GetSourceRec(gameTime);
-            Functions_DebugWriter.WriteLine(component.BoundDrawComponent.SourceRec.ToString());
         }
 
         private static void ApplyMirroring(AnimationComponent component)
