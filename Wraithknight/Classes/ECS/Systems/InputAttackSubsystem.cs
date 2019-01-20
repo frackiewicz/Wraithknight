@@ -20,8 +20,6 @@ namespace Wraithknight
         {
             if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
-                Functions_DebugWriter.WriteLine(input.Blocked.ToString());
-                Functions_DebugWriter.WriteLine(input.BlockedTimer.CurrentTime.TotalGameTime.TotalMilliseconds.ToString() + " TO " + input.BlockedTimer.TargetTimeSpanMilliseconds);
                 AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
 
                 if (HasDelayedAttack(attackBehavior))
@@ -39,11 +37,11 @@ namespace Wraithknight
                 if (!(input.PrimaryAttack || input.SecondaryAttack)) return;
                 if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
 
-                FindAndStartAttack(input, attackBehavior, gameTime);
-
-
+                FindAndStartTriggeredAttack(input, attackBehavior, gameTime);
             }
         }
+
+        #region Delay
 
         private bool HasDelayedAttack(AttackBehaviorComponent attackBehavior)
         {
@@ -63,6 +61,10 @@ namespace Wraithknight
             }
         }
 
+        #endregion
+
+        #region Cooldown
+
         private bool IsInAttackCooldown(AttackBehaviorComponent attackBehavior)
         {
             return attackBehavior.RemainingAttackCooldownMilliseconds > 0;
@@ -74,9 +76,9 @@ namespace Wraithknight
 
         }
 
+        #endregion
 
-
-        private void FindAndStartAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
+        private void FindAndStartTriggeredAttack(InputComponent input, AttackBehaviorComponent attackBehavior, GameTime gameTime)
         {
             foreach (var attack in attackBehavior.AttackComponents)
             {
