@@ -54,7 +54,7 @@ namespace Wraithknight
         public ECS(Camera2D camera)
         {
             _camera = camera;
-            _createEntity = new ECS_CreateEntity(this, _actors);
+            ECS_CreateEntity.RegisterECS(this);
         }
 
         public void StartupRoutine(ecsBootRoutine routine)
@@ -134,12 +134,16 @@ namespace Wraithknight
         #endregion
 
         #region EntityManagement
-
-        private readonly ECS_CreateEntity _createEntity;
         //TODO Breunig lmao
         public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral)
         {
-            return _createEntity.CreateEntity(type, position, speed, gameTime, allegiance);
+            Entity entity = ECS_CreateEntity.CreateEntity(type, position, speed, gameTime, allegiance);
+
+            if (type == EntityType.Hero || type == EntityType.Forest_Wolf || type == EntityType.Forest_Knight)
+            {
+                _actors.Add(entity);
+            }
+            return entity;
         }
 
         private void RegisterAllEntities()

@@ -100,7 +100,7 @@ namespace Wraithknight
             if (attack.AttackDelayMilliseconds > 0)
             {
                 attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, input.CursorPoint);
-                if (attack.BlockInput) BlockInput(input, gameTime, attack.AttackCooldownMilliseconds);
+                if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
             }
             else SpawnAttack(input, input.CursorPoint, attackBehavior, attack, gameTime);
         }
@@ -115,7 +115,7 @@ namespace Wraithknight
                 gameTime: gameTime, allegiance: attack.Allegiance));
 
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
-            if (attack.BlockInput) BlockInput(input, gameTime, attack.AttackCooldownMilliseconds);
+            if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
 
             attackBehavior.DelayedAttack = null;
         }
