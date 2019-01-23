@@ -16,7 +16,6 @@ namespace Wraithknight
             }
             catch (InvalidCastException)
             {
-                Console.WriteLine("Wrong cast: " + component.GetType() + " to " + typeof(T));
                 return default(T);
             }
         }
@@ -29,7 +28,6 @@ namespace Wraithknight
             }
             catch (InvalidCastException)
             {
-                Console.WriteLine("Wrong cast: " + system.GetType() + " to " + typeof(T));
                 return default(T);
             }
         }

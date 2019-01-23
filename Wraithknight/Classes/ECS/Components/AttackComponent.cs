@@ -22,7 +22,6 @@ namespace Wraithknight
         public Vector2 PosOffset;
         public double PosOffsetInDirection;
 
-        public int Knockback;
         public int StartSpeed;
         public int AttackState; //for switching equipment?
         public double AttackDelayMilliseconds;
@@ -31,7 +30,9 @@ namespace Wraithknight
         public bool BlockInput;
         public double BlockInputDurationMilliseconds;
 
-        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0)
+        public int Knockback;
+
+        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int knockback = 0)
         {
             MultiBinding = true;
             Projectile = projectile;
@@ -46,6 +47,7 @@ namespace Wraithknight
             BlockInput = blockInput;
             if (BlockInput && blockInputDurationMilliseconds == 0) BlockInputDurationMilliseconds = AttackDelayMilliseconds + AttackCooldownMilliseconds;
             else BlockInputDurationMilliseconds = blockInputDurationMilliseconds;
+            Knockback = knockback;
         }
     }
 }

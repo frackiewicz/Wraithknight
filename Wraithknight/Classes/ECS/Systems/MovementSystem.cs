@@ -69,15 +69,16 @@ namespace Wraithknight
 
         private static void AccelerateUntilMaxSpeed(MovementComponent movement, GameTime gameTime)
         {
-            movement.Speed.AddVector2(movement.Acceleration * (float) gameTime.ElapsedGameTime.TotalSeconds);
-            if (movement.MaxSpeed != 0.0f) //default
+            if (movement.MaxSpeed != 0.0f) //has a max speed
             {
-                if (movement.Speed.Polar.Length >= movement.MaxSpeed)
+                double delta = movement.MaxSpeed - movement.Speed.Polar.Length;
+                
+                if (delta >= 0)
                 {
-                    movement.Speed.ChangePolarLength(movement.MaxSpeed);
+                    movement.Speed.AddVector2(movement.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
             }
-            
+
         }
 
         private static void ApplySpeed(MovementComponent movement, GameTime gameTime)

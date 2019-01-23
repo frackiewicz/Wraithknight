@@ -111,11 +111,13 @@ namespace Wraithknight
 
             _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile,
                 position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian),
-                speed: new Coord2(new Vector2(cursor.X - attack.SourcePos.X, cursor.Y - attack.SourcePos.Y)).ChangePolarLength(attack.StartSpeed),
+                speed: new Coord2(cursorDelta).ChangePolarLength(attack.StartSpeed),
                 gameTime: gameTime, allegiance: attack.Allegiance));
 
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
+
             if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
+            if (attack.Knockback != 0) ApplyKnockback(input, attack.Knockback, cursorDelta);
 
             attackBehavior.DelayedAttack = null;
         }
@@ -125,6 +127,14 @@ namespace Wraithknight
             input.Blocked = true;
             input.BlockedTimer.SetTimer(gameTime, milliseconds);
         }
-        
+
+        private void ApplyKnockback(InputComponent input, int knockback, Vector2 cursorDelta)
+        {
+            if (input.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
+            {
+                MovementComponent movement = binding as MovementComponent;
+                movement.Speed.AddVector2(new Coord2(-cursorDelta).ChangePolarLength(knockback).Cartesian);
+            }
+        }
     }
 }

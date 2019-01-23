@@ -8,17 +8,12 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    public class Coord2
+    public struct Coord2
     {
         public Polar2 Polar;
         public Vector2 Cartesian;
 
         #region Constructors
-        public Coord2()
-        {
-            Polar = new Polar2(0, 0);
-            Cartesian = new Vector2(0, 0);
-        }
 
         public Coord2 (Polar2 polar)
         {
@@ -31,6 +26,7 @@ namespace Wraithknight
             Polar = PolarFromCartesian(cartesian);
             Cartesian = cartesian;
         }
+
         #endregion
 
         public Coord2 ChangePolarLength(float newLength)
@@ -124,7 +120,7 @@ namespace Wraithknight
         }
     }
 
-    public class Polar2
+    public struct Polar2
     {
         public double Length;
         public double Angle;
@@ -143,6 +139,8 @@ namespace Wraithknight
 
         public Polar2(Vector2 cartesian)
         {
+            Length = 0;
+            Angle = 0;
             ChangeLengthFromCartesian(cartesian);
             ChangeAngleFromCartesian(cartesian);
         }
@@ -181,7 +179,7 @@ namespace Wraithknight
         public bool FrictionWhileAccelerating;
 
 
-        public MovementComponent(Vector2Ref position, Coord2 speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileAccelerating = false)
+        public MovementComponent(Vector2Ref position, Coord2? speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileAccelerating = false)
         {
             Position = position;
             Speed = speed ?? new Coord2();

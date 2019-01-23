@@ -38,8 +38,6 @@ namespace Wraithknight
         {
             CurrentTime = currentTime;
             TargetTimeSpanMilliseconds = CurrentTime.TotalGameTime.TotalMilliseconds + durationMilliseconds;
-            Console.WriteLine(CurrentTime.TotalGameTime.TotalMilliseconds);
-            Console.WriteLine(TargetTimeSpanMilliseconds);
         }
     }
 }

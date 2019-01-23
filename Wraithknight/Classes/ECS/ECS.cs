@@ -135,7 +135,7 @@ namespace Wraithknight
 
         #region EntityManagement
         //TODO Breunig lmao
-        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2 speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral)
+        public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2? speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral)
         {
             Entity entity = ECS_CreateEntity.CreateEntity(type, position, speed, gameTime, allegiance);
 
