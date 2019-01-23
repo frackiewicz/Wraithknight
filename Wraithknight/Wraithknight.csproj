@@ -55,7 +55,7 @@
     <Compile Include="Classes\ECS\Components\StateComponent.cs" />
     <Compile Include="Classes\ECS\ECS_CreateEntity.cs" />
     <Compile Include="Classes\ECS\Systems\AnimationSystem.cs" />
-    <Compile Include="Classes\ECS\Systems\CollisionPhysicalSubsystem.cs" />
+    <Compile Include="Classes\ECS\Systems\CollisionPhysicsSubsystem.cs" />
     <Compile Include="Classes\ECS\Systems\InputAttackSubsystem.cs" />
     <Compile Include="Classes\ECS\Systems\IntelligenceSystem.cs" />
     <Compile Include="Classes\ECS\Systems\StateSystem.cs" />

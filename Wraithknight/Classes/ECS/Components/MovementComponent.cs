@@ -171,7 +171,7 @@ namespace Wraithknight
         public Vector2 OldPosition;
 
         public Coord2 Speed;
-        public Vector2 Acceleration;
+        public Coord2 Acceleration;
 
         public float AccelerationBase = 0;
         public float MaxSpeed = 0.0f;
@@ -179,7 +179,7 @@ namespace Wraithknight
         public bool FrictionWhileAccelerating;
 
 
-        public MovementComponent(Vector2Ref position, Coord2? speed = null, Vector2 acceleration = new Vector2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileAccelerating = false)
+        public MovementComponent(Vector2Ref position, Coord2? speed = null, Coord2 acceleration = new Coord2(), float accelerationBase = 0.0f, float maxSpeed = 0.0f, float friction = 0.0f, bool frictionWhileAccelerating = false)
         {
             Position = position;
             Speed = speed ?? new Coord2();

@@ -117,7 +117,7 @@ namespace Wraithknight
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
 
             if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
-            if (attack.Knockback != 0) ApplyKnockback(input, attack.Knockback, cursorDelta);
+            if (attack.SelfKnockback != 0) ApplyKnockback(input, attack.SelfKnockback, cursorDelta);
 
             attackBehavior.DelayedAttack = null;
         }
@@ -133,7 +133,7 @@ namespace Wraithknight
             if (input.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
             {
                 MovementComponent movement = binding as MovementComponent;
-                movement.Speed.AddVector2(new Coord2(-cursorDelta).ChangePolarLength(knockback).Cartesian);
+                movement.Speed.SetVector2(new Coord2(-cursorDelta).ChangePolarLength(knockback).Cartesian);
             }
         }
     }

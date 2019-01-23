@@ -94,6 +94,7 @@ namespace Wraithknight
 
             if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
             if (target.Power <= 0) _ecs.KillGameObject(target.RootID);
+            else ApplyKnockback(actor, target);
         }
 
         private void ProjectileOnHealth(ProjectileComponent actor, HealthComponent target)
@@ -127,11 +128,26 @@ namespace Wraithknight
 
             if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
             if (target.CurrentHealth <= 0) _ecs.KillGameObject(target.RootID);
-            else if (!actor.IsPhasing) //projectile didnt penetrate because target survived
+            else
             {
-                _ecs.KillGameObject(actor.RootID);
+                if (!actor.IsPhasing) _ecs.KillGameObject(actor.RootID); //projectile didnt penetrate
+                ApplyKnockback(actor, target);
             }
         }
+
+        private void ApplyKnockback(ProjectileComponent actor, BindableComponent target)
+        {
+            if (actor.Bindings.TryGetValue(typeof(MovementComponent), out var actorBinding))
+            {
+                if (target.Bindings.TryGetValue(typeof(MovementComponent), out var targetBinding))
+                {
+                    MovementComponent actorMovement = actorBinding as MovementComponent;
+                    MovementComponent targetMovement = targetBinding as MovementComponent;
+                    targetMovement.Speed.SetVector2(new Coord2(actorMovement.Speed.Cartesian).ChangePolarLength(actor.Knockback).Cartesian);
+                }
+            }
+        }
+            
 
 
     }

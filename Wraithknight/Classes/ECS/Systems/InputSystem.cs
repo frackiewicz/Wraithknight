@@ -116,8 +116,8 @@ namespace Wraithknight
             {
                 MovementComponent movement = binding as MovementComponent;
 
-                movement.Acceleration.X = input.MovementDirection.X * movement.AccelerationBase;
-                movement.Acceleration.Y = input.MovementDirection.Y * movement.AccelerationBase;
+                movement.Acceleration.Cartesian.X = input.MovementDirection.X * movement.AccelerationBase;
+                movement.Acceleration.Cartesian.Y = input.MovementDirection.Y * movement.AccelerationBase;
             }
         }
 

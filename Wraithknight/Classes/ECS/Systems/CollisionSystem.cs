@@ -32,7 +32,7 @@ namespace Wraithknight
         private CollisionComponent[,] _wallCollisions; //can handle only 1 component per tile
 
         private readonly CollisionLogicSubsystem _logicSubsystem; //TODO Breunig, maybe also move physical into a subsystem to clean up this mess?
-        private readonly CollisionPhysicalSubsystem _physicalSubsystem;
+        private readonly CollisionPhysicsSubsystem _physicsSubsystem;
 
         #region General System Stuff
 
@@ -40,7 +40,7 @@ namespace Wraithknight
         {
             _ecs = ecs;
             _logicSubsystem = new CollisionLogicSubsystem(ecs);
-            _physicalSubsystem = new CollisionPhysicalSubsystem();
+            _physicsSubsystem = new CollisionPhysicsSubsystem();
         }
 
 
@@ -67,7 +67,7 @@ namespace Wraithknight
             _moveableCollisionComponents.Clear();
             _collisionComponents.Clear();
             _logicSubsystem.ResetSystem();
-            _physicalSubsystem.ResetSystem();
+            _physicsSubsystem.ResetSystem();
         }
 
         public HashSet<CollisionComponent> GetCollisionComponents()
@@ -98,7 +98,7 @@ namespace Wraithknight
                     if (target.Inactive) continue;
                     if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
-                        Functions_Draw.DrawDebug(CollisionPhysicalSubsystem.CalculateMinkowskiDifference(actor.Collision.CollisionRectangle, target.CollisionRectangle));
+                        Functions_Draw.DrawDebug(CollisionPhysicsSubsystem.CalculateMinkowskiDifference(actor.Collision.CollisionRectangle, target.CollisionRectangle));
                     }
                 }
             }
@@ -118,7 +118,7 @@ namespace Wraithknight
                     if (target.Inactive) continue;
                     if (actor.Movement.IsMoving && !actor.Collision.Equals(target))
                     {
-                        if (actor.Collision.IsPhysical && target.IsPhysical) _physicalSubsystem.HandlePhysicalCollision(actor, target, gameTime, false);
+                        if (actor.Collision.IsPhysical && target.IsPhysical) _physicsSubsystem.HandlePhysicalCollision(actor, target, gameTime, false);
                         else _logicSubsystem.HandleCollision(actor.Collision, target, gameTime);
                     }
                 }
@@ -180,7 +180,7 @@ namespace Wraithknight
 
                     else if (_wallCollisions[x, y] != null)
                     {
-                        _physicalSubsystem.HandlePhysicalCollision(actor, _wallCollisions[x, y], gameTime, swept);
+                        _physicsSubsystem.HandlePhysicalCollision(actor, _wallCollisions[x, y], gameTime, swept);
                     }
                 }
             }

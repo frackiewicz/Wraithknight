@@ -18,7 +18,7 @@ namespace Wraithknight
         Pass //useful for sticky floors, event triggers etc
     }
 
-    class CollisionComponent : BindableComponent //TODO implement PositionRef here?
+    class CollisionComponent : BindableComponent
     {
         public CollisionBehavior Behavior;
         public AABB CollisionRectangle;

@@ -54,7 +54,11 @@ namespace Wraithknight
 
         private static void ApplyInertia(MovementComponent movement, GameTime gameTime)
         {
-            if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileAccelerating || movement.Acceleration.Equals(Vector2.Zero)))
+            if (movement.RootType == EntityType.Hero)
+            {
+                Functions_DebugWriter.WriteLine(movement.Acceleration.Cartesian.ToString());
+            }
+            if (movement.Speed.Polar.Length > 0 && (movement.FrictionWhileAccelerating || movement.Acceleration.Cartesian.Equals(Vector2.Zero) || movement.Speed.Polar.Length > movement.MaxSpeed))
             {
                 if (movement.Speed.Polar.Length - movement.Friction * (float)gameTime.ElapsedGameTime.TotalSeconds < 0 )
                 {
@@ -75,7 +79,13 @@ namespace Wraithknight
                 
                 if (delta >= 0)
                 {
-                    movement.Speed.AddVector2(movement.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    movement.Speed.AddVector2(movement.Acceleration.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                }
+                else
+                {
+                    double previousLength = movement.Speed.Polar.Length;
+                    movement.Speed.AddVector2(movement.Acceleration.Cartesian * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    movement.Speed.ChangePolarLength(previousLength);
                 }
             }
 
@@ -90,8 +100,8 @@ namespace Wraithknight
 
         private void SetMovementStates(MovementComponent movement)
         {
-            if(movement.State == null) return;
-            StateComponent stateComponent = movement.State;
+            if(movement.CurrentEntityState == null) return;
+            StateComponent stateComponent = movement.CurrentEntityState;
             if (movement.IsMoving)
             {
                 if (stateComponent.CurrentStatePriority < 1)

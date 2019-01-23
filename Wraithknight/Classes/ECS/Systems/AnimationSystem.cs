@@ -23,9 +23,9 @@ namespace Wraithknight
         {
             foreach (var component in _animationComponents)
             {
-                if (component.State.RecentlyChanged)
+                if (component.CurrentEntityState.RecentlyChanged)
                 {
-                    StartAnimation(component, component.State.CurrentState, gameTime);
+                    StartAnimation(component, component.CurrentEntityState.CurrentState, gameTime);
                 }
                 ProcessAnimation(component, gameTime);
                 if (component.CurrentAnimation.AllowMirroring) ApplyMirroring(component);
@@ -73,7 +73,7 @@ namespace Wraithknight
 
         private static void ApplyMirroring(AnimationComponent component)
         {
-            if (component.State.Direction == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
+            if (component.CurrentEntityState.Direction == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
             else component.BoundDrawComponent.FlipHorizontally = false;
         }
     }

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    class CollisionPhysicalSubsystem //TODO Cleanup necessary lmao
+    class CollisionPhysicsSubsystem //TODO Cleanup necessary lmao
     {
         public void ResetSystem()
         {

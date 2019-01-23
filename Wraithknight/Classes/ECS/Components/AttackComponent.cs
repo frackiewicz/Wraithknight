@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -30,9 +31,9 @@ namespace Wraithknight
         public bool BlockInput;
         public double BlockInputDurationMilliseconds;
 
-        public int Knockback;
+        public int SelfKnockback;
 
-        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int knockback = 0)
+        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int selfKnockback = 0)
         {
             MultiBinding = true;
             Projectile = projectile;
@@ -47,7 +48,7 @@ namespace Wraithknight
             BlockInput = blockInput;
             if (BlockInput && blockInputDurationMilliseconds == 0) BlockInputDurationMilliseconds = AttackDelayMilliseconds + AttackCooldownMilliseconds;
             else BlockInputDurationMilliseconds = blockInputDurationMilliseconds;
-            Knockback = knockback;
+            SelfKnockback = selfKnockback;
         }
     }
 }

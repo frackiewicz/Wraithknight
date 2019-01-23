@@ -18,7 +18,7 @@ namespace Wraithknight
         public int RootID;
         public EntityType RootType;
         public Allegiance Allegiance; //RootAllegiance
-        public StateComponent State;
+        public StateComponent CurrentEntityState;
 
         public virtual void Activate() { Inactive = false; }
         public virtual void Deactivate() { Inactive = true; }

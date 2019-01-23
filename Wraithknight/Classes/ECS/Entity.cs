@@ -39,13 +39,13 @@ namespace Wraithknight
             else Components.Add(component.GetType(), component);
         }
 
-        public void AddBindableComponent(BindableComponent component, Component bind)
+        public void AddComponent(BindableComponent component, Component bind) 
         {
             component.AddBinding(bind);
             AddComponent(component);
         }
 
-        public void AddBindableComponent(BindableComponent component, ICollection<Component> binds)
+        public void AddComponent(BindableComponent component, ICollection<Component> binds) //TODO Ellipse with PARAMS ?
         {
             foreach (var bind in binds)
             {
@@ -75,7 +75,7 @@ namespace Wraithknight
             component.RootType = Type;
             if (Components.TryGetValue(typeof(StateComponent), out var stateComponent))
             {
-                component.State = stateComponent as StateComponent;
+                component.CurrentEntityState = stateComponent as StateComponent;
             }
         }
 
