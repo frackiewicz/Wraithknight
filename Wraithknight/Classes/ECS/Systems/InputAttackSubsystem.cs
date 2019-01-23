@@ -117,7 +117,7 @@ namespace Wraithknight
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
 
             if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
-            if (attack.SelfKnockback != 0) ApplyKnockback(input, attack.SelfKnockback, cursorDelta);
+            if (attack.SelfKnockback != 0) ApplySelfKnockback(input, attack.SelfKnockback, cursorDelta);
 
             attackBehavior.DelayedAttack = null;
         }
@@ -128,7 +128,7 @@ namespace Wraithknight
             input.BlockedTimer.SetTimer(gameTime, milliseconds);
         }
 
-        private void ApplyKnockback(InputComponent input, int knockback, Vector2 cursorDelta)
+        private void ApplySelfKnockback(InputComponent input, int knockback, Vector2 cursorDelta)
         {
             if (input.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
             {
