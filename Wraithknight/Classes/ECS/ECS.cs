@@ -15,29 +15,8 @@ namespace Wraithknight
     internal enum ecsBootRoutine
     {
         Testing,
-        Presenting
-    }
-
-    internal enum EntityType
-    {
-        Nothing, //PLACEHOLDER FOR MAPGEN
-        Hero,
-        
-        //Enemies
-        Forest_Knight,
-        Forest_Wolf,
-
-        //Objects
-        Wall,
-        Floor,
-
-        Mushroom,
-
-        Treestump,
-
-        //Projectiles
-        HeroKnightSlashWeak,
-        HeroKnightSlashStrong
+        Presenting,
+        Generation
     }
 
     class ECS
@@ -273,6 +252,8 @@ namespace Wraithknight
 
         #endregion
 
+        #region LevelManagement
+
         public void ProcessLevel(Level level)
         {
             for (int x = 0; x < level.Walls.GetLength(0); x++)
@@ -303,5 +284,7 @@ namespace Wraithknight
         {
             GetSystem<CollisionSystem>().RegisterLevel(level);
         }
+
+        #endregion
     }
 }

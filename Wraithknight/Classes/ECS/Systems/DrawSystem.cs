@@ -77,7 +77,7 @@ namespace Wraithknight
         private void DrawComponent(DrawComponent component)
         {
             if (component.Inactive) return;
-            if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible
+            if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible TODO Give the drawrec a buffer, that maybe removes the pop ins
             {
                 UpdatePosition(component);
                 Functions_Draw.Draw(component);

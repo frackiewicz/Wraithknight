@@ -31,7 +31,7 @@ namespace Wraithknight
         private Level _level;
         private CollisionComponent[,] _wallCollisions; //can handle only 1 component per tile
 
-        private readonly CollisionLogicSubsystem _logicSubsystem; //TODO Breunig, maybe also move physical into a subsystem to clean up this mess?
+        private readonly CollisionLogicSubsystem _logicSubsystem;
         private readonly CollisionPhysicsSubsystem _physicsSubsystem;
 
         #region General System Stuff
@@ -48,7 +48,6 @@ namespace Wraithknight
         {
             CoupleComponent(_collisionComponents, entities);
             BindMovementComponents();
-            if(_level != null) MapWalls();
         }
 
         private void BindMovementComponents()
@@ -132,9 +131,8 @@ namespace Wraithknight
         public void RegisterLevel(Level level)
         {
             _level = level;
-            _wallCollisions = new CollisionComponent[level.Walls.GetLength(0),level.Walls.GetLength(1)];
+            _wallCollisions = new CollisionComponent[level.Walls.GetLength(0), level.Walls.GetLength(1)];
 
-            //Filter _collisionComponents for walls and put them into the array
             MapWalls();
         }
 

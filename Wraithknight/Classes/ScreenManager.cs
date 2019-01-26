@@ -41,6 +41,10 @@ namespace Wraithknight
             {
                 FlushAndLoad(new ScreenGame(this));
             }
+            else if (Flags.BootRoutine == BootRoutine.Generation)
+            {
+
+            }
             #endregion
         }
 

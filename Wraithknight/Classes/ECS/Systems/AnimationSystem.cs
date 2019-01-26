@@ -34,10 +34,15 @@ namespace Wraithknight
 
         public override void Reset()
         {
+            _animationComponents.Clear();
         }
 
         private static void StartAnimation(AnimationComponent component, EntityState trigger, GameTime gameTime) //for now just randomize it
         {
+            if (component.RootType == EntityType.Forest_Knight)
+            {
+
+            }
             List<Animation> animations = component.Animations.FindAll(a => a.Trigger == trigger);
             Random random = new Random();
             component.CurrentAnimation = animations[random.Next(0, animations.Count - 1)];

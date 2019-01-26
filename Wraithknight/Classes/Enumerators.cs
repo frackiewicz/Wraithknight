@@ -9,7 +9,8 @@ namespace Wraithknight
     public enum BootRoutine
     {
         Game,
-        TestingRoom
+        TestingRoom,
+        Generation
     }
 
     public enum Direction
@@ -22,11 +23,6 @@ namespace Wraithknight
         DownLeft,
         Left,
         UpLeft
-    }
-
-    public enum AiType
-    {
-        Simple
     }
 
     public enum Allegiance

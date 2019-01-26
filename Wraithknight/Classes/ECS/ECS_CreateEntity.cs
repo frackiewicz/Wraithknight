@@ -8,7 +8,29 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wraithknight
 {
-    //TODO idunno i feel real bad about this
+    internal enum EntityType
+    {
+        Nothing, //PLACEHOLDER FOR MAPGEN
+        Hero,
+
+        //Enemies
+        Forest_Knight,
+        Forest_Wolf,
+        Forest_Archer,
+
+        //Objects
+        Wall,
+        Floor,
+
+        Mushroom,
+
+        Treestump,
+
+        //Projectiles
+        HeroKnightSlashWeak,
+        HeroKnightSlashStrong
+    }
+
     static class ECS_CreateEntity
     {
         private static ECS _ecs;
@@ -58,7 +80,8 @@ namespace Wraithknight
                         new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 2000, attackCooldownMilliseconds: 1500)
                     }));
                     entity.AddComponent(new HealthComponent(20), entity.GetComponent<MovementComponent>());
-                    entity.AddComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16), tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestknightIdle"), drawRec: new AABB(0, 0, 64, 64), scale: new Vector2(1,1), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), entity.Components[typeof(DrawComponent)]);
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                     entity.AddComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                     List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
@@ -84,6 +107,11 @@ namespace Wraithknight
                     orders.Add(new IntelligenceOrder(EntityType.Hero, 50, OrderType.Null, 1, 250, true));
                     orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                     entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), entity.Components[typeof(InputComponent)]);
+                    break;
+                }
+                case EntityType.Forest_Archer:
+                {
+
                     break;
                 }
 

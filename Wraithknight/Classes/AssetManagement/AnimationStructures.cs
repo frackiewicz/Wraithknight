@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
-    static class AnimationStructures //TODO Breunig talk about this
+    static class AnimationStructures 
     {
         /*
          * maybe also add an Identifier library for states?
@@ -19,6 +19,13 @@ namespace Wraithknight
 
             switch (type)
             {
+                case EntityType.Forest_Knight:
+                {
+                    frameSize = new Point(64, 64);
+                    animationList.Add(new Animation(Assets.GetTexture("forestknightRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 8, 150));
+                    animationList.Add(new Animation(Assets.GetTexture("forestknightIdle"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 4, 500));
+                    break;
+                }
                 case EntityType.Forest_Wolf:
                 {
                     frameSize = new Point(64,32);

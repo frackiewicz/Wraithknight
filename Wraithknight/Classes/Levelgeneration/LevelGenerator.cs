@@ -143,7 +143,7 @@ namespace Wraithknight
 
                 MinRoomPercent = 10;
                 MaxRoomPercent = 15;
-                TotalEnemySpawnBudget = 25;
+                TotalEnemySpawnBudget = 100;
             }
         }
 

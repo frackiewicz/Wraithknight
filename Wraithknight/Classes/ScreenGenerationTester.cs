@@ -7,28 +7,25 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Wraithknight
+namespace Wraithknight.Classes
 {
-    class ScreenGame : Screen
+    class ScreenGenerationTester : Screen
     {
         private readonly ECS _ecs;
         private readonly DebugDrawer _debugDrawer;
         private readonly Camera2D _camera;
         private GameTime _internalGameTime = new GameTime();
 
-        private Entity _hero;
-
         private LevelGenerator _levelGenerator = new LevelGenerator();
         private Level _currentLevel;
 
-        public ScreenGame(ScreenManager screenManager) : base(screenManager)
+        public ScreenGenerationTester(ScreenManager screenManager) : base(screenManager)
         {
-            _camera = new Camera2D(screenManager.Graphics.GraphicsDevice) {FollowingHero = true};
+            _camera = new Camera2D(screenManager.Graphics.GraphicsDevice) { FollowingHero = true };
 
             _ecs = new ECS(_camera);
             _ecs.StartupRoutine(ecsBootRoutine.Presenting);
             _debugDrawer = new DebugDrawer(_ecs);
-            _hero = _ecs.GetHero();
 
             _levelGenerator.ApplyPreset(LevelPreset.Forest);
         }
@@ -50,7 +47,7 @@ namespace Wraithknight
             if (Flags.Debug) _debugDrawer.Draw();
 
             _screenManager.SpriteBatch.End();
-            if(Flags.Debug) DrawDebugText();
+            if (Flags.Debug) DrawDebugText();
             return this;
         }
 
@@ -59,7 +56,6 @@ namespace Wraithknight
             _currentLevel = _levelGenerator.GenerateLevel();
             _ecs.PurgeForNextLevel();
             _ecs.ProcessLevel(_currentLevel);
-            _hero = _ecs.GetHero();
             return this;
         }
 
@@ -86,7 +82,7 @@ namespace Wraithknight
                 Flags.ShowDebuggingText = true;
                 Flags.ShowMovementCenters = true;
             }
-            
+
         }
 
         public void DrawDebugText() //TODO move into debugdrawer?
@@ -111,7 +107,10 @@ namespace Wraithknight
             if (InputReader.IsKeyTriggered(Keys.F3)) Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
             if (InputReader.IsKeyTriggered(Keys.F4)) Flags.ShowDebuggingText = !Flags.ShowDebuggingText;
             if (InputReader.IsKeyTriggered(Keys.F5)) Flags.ShowMovementCenters = !Flags.ShowMovementCenters;
-            if (InputReader.IsKeyPressed(Keys.F10)) Functions_Draw.Draw("Error", Assets.GetFont("Test"), new Vector2(100, 100));
+
+            if (InputReader.IsKeyTriggered(Keys.B))
+            {
+            }
 
             if (InputReader.IsKeyTriggered(Keys.N)) //TODO Create GenerationTesterScreen to test generation lmao
             {
@@ -119,6 +118,14 @@ namespace Wraithknight
                 _ecs.PurgeForNextLevel();
                 _ecs.ProcessLevel(_currentLevel);
             }
+
+            if (InputReader.IsKeyTriggered(Keys.M))
+            {
+                _currentLevel = _levelGenerator.GenerateLevel();
+                _ecs.PurgeForNextLevel();
+                _ecs.ProcessLevel(_currentLevel);
+            }
+
             SimpleCameraMovement(gameTime);
 
             return this;
@@ -126,25 +133,10 @@ namespace Wraithknight
 
         private void SimpleCameraMovement(GameTime gameTime)
         {
-            if (InputReader.IsKeyTriggered(Keys.Space)) _camera.FollowingHero = !_camera.FollowingHero;
-            if (!_camera.FollowingHero)
-            {
-                if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y -= 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-                if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y += 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-                if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-                if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            }
-            else
-            {
-                if(_hero != null && _hero.Components.TryGetValue(typeof(DrawComponent), out var component))
-                {
-                    DrawComponent heroMovement = component as DrawComponent;
-                    _camera.TargetPosition.X = heroMovement.DrawRec.Center.X;
-                    _camera.TargetPosition.Y = heroMovement.DrawRec.Center.Y;
-                }
-            }
-
-
+            if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
 
             if (InputReader.IsScrollingUp()) _camera.TargetZoom += 1;
             if (InputReader.IsScrollingDown()) _camera.TargetZoom -= 1;
@@ -173,13 +165,7 @@ namespace Wraithknight
 
         private void OpenMenuScreen()
         {
-            _screenManager.AddScreen(new ScreenGameMenu(_screenManager, this));
-        }
-
-        public void Restart()
-        {
-            _ecs.PurgeForNextLevel();
-            LoadContent();
+            _screenManager.AddScreen(new ScreenGameMenu(_screenManager));
         }
     }
 }
