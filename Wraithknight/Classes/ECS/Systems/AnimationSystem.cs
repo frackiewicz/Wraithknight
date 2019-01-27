@@ -81,5 +81,7 @@ namespace Wraithknight
             if (component.CurrentEntityState.Direction == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
             else component.BoundDrawComponent.FlipHorizontally = false;
         }
+
+
     }
 }

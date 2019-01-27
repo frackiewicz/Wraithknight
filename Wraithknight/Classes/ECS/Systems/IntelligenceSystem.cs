@@ -73,6 +73,7 @@ namespace Wraithknight
         {
             InputComponent input = null;
             if(intelligence.Bindings.TryGetValue(typeof(InputComponent), out var binding)) input = binding as InputComponent;
+            if (input.Blocked) return;
 
             intelligence.State = order.Type;
 
@@ -103,7 +104,6 @@ namespace Wraithknight
             if (order.Type == OrderType.Attack1) input.PrimaryAttack = false;
             if (order.Type == OrderType.Attack2) input.SecondaryAttack = false;
             if (order.Type == OrderType.Follow || order.Type == OrderType.Move) input.MovementDirection = Vector2.Zero;
-
         }
 
         private void ResetInputs(IntelligenceComponent intelligence)

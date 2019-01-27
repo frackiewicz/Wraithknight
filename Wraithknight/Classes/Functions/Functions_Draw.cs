@@ -38,9 +38,11 @@ namespace Wraithknight
         {
             _spriteBatch.Draw(
                 sprite.Texture,
-                position: MakeVector2(sprite.DrawRec.X, sprite.DrawRec.Y),
+                position: sprite.DrawRec.Center,
                 sourceRectangle: sprite.SourceRec,
                 scale: sprite.Scale,
+                rotation: sprite.Rotation,
+                origin: sprite.Origin,
                 color: sprite.Tint * 1,
                 layerDepth: sprite.LayerDepth - 0.000000001f * sprite.DrawRec.Bottom,
                 effects: sprite.FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None);

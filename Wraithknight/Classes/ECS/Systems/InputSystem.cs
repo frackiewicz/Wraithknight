@@ -33,8 +33,15 @@ namespace Wraithknight
             foreach (var component in _components)
             {
                 if (component.Inactive) continue;
-                if (component.Blocked && component.BlockedTimer.Over) component.Blocked = false;
-                if (component.UserInput) ReadInput(component);
+
+                if (BlockedTimerIsOver(component)) component.Blocked = false;
+                if (!component.Blocked)
+                {
+                    if (component.UserInput) ReadInput(component);
+                    //else handled by IntelligenceSystem
+                }
+                else ResetInput(component);
+
 
                 HandleInputLogic(component, gameTime);
             }
@@ -47,12 +54,6 @@ namespace Wraithknight
 
         private void ReadInput(InputComponent component)
         {
-            if (component.Blocked)
-            {
-                ResetInput(component);
-                CheckBlockedTimer(component);
-                return;
-            }
             component.MovementDirection.X = 0;
             component.MovementDirection.Y = 0;
 
@@ -94,9 +95,9 @@ namespace Wraithknight
             component.Blink = false;
         }
 
-        private static void CheckBlockedTimer(InputComponent component)
+        private static bool BlockedTimerIsOver(InputComponent component)
         {
-            if (component.BlockedTimer.Over) component.Blocked = false;
+            return component.Blocked && component.BlockedTimer.Over;
         }
 
         #region Logic

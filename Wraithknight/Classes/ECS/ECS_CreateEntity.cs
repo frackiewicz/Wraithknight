@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -226,10 +227,11 @@ namespace Wraithknight
 
                 case EntityType.HeroKnightSlashWeak:
                 {
+                    Color tint = allegiance == Allegiance.Enemy ? Color.Red : Color.White;
                     entity.SetAllegiance(allegiance);
                     entity.AddComponent(new MovementComponent(maxSpeed: 100, friction: 200, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
-                    entity.AddComponent(new DrawComponent(drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, tint: Color.Red), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int) safePosition.X, (int) safePosition.Y, 64, 64), boundPos: entity.GetComponent<MovementComponent>().Position, tint: tint, getRotationFromMovementVector: true), entity.Components[typeof(MovementComponent)]);
                     entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, knockback: 200, isPhasing: true, hitCooldownMilliseconds: 200), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
                     break;
@@ -239,7 +241,7 @@ namespace Wraithknight
                     entity.SetAllegiance(allegiance);
                     entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 2000, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
-                    entity.AddComponent(new DrawComponent(drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new DrawComponent(drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true, tint: Color.Blue), entity.Components[typeof(MovementComponent)]);
                     entity.AddComponent(new ProjectileComponent(power: 20, damage: 10, knockback: 400, isPhasing: true, hitCooldownMilliseconds: 200), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
                     break;

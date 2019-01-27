@@ -80,6 +80,7 @@ namespace Wraithknight
             if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible TODO Give the drawrec a buffer, that maybe removes the pop ins
             {
                 UpdatePosition(component);
+                if (component.GetRotationFromMovementVector) RotateFromMovementVector(component);
                 Functions_Draw.Draw(component);
             }
         }
@@ -104,6 +105,15 @@ namespace Wraithknight
         private void UpdatePosition(DrawComponent component)
         {
             if(component.BoundPos != null) component.DrawRec.Center = component.BoundPos + component.Offset;
+        }
+
+        private static void RotateFromMovementVector(DrawComponent component)
+        {
+            if (component.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
+            {
+                MovementComponent movement = binding as MovementComponent;
+                component.Rotation = (float)movement.Speed.Polar.Angle;
+            }
         }
 
         public override void Reset()
