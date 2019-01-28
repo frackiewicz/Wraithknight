@@ -38,6 +38,7 @@ namespace Wraithknight
                 if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
 
                 FindAndStartTriggeredAttack(input, attackBehavior, gameTime);
+                SetAttackStates(attackBehavior);
             }
         }
 
@@ -90,19 +91,21 @@ namespace Wraithknight
             }
         }
 
-        private bool AttackTriggered(InputComponent input, AttackComponent attack)
+        private static bool AttackTriggered(InputComponent input, AttackComponent attack)
         {
             return input.PrimaryAttack && attack.Type == AttackType.Primary || input.SecondaryAttack && attack.Type == AttackType.Secondary;
         }
 
         private void StartAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
         {
+            attackBehavior.Cursor = input.CursorPoint;
+
             if (attack.AttackDelayMilliseconds > 0)
             {
-                attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, input.CursorPoint);
+                attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, attackBehavior.Cursor);
                 if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
             }
-            else SpawnAttack(input, input.CursorPoint, attackBehavior, attack, gameTime);
+            else SpawnAttack(input, attackBehavior.Cursor, attackBehavior, attack, gameTime);
         }
 
         private void SpawnAttack(InputComponent input, Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
@@ -126,6 +129,68 @@ namespace Wraithknight
         {
             input.Blocked = true;
             input.BlockedTimer.SetTimer(gameTime, milliseconds);
+        }
+
+        private void SetAttackStates(AttackBehaviorComponent attack)
+        {
+            if (attack.CurrentEntityState == null || !attack.CurrentEntityState.ReadyToChange) return;
+            StateComponent stateComponent = attack.CurrentEntityState;
+
+            if (attack.RemainingAttackCooldownMilliseconds > 0 || (attack.DelayedAttack != null && attack.DelayedAttack.RemainingAttackDelayMilliseconds > 0))
+            {
+                if (stateComponent.CurrentStatePriority < 2)
+                {
+                    stateComponent.CurrentState = EntityState.Attacking;
+                }
+
+                if (stateComponent.CurrentState == EntityState.Attacking)
+                {
+                    double PI = Math.PI;
+                    Vector2 cursorDelta = new Vector2(attack.Cursor.X, attack.Cursor.Y) - attack.SourcePos.Vector2;
+                    double Angle = new Coord2(cursorDelta).Polar.Angle;
+
+                    if (Angle < PI / 2 && Angle > -PI / 2) stateComponent.Orientation = Direction.Right;
+                    if (Angle >= PI / 2 || Angle <= -PI / 2) stateComponent.Orientation = Direction.Left;
+                }
+            }
+            else
+            {
+                if(stateComponent.CurrentState == EntityState.Attacking) stateComponent.Clear();
+            }
+            /*
+             *if(movement.CurrentEntityState == null || !movement.CurrentEntityState.ReadyToChange) return;
+            StateComponent stateComponent = movement.CurrentEntityState;
+            if (movement.IsMoving)
+            {
+                if (stateComponent.CurrentStatePriority < 1)
+                {
+                    stateComponent.CurrentState = EntityState.Moving;
+                }
+
+                if (stateComponent.CurrentState == EntityState.Moving)
+                {
+                    double PI = Math.PI;
+                    double Angle = movement.Speed.Polar.Angle;
+
+                    if (Angle < PI / 2 && Angle > -PI / 2) stateComponent.Orientation = Direction.Right;
+                    if (Angle >= PI / 2 || Angle <= -PI / 2) stateComponent.Orientation = Direction.Left;
+
+                    
+                    if (Angle <= PI / 4 && Angle >= -PI / 4) stateComponent.Direction = Direction.Right;
+                    if (Angle > PI / 4 && Angle < 3 * PI / 4) stateComponent.Direction = Direction.Down;
+                    if (Angle < -PI / 4 && Angle > 3 * -PI / 4) stateComponent.Direction = Direction.Up;
+                    if (Angle >= 3 * PI / 4 || Angle <= 3 * -PI / 4) stateComponent.Direction = Direction.Left;
+                    
+                }
+            }
+            else
+            {
+                if (stateComponent.CurrentState == EntityState.Moving)
+                {
+                    stateComponent.CurrentState = EntityState.Idle;
+                }
+            }
+             */
         }
 
         private void ApplySelfKnockback(InputComponent input, int knockback, Vector2 cursorDelta)

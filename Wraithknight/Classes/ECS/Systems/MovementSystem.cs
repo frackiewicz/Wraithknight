@@ -100,7 +100,7 @@ namespace Wraithknight
 
         private void SetMovementStates(MovementComponent movement)
         {
-            if(movement.CurrentEntityState == null) return;
+            if(movement.CurrentEntityState == null || !movement.CurrentEntityState.ReadyToChange) return;
             StateComponent stateComponent = movement.CurrentEntityState;
             if (movement.IsMoving)
             {
@@ -114,8 +114,8 @@ namespace Wraithknight
                     double PI = Math.PI;
                     double Angle = movement.Speed.Polar.Angle;
 
-                    if (Angle < PI / 2 && Angle > -PI / 2) stateComponent.Direction = Direction.Right;
-                    if (Angle >= PI / 2 || Angle <= -PI / 2) stateComponent.Direction = Direction.Left;
+                    if (Angle < PI / 2 && Angle > -PI / 2) stateComponent.Orientation = Direction.Right;
+                    if (Angle >= PI / 2 || Angle <= -PI / 2) stateComponent.Orientation = Direction.Left;
 
                     /*
                     if (Angle <= PI / 4 && Angle >= -PI / 4) stateComponent.Direction = Direction.Right;
@@ -127,10 +127,7 @@ namespace Wraithknight
             }
             else
             {
-                if (stateComponent.CurrentState == EntityState.Moving)
-                {
-                    stateComponent.CurrentState = EntityState.Idle;
-                }
+                if (stateComponent.CurrentState == EntityState.Moving) stateComponent.Clear();
             }
         }
     }

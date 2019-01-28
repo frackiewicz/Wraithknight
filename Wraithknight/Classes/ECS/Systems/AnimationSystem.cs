@@ -39,10 +39,6 @@ namespace Wraithknight
 
         private static void StartAnimation(AnimationComponent component, EntityState trigger, GameTime gameTime) //for now just randomize it
         {
-            if (component.RootType == EntityType.Forest_Knight)
-            {
-
-            }
             List<Animation> animations = component.Animations.FindAll(a => a.Trigger == trigger);
             Random random = new Random();
             component.CurrentAnimation = animations[random.Next(0, animations.Count - 1)];
@@ -78,7 +74,7 @@ namespace Wraithknight
 
         private static void ApplyMirroring(AnimationComponent component)
         {
-            if (component.CurrentEntityState.Direction == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
+            if (component.CurrentEntityState.Orientation == Direction.Left) component.BoundDrawComponent.FlipHorizontally = true;
             else component.BoundDrawComponent.FlipHorizontally = false;
         }
 

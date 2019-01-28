@@ -12,6 +12,7 @@ namespace Wraithknight
         public bool Alive = true; //used for garbage collection
         public Allegiance Allegiance;
         public EntityType Type;
+        public StateComponent StateComponent;
         public Dictionary<Type, Component> Components = new Dictionary<Type, Component>();
         public Dictionary<Type, List<Component>> MultiComponents = new Dictionary<Type, List<Component>>(); //for multiples?
 
@@ -28,7 +29,9 @@ namespace Wraithknight
 
         public Entity SetStateComponent()
         {
-            AddComponent(new StateComponent());
+            StateComponent component = new StateComponent();
+            StateComponent = component;
+            AddComponent(component);
             return this;
         }
 

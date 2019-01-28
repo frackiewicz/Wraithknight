@@ -173,14 +173,29 @@ namespace Wraithknight
 
         public void KillEntity(Entity entity)
         {
+            TryToExecuteDeathAnimation(entity);
             foreach (var component in entity.Components.Values)
             {
+                Type type = component.GetType();
+                if (type == typeof(DrawComponent) || type == typeof(AnimationComponent) || type == typeof(MovementComponent)) continue;
                 component.Deactivate();   
             }
             entity.Alive = false;
         }
 
-        public void TrueKillEntity(Entity entity)
+        private static void TryToExecuteDeathAnimation(Entity entity)
+        {
+            if (entity.StateComponent == null) return;
+            if (entity.Components.TryGetValue(typeof(AnimationComponent), out var component))
+            {
+                AnimationComponent animation = component as AnimationComponent;
+                
+            }
+            entity.StateComponent.CurrentState = EntityState.Dying;
+            entity.StateComponent.CurrentStatePriority = 10;
+        }
+
+        public void RemoveEntity(Entity entity)
         {
             _entityDictionary.Remove(entity.ID);
         }

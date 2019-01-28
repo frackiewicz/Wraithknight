@@ -26,11 +26,14 @@ namespace Wraithknight
         public List<AttackComponent> AttackComponents = new List<AttackComponent>();
         public double RemainingAttackCooldownMilliseconds = 0;
         public DelayedAttackClass DelayedAttack;
+        public Vector2Ref SourcePos;
+        public Point Cursor;
         public bool CurrentlyBlockingAttack;
 
-        public AttackBehaviorComponent(List<AttackComponent> attackComponents)
+        public AttackBehaviorComponent(List<AttackComponent> attackComponents, Vector2Ref sourcePos)
         {
             AttackComponents.AddRange(attackComponents);
+            SourcePos = sourcePos;
         }
 
         public override void SetAllegiance(Allegiance allegiance)

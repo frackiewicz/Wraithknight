@@ -17,6 +17,8 @@ namespace Wraithknight
         Idle,
         Moving,
         Attacking,
+        Dying,
+        Dead, //TODO figure out a good way to do this
         Other,
         None
     }
@@ -26,7 +28,7 @@ namespace Wraithknight
         public EntityState CurrentState;
         public int CurrentStatePriority;
         public Direction Direction;
-        public Direction Orientation; //TODO use this for sprite flipping
+        public Direction Orientation;
 
         public bool ReadyToChange = true; //To fixate states and put them on a timer maybe?
         public bool RecentlyChanged;
