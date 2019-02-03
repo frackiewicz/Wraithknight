@@ -30,9 +30,16 @@ namespace Wraithknight
         public Direction Direction;
         public Direction Orientation;
 
-        public bool ReadyToChange = true; //To fixate states and put them on a timer maybe?
+        public bool Dead = false;
+
+        public bool ReadyToChange; //To fixate states and put them on a timer maybe?
         public bool RecentlyChanged;
         public String StateIdentifier; //To coordinate with AnimationIdentifier?
+
+        public StateComponent()
+        {
+            Clear();
+        }
 
         public void Clear()
         {

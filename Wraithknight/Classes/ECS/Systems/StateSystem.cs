@@ -9,8 +9,14 @@ namespace Wraithknight
 { 
     class StateSystem : System
     {
+        private readonly ECS _ecs;
         private List<StateComponent> _components = new List<StateComponent>();
 
+        public StateSystem(ECS ecs)
+        {
+            _ecs = ecs;
+        }
+        
         public override void RegisterComponents(ICollection<Entity> entities)
         {
             CoupleComponent(_components, entities);
@@ -21,6 +27,7 @@ namespace Wraithknight
             foreach (var stateComponent in _components)
             {
                 SetPreviousState(stateComponent);
+                KillIfDead(stateComponent);
             }
         }
 
@@ -29,10 +36,15 @@ namespace Wraithknight
             _components.Clear();
         }
 
-        public void SetPreviousState(StateComponent component) //gets called when all computation is finished and it is preparing for the next game update
+        private void SetPreviousState(StateComponent component) //gets called when all computation is finished and it is preparing for the next game update
         {
             component.RecentlyChanged = component.PreviousState != component.CurrentState;
             component.PreviousState = component.CurrentState;
+        }
+
+        private void KillIfDead(StateComponent component)
+        {
+            if(component.Dead) _ecs.KillEntity(component.RootID);
         }
     }
 }

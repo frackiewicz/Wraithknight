@@ -9,14 +9,7 @@ namespace Wraithknight
 {
     class TimerSystem : System
     {
-        private readonly ECS _ecs;
-
         private HashSet<TimerComponent> _timerComponents = new HashSet<TimerComponent>();
-
-        public TimerSystem(ECS ecs)
-        {
-            _ecs = ecs;
-        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
@@ -30,7 +23,7 @@ namespace Wraithknight
                 if (timer.Inactive) continue;
                 if (timer.Over)
                 {
-                    if(timer.Type == TimerType.Death) _ecs.KillGameObject(timer.RootID);
+                    if (timer.Type == TimerType.Death) timer.CurrentEntityState.Dead = true;
                 }
             }
         }

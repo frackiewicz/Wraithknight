@@ -10,14 +10,7 @@ namespace Wraithknight
 {
     class MovementSystem : System
     {
-        private readonly ECS _ecs;
-
         private HashSet<MovementComponent> _components = new HashSet<MovementComponent>();
-
-        public MovementSystem(ECS ecs)
-        {
-            _ecs = ecs;
-        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {

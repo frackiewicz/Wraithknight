@@ -9,11 +9,6 @@ namespace Wraithknight
 {
     class CollisionPhysicsSubsystem //TODO Cleanup necessary lmao
     {
-        public void ResetSystem()
-        {
-
-        }
-
         public void HandlePhysicalCollision(CollisionSystem.Pair actor, CollisionComponent target, GameTime gameTime, bool swept) //TODO Implement Swept CC sometime
         {
             if (swept)

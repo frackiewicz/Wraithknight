@@ -10,15 +10,12 @@ namespace Wraithknight
 {
     class DrawSystem : System
     {
-        private readonly ECS _ecs;
-
         private readonly Dictionary<Texture2D, HashSet<DrawComponent>> _sortedDrawComponents = new Dictionary<Texture2D, HashSet<DrawComponent>>();
         private readonly HashSet<DrawComponent> _animatedDrawComponents = new HashSet<DrawComponent>();
         private readonly Camera2D _camera;
 
-        public DrawSystem(ECS ecs, Camera2D camera)
+        public DrawSystem(Camera2D camera)
         {
-            _ecs = ecs;
             _camera = camera;
         }
 

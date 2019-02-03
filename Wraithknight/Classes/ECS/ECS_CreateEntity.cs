@@ -229,9 +229,11 @@ namespace Wraithknight
                 {
                     Color tint = allegiance == Allegiance.Enemy ? Color.Red : Color.White;
                     entity.SetAllegiance(allegiance);
+                    entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(maxSpeed: 100, friction: 200, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int) safePosition.X, (int) safePosition.Y, 64, 64), boundPos: entity.GetComponent<MovementComponent>().Position, tint: tint, getRotationFromMovementVector: true), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), entity.Components[typeof(DrawComponent)]);
                     entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, knockback: 200, isPhasing: true, hitCooldownMilliseconds: 200), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(ProjectileComponent)] });
                     break;
@@ -239,6 +241,7 @@ namespace Wraithknight
                 case EntityType.HeroKnightSlashStrong:
                 {
                     entity.SetAllegiance(allegiance);
+                    entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 2000, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 32), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true, tint: Color.Blue), entity.Components[typeof(MovementComponent)]);

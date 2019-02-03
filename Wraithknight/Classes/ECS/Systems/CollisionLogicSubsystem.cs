@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -9,17 +10,6 @@ namespace Wraithknight
 {
     class CollisionLogicSubsystem
     {
-        private readonly ECS _ecs;
-
-        public CollisionLogicSubsystem(ECS ecs)
-        {
-            _ecs = ecs;
-        }
-
-        public void ResetSystem()
-        {
-        }
-
         public void HandleCollision(CollisionComponent actor, CollisionComponent target, GameTime gameTime)
         {
             if (actor.Allegiance == target.Allegiance || !actor.CollisionRectangle.Intersects(target.CollisionRectangle)) return;
@@ -92,8 +82,8 @@ namespace Wraithknight
                 }
             }
 
-            if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
-            if (target.Power <= 0) _ecs.KillGameObject(target.RootID);
+            if (actor.Power <= 0) actor.CurrentEntityState.Dead = true;
+            if (target.Power <= 0) target.CurrentEntityState.Dead = true;
             else ApplyKnockback(actor, target);
         }
 
@@ -126,11 +116,11 @@ namespace Wraithknight
                 }
             }
 
-            if (actor.Power <= 0) _ecs.KillGameObject(actor.RootID);
-            if (target.CurrentHealth <= 0) _ecs.KillGameObject(target.RootID);
+            if (actor.Power <= 0) actor.CurrentEntityState.Dead = true;
+            if (target.CurrentHealth <= 0) actor.CurrentEntityState.Dead = true;
             else
             {
-                if (!actor.IsPhasing) _ecs.KillGameObject(actor.RootID); //projectile didnt penetrate
+                if (!actor.IsPhasing) actor.CurrentEntityState.Dead = true; //projectile didnt penetrate
                 ApplyKnockback(actor, target);
             }
         }

@@ -31,7 +31,15 @@ namespace Wraithknight
                     frameSize = new Point(64,32);
                     animationList.Add(new Animation(Assets.GetTexture("wolfRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 6, 100));
                     animationList.Add(new Animation(Assets.GetTexture("wolf"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 1, 1000));
-                } break;
+                    break;
+                }
+                case EntityType.HeroKnightSlashWeak:
+                {
+                    frameSize = new Point(64, 64);
+                    animationList.Add(new Animation(Assets.GetTexture("heroslashweak"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 1, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("heroslashweakdying"), "dying", "dying", frameSize, EntityState.Dying, false).CreateAnimationFrames(0, 9, 50));
+                    break;
+                }
 
             }
 

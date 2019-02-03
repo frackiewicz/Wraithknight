@@ -96,16 +96,16 @@ namespace Wraithknight
 
         private void CreateSystems(ecsBootRoutine routine)
         {
-            drawSystem = new DrawSystem(this, _camera);
+            drawSystem = new DrawSystem(_camera);
 
-            _systemSet.Add(new StateSystem());
+            _systemSet.Add(new StateSystem(this));
 
             _systemSet.Add(new AnimationSystem());
             _systemSet.Add(new InputSystem(this, _camera));
-            _systemSet.Add(new CollisionSystem(this));
-            _systemSet.Add(new MovementSystem(this));
-            _systemSet.Add(new TimerSystem(this));
-            _systemSet.Add(new HealthSystem(this));
+            _systemSet.Add(new CollisionSystem());
+            _systemSet.Add(new MovementSystem());
+            _systemSet.Add(new TimerSystem());
+            _systemSet.Add(new HealthSystem());
             _systemSet.Add(new IntelligenceSystem());
 
             _systemSet.Add(drawSystem);
@@ -155,17 +155,6 @@ namespace Wraithknight
             }
         }
 
-        public void KillGameObject(int id)
-        {
-            KillGameObject(GetEntity(id));
-        }
-
-        public void KillGameObject(Entity entity)
-        {
-            //here you will differentiate between all the entityTypes for their unique deaths
-            KillEntity(entity); //for now just kill it lmao
-        }
-
         public void KillEntity(int id)
         {
             KillEntity(GetEntity(id));
@@ -173,31 +162,68 @@ namespace Wraithknight
 
         public void KillEntity(Entity entity)
         {
-            TryToExecuteDeathAnimation(entity);
-            foreach (var component in entity.Components.Values)
+            if (HasDeathAnimation(entity))
             {
-                Type type = component.GetType();
-                if (type == typeof(DrawComponent) || type == typeof(AnimationComponent) || type == typeof(MovementComponent)) continue;
-                component.Deactivate();   
+                ExecuteDeathAnimation(entity);
+                DeactivateSelectComponents(entity);
             }
+            else
+            {
+                DeactivateAllComponents(entity);
+            }
+
             entity.Alive = false;
         }
 
-        private static void TryToExecuteDeathAnimation(Entity entity)
+
+        private static bool HasDeathAnimation(Entity entity)
         {
-            if (entity.StateComponent == null) return;
             if (entity.Components.TryGetValue(typeof(AnimationComponent), out var component))
             {
                 AnimationComponent animation = component as AnimationComponent;
-                
+                if (animation.CurrentEntityState.CurrentState != EntityState.Dying) return animation.Animations.Exists(a => a.Trigger == EntityState.Dying);
+                return animation.Animations.Exists(a => a.Trigger == EntityState.Dead);
             }
-            entity.StateComponent.CurrentState = EntityState.Dying;
-            entity.StateComponent.CurrentStatePriority = 10;
+
+            return false;
         }
 
-        public void RemoveEntity(Entity entity)
+        private static void ExecuteDeathAnimation(Entity entity)
         {
-            _entityDictionary.Remove(entity.ID);
+            if (entity.Components.TryGetValue(typeof(AnimationComponent), out var component))
+            {
+                AnimationComponent animation = component as AnimationComponent;
+                if (animation.CurrentEntityState.CurrentState != EntityState.Dying)
+                {
+                    entity.StateComponent.CurrentState = EntityState.Dying;
+                    entity.StateComponent.CurrentStatePriority = 10;
+                    entity.StateComponent.Dead = false;
+                }
+                else
+                {
+                    entity.StateComponent.CurrentState = EntityState.Dead;
+                    entity.StateComponent.CurrentStatePriority = 11;              
+                }
+                    
+            }
+        }
+
+        private static void DeactivateAllComponents(Entity entity)
+        {
+            foreach (var component in entity.Components.Values)
+            {
+                component.Deactivate();
+            }
+        }
+
+        private static void DeactivateSelectComponents(Entity entity)
+        {
+            foreach (var component in entity.Components.Values)
+            {
+                Type type = component.GetType();
+                if (type == typeof(StateComponent) || type == typeof(DrawComponent) || type == typeof(AnimationComponent) || type == typeof(MovementComponent)) continue;
+                component.Deactivate();
+            }
         }
 
         public void PurgeTheDead()

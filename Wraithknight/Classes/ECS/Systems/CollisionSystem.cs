@@ -23,8 +23,6 @@ namespace Wraithknight
             }
         }
 
-        private readonly ECS _ecs;
-
         private readonly HashSet<CollisionComponent> _collisionComponents = new HashSet<CollisionComponent>();
         private readonly HashSet<Pair> _moveableCollisionComponents = new HashSet<Pair>();
 
@@ -36,10 +34,9 @@ namespace Wraithknight
 
         #region General System Stuff
 
-        public CollisionSystem(ECS ecs)
+        public CollisionSystem()
         {
-            _ecs = ecs;
-            _logicSubsystem = new CollisionLogicSubsystem(ecs);
+            _logicSubsystem = new CollisionLogicSubsystem();
             _physicsSubsystem = new CollisionPhysicsSubsystem();
         }
 
@@ -65,8 +62,6 @@ namespace Wraithknight
         {
             _moveableCollisionComponents.Clear();
             _collisionComponents.Clear();
-            _logicSubsystem.ResetSystem();
-            _physicsSubsystem.ResetSystem();
         }
 
         public HashSet<CollisionComponent> GetCollisionComponents()

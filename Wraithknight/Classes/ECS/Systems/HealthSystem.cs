@@ -9,14 +9,7 @@ namespace Wraithknight
 {
     class HealthSystem : System
     {
-        private readonly ECS _ecs;
-
         private HashSet<HealthComponent> _components = new HashSet<HealthComponent>();
-
-        public HealthSystem(ECS ecs)
-        {
-            _ecs = ecs;
-        }
 
         public override void RegisterComponents(ICollection<Entity> entities)
         {
@@ -28,7 +21,7 @@ namespace Wraithknight
             {
                 if (health.IsDead)
                 {
-                    _ecs.KillEntity(health.RootID);
+                    health.CurrentEntityState.Dead = true;
                 }
             }
         }
