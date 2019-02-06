@@ -13,11 +13,17 @@ namespace Wraithknight
         Primary,
         Secondary
     }
+    public enum CursorType
+    {
+        Absolute,
+        Relative
+    }
 
     class AttackComponent : Component //Maybe take a more CurrentState based approach
     {
         public EntityType Projectile;
         public AttackType Type;
+        public CursorType CursorType; //only useful for delayed attacks
 
         public Vector2Ref SourcePos;
         public Vector2 PosOffset;
@@ -26,6 +32,7 @@ namespace Wraithknight
         public int StartSpeed;
         public int AttackState; //for switching equipment?
         public double AttackDelayMilliseconds;
+        public bool IsDelayedAttack;
         public double AttackCooldownMilliseconds;
 
         public bool BlockInput;
@@ -33,17 +40,19 @@ namespace Wraithknight
 
         public int SelfKnockback;
 
-        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int selfKnockback = 0)
+        public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int selfKnockback = 0, CursorType cursorType = CursorType.Relative)
         {
             MultiBinding = true;
             Projectile = projectile;
             Type = type;
+            CursorType = cursorType;
             SourcePos = sourcePos;
             PosOffset = posOffset;
             PosOffsetInDirection = posOffsetInDirection;
             StartSpeed = startSpeed;
             AttackState = attackState;
             AttackCooldownMilliseconds = attackCooldownMilliseconds;
+            IsDelayedAttack = AttackCooldownMilliseconds > 0;
             AttackDelayMilliseconds = attackDelayMilliseconds;
             BlockInput = blockInput;
             if (BlockInput && blockInputDurationMilliseconds == 0) BlockInputDurationMilliseconds = AttackDelayMilliseconds + AttackCooldownMilliseconds;

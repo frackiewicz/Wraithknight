@@ -58,7 +58,7 @@ namespace Wraithknight
         {
             if (attackBehavior.DelayedAttack.RemainingAttackDelayMilliseconds <= 0)
             {
-                SpawnAttack(input, attackBehavior.DelayedAttack.Cursor, attackBehavior, attackBehavior.DelayedAttack.Attack, gameTime);
+                SpawnAttackProjectile(input, attackBehavior.DelayedAttack.Cursor, attackBehavior, attackBehavior.DelayedAttack.Attack, gameTime);
             }
         }
 
@@ -98,24 +98,48 @@ namespace Wraithknight
 
         private void StartAttack(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
         {
-            attackBehavior.Cursor = input.CursorPoint;
+            PlaceCursorInBehavior(input, attackBehavior, attack);
 
-            if (attack.AttackDelayMilliseconds > 0)
+            if (attack.IsDelayedAttack)
             {
                 attackBehavior.DelayedAttack = new AttackBehaviorComponent.DelayedAttackClass(attack.AttackDelayMilliseconds, attack, attackBehavior.Cursor);
                 if (attack.BlockInput) BlockInput(input, gameTime, attack.BlockInputDurationMilliseconds);
             }
-            else SpawnAttack(input, attackBehavior.Cursor, attackBehavior, attack, gameTime);
+            else SpawnAttackProjectile(input, attackBehavior.Cursor, attackBehavior, attack, gameTime);
         }
 
-        private void SpawnAttack(InputComponent input, Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
+        private void PlaceCursorInBehavior(InputComponent input, AttackBehaviorComponent attackBehavior, AttackComponent attack)
         {
-            Vector2 cursorDelta = new Vector2(cursor.X, cursor.Y) - attack.SourcePos.Vector2;
+            if (attack.CursorType == CursorType.Absolute)
+            {
+                attackBehavior.Cursor = input.CursorPoint;
+            }
+            else //Relative
+            {
+                Point cursor = input.CursorPoint;
+                Point source = new Point((int)attack.SourcePos.Vector2.X, (int)attack.SourcePos.Vector2.Y);
+                Point delta = cursor - source;
+                attackBehavior.Cursor = delta;
+            }
+        }
 
+        private void SpawnAttackProjectile(InputComponent input, Point cursor, AttackBehaviorComponent attackBehavior, AttackComponent attack, GameTime gameTime)
+        {
+            Vector2 cursorDelta;
+            if (attack.CursorType == CursorType.Absolute)
+            {
+                cursorDelta = new Vector2(cursor.X, cursor.Y) - attack.SourcePos.Vector2;
+            }
+            else //Relative
+            {
+                cursorDelta = new Vector2(cursor.X, cursor.Y);
+            }
+            Console.WriteLine(cursorDelta);
             _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile,
                 position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian),
                 speed: new Coord2(cursorDelta).ChangePolarLength(attack.StartSpeed),
                 gameTime: gameTime, allegiance: attack.Allegiance));
+
 
             attackBehavior.RemainingAttackCooldownMilliseconds = attack.AttackCooldownMilliseconds;
 

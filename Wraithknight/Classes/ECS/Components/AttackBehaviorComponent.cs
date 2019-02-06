@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
+
     class AttackBehaviorComponent : Component
     {
         public class DelayedAttackClass
@@ -28,6 +29,7 @@ namespace Wraithknight
         public DelayedAttackClass DelayedAttack;
         public Vector2Ref SourcePos;
         public Point Cursor;
+        public CursorType CursorType;
         public bool CurrentlyBlockingAttack;
 
         public AttackBehaviorComponent(List<AttackComponent> attackComponents, Vector2Ref sourcePos)
