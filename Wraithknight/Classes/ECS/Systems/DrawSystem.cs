@@ -109,6 +109,8 @@ namespace Wraithknight
             if (component.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
             {
                 MovementComponent movement = binding as MovementComponent;
+                if (!movement.IsMoving) return;
+                Console.WriteLine(movement.Speed.Polar.Angle);
                 component.Rotation = (float)movement.Speed.Polar.Angle;
             }
         }

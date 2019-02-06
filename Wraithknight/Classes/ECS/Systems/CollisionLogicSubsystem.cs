@@ -89,35 +89,36 @@ namespace Wraithknight
 
         private void ProjectileOnHealth(ProjectileComponent actor, HealthComponent target)
         {
+            if (target.Invincible) return;
             if (actor.Power >= actor.Damage) //actor can afford full strike
             {
-                if (target.CurrentHealth >= actor.Damage) //target can afford full strike
+                if (target.ProcessedHealth >= actor.Damage) //target can afford full strike
                 {
-                    target.CurrentHealth -= actor.Damage;
+                    target.ProcessedHealth -= actor.Damage;
                     actor.Power -= actor.Damage;
                 }
                 else //target takes partial strike
                 {
-                    actor.Power -= target.CurrentHealth;
-                    target.CurrentHealth = 0;
+                    actor.Power -= target.ProcessedHealth;
+                    target.ProcessedHealth = 0;
                 }
             }
             else //actor can only afford partial strike
             {
-                if (target.CurrentHealth >= actor.Power) //target can afford full strike
+                if (target.ProcessedHealth >= actor.Power) //target can afford full strike
                 {
-                    target.CurrentHealth -= actor.Power;
+                    target.ProcessedHealth -= actor.Power;
                     actor.Power = 0;
                 }
                 else //target takes partial strike
                 {
-                    actor.Power -= target.CurrentHealth;
-                    target.CurrentHealth = 0;
+                    actor.Power -= target.ProcessedHealth;
+                    target.ProcessedHealth = 0;
                 }
             }
 
             if (actor.Power <= 0) actor.CurrentEntityState.Dead = true;
-            if (target.CurrentHealth <= 0) actor.CurrentEntityState.Dead = true;
+            if (target.ProcessedHealth <= 0) actor.CurrentEntityState.Dead = true;
             else
             {
                 if (!actor.IsPhasing) actor.CurrentEntityState.Dead = true; //projectile didnt penetrate

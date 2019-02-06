@@ -24,7 +24,6 @@ namespace Wraithknight
             foreach (MovementComponent movement in _components)
             {
                 if (movement.Inactive) continue;
-                movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
 
                 if (movement.HasCollided) movement.HasCollided = false;
                 else ApplySpeed(movement, gameTime);
@@ -32,6 +31,8 @@ namespace Wraithknight
                 ApplyInertia(movement, gameTime);
                 AccelerateUntilMaxSpeed(movement, gameTime);
                 SetMovementStates(movement);
+
+                movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
             }
         }
 

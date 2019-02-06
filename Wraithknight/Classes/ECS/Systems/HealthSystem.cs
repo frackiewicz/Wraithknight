@@ -19,16 +19,69 @@ namespace Wraithknight
         {
             foreach (var health in _components)
             {
-                if (health.IsDead)
-                {
-                    health.CurrentEntityState.Dead = true;
-                }
+                KillIfDead(health);
+                InvincibilityLogic(health, gameTime);
+                ApplyVariables(health);
             }
         }
 
         public override void Reset()
         {
             _components.Clear();
+        }
+
+        private static void KillIfDead(HealthComponent health)
+        {
+            if (health.IsDead)
+            {
+                health.CurrentEntityState.Dead = true;
+            }
+        }
+
+        private static void InvincibilityLogic(HealthComponent health, GameTime gameTime) 
+        {
+            if (health.RemainingInvincibilityTimeMilliseconds > 0)
+            {
+                health.RemainingInvincibilityTimeMilliseconds -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (health.RemainingInvincibilityTimeMilliseconds < 0) health.RemainingInvincibilityTimeMilliseconds = 0;
+            }
+            else if (health.ProcessedHealth < health.CurrentHealth)
+            {
+                health.RemainingInvincibilityTimeMilliseconds = health.InvincibilityTimeMilliseconds;
+                FlashDrawComponentColor(health);
+            }
+            else
+            {
+                ResetDrawComponentColor(health);
+            }
+        }
+
+        private static void FlashDrawComponentColor(HealthComponent health)
+        {
+            if (health.Bindings.TryGetValue(typeof(DrawComponent), out var binding))
+            {
+                DrawComponent draw = binding as DrawComponent;
+                draw.Tint = Color.Red;
+                Console.WriteLine("ass");
+            }
+        }
+
+        private static void ResetDrawComponentColor(HealthComponent health)
+        {
+            if (health.Bindings.TryGetValue(typeof(DrawComponent), out var binding)) //TODO think of a way to prevent this shit being called all the time
+            {
+                DrawComponent draw = binding as DrawComponent;
+                if (draw.Tint == Color.Red)
+                {
+                    draw.Tint = Color.White;
+                    Console.WriteLine("tits");
+                }
+            }
+        }
+
+        private static void ApplyVariables(HealthComponent health)
+        {
+            health.CurrentHealth = health.ProcessedHealth;
         }
     }
 }

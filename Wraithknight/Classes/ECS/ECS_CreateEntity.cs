@@ -64,9 +64,9 @@ namespace Wraithknight
                         new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 35, startSpeed: 200, attackState: 0, attackCooldownMilliseconds: 500, blockInputDurationMilliseconds: 250, selfKnockback: -150),
                         new AttackComponent(EntityType.HeroKnightSlashStrong, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 100, startSpeed: 800, attackState: 0, attackCooldownMilliseconds: 1000, blockInputDurationMilliseconds: 600)
                     }, entity.GetComponent<MovementComponent>().Position));
-                    entity.AddComponent(new HealthComponent(20), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new HealthComponent(20), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20, 40), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                     entity.AddComponent(new InputComponent(true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
                     break;
@@ -80,8 +80,8 @@ namespace Wraithknight
                     {
                         new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 2000, attackCooldownMilliseconds: 1500, cursorType: CursorType.Relative)
                     }, entity.GetComponent<MovementComponent>().Position));
-                    entity.AddComponent(new HealthComponent(20), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("forestknightIdle"), drawRec: new AABB(0, 0, 64, 64), scale: new Vector2(1,1), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new HealthComponent(20, invincibilityTimeMilliseconds: 200), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(DrawComponent)] });
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), entity.Components[typeof(DrawComponent)]);
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                     entity.AddComponent(new InputComponent(false), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(AttackBehaviorComponent)] });
@@ -96,8 +96,8 @@ namespace Wraithknight
                     entity.SetAllegiance(Allegiance.Enemy);
                     entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(accelerationBase: 1200, maxSpeed: 150, friction: 400, position: safePosition));
-                    entity.AddComponent(new HealthComponent(15), entity.GetComponent<MovementComponent>());
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("wolf"), drawRec: new AABB(0, 0, 64, 32), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, 0)), entity.Components[typeof(MovementComponent)]);
+                    entity.AddComponent(new HealthComponent(15, invincibilityTimeMilliseconds: 200), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(DrawComponent)] });
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), entity.Components[typeof(DrawComponent)]);
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Component> { entity.Components[typeof(MovementComponent)], entity.Components[typeof(HealthComponent)] });
                     entity.AddComponent(new InputComponent(false), new List<Component>

@@ -13,9 +13,10 @@ namespace Wraithknight
         public int ProcessedHealth; //TODO Replace calculations with this here so that the health system has more power over health
 
         public double InvincibilityTimeMilliseconds;
+        public bool Invincible => RemainingInvincibilityTimeMilliseconds > 0;
         public double RemainingInvincibilityTimeMilliseconds; //TODO Logic missing
 
-        public bool IsDead => CurrentHealth <= 0;
+        public bool IsDead => CurrentHealth <= 0 || ProcessedHealth <= 0;
 
         public HealthComponent(int maxHealth, int currentHealth = -1, double invincibilityTimeMilliseconds = 0)
         {

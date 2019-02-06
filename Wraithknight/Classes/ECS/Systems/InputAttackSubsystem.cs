@@ -134,7 +134,6 @@ namespace Wraithknight
             {
                 cursorDelta = new Vector2(cursor.X, cursor.Y);
             }
-            Console.WriteLine(cursorDelta);
             _ecs.RegisterEntity(_ecs.CreateEntity(attack.Projectile,
                 position: new Vector2Ref(attack.SourcePos.Vector2 + new Coord2(cursorDelta).ChangePolarLength(attack.PosOffsetInDirection).Cartesian),
                 speed: new Coord2(cursorDelta).ChangePolarLength(attack.StartSpeed),
