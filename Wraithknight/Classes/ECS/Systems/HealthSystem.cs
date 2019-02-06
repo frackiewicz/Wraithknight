@@ -62,7 +62,6 @@ namespace Wraithknight
             {
                 DrawComponent draw = binding as DrawComponent;
                 draw.Tint = Color.Red;
-                Console.WriteLine("ass");
             }
         }
 
@@ -74,7 +73,6 @@ namespace Wraithknight
                 if (draw.Tint == Color.Red)
                 {
                     draw.Tint = Color.White;
-                    Console.WriteLine("tits");
                 }
             }
         }
