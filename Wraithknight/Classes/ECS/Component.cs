@@ -13,7 +13,6 @@ namespace Wraithknight
 
         public readonly int ID = IDcount++;
 
-        public bool MultiBinding = false; //TODO What to do with this?
         public bool Inactive { get; protected set; } = true;
         public int RootID;
         public EntityType RootType;

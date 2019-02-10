@@ -107,6 +107,7 @@ namespace Wraithknight
             _systemSet.Add(new TimerSystem());
             _systemSet.Add(new HealthSystem());
             _systemSet.Add(new IntelligenceSystem());
+            _systemSet.Add(new BlinkingSystem());
 
             _systemSet.Add(drawSystem);
         }

@@ -118,7 +118,7 @@ namespace Wraithknight
             }
 
             if (actor.Power <= 0) actor.CurrentEntityState.Dead = true;
-            if (target.ProcessedHealth <= 0) actor.CurrentEntityState.Dead = true;
+            if (target.ProcessedHealth <= 0) target.CurrentEntityState.Dead = true;
             else
             {
                 if (!actor.IsPhasing) actor.CurrentEntityState.Dead = true; //projectile didnt penetrate

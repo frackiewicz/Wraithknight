@@ -12,7 +12,7 @@ namespace Wraithknight
     {
         public readonly bool UserInput;
         public bool Blocked;
-        public TimerComponent BlockedTimer = new TimerComponent(TimerType.Flag);
+        public TimerComponent BlockedTimer = new TimerComponent();
 
         public Vector2 MovementDirection = new Vector2(0, 0); //WASD
         public bool PrimaryAttack = false; //LMB
@@ -20,7 +20,7 @@ namespace Wraithknight
         public bool SwitchWeapons = false; //Space
         public bool Action = false; //F
         public bool Blink = false; //Shift
-        public Point CursorPoint = new Point(); //Should this really be a point?
+        public Point CursorPoint = new Point();
 
         public InputComponent(bool userInput)
         {

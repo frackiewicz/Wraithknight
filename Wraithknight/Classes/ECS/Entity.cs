@@ -14,16 +14,20 @@ namespace Wraithknight
         public EntityType Type;
         public StateComponent StateComponent; //for ease of access, can be removed later?
         public Dictionary<Type, Component> Components = new Dictionary<Type, Component>();
-        public Dictionary<Type, List<Component>> MultiComponents = new Dictionary<Type, List<Component>>(); //for multiples?
 
         public Entity(EntityType type) 
         {
             Type = type;
         }
 
+
         public Entity SetAllegiance(Allegiance allegiance)
         {
             Allegiance = allegiance;
+            foreach (var component in Components)
+            {
+                component.Value.SetAllegiance(Allegiance);
+            }
             return this;
         }
 
@@ -37,18 +41,17 @@ namespace Wraithknight
 
         public void AddComponent(Component component)
         {
-            SetRoots(component);
-            if (component.MultiBinding) AddMultiComponent(component);
-            else Components.Add(component.GetType(), component);
+            SetComponentRoots(component);
+            Components.Add(component.GetType(), component);
         }
 
-        public void AddComponent(BindableComponent component, Component bind) 
+        public void AddComponent(BindableComponent component, Type bind) 
         {
             component.AddBinding(bind);
             AddComponent(component);
         }
 
-        public void AddComponent(BindableComponent component, ICollection<Component> binds) //TODO Ellipse with PARAMS ?
+        public void AddComponent(BindableComponent component, ICollection<Type> binds)
         {
             foreach (var bind in binds)
             {
@@ -57,29 +60,12 @@ namespace Wraithknight
             AddComponent(component);
         }
 
-        public void AddMultiComponent(Component component) //only difference here is the data structure, you will differentiate manually
-        {
-            SetRoots(component);
-            if (MultiComponents.TryGetValue(component.GetType(), out var list))
-            {
-                list.Add(component);
-            }
-            else
-            {
-                MultiComponents.Add(component.GetType(), new List<Component>());
-                AddMultiComponent(component);
-            }
-        }
-
-        private void SetRoots(Component component)
+        private void SetComponentRoots(Component component)
         {
             component.RootID = ID;
             component.SetAllegiance(Allegiance);
             component.RootType = Type;
-            if (Components.TryGetValue(typeof(StateComponent), out var stateComponent))
-            {
-                component.CurrentEntityState = stateComponent as StateComponent;
-            }
+            if (StateComponent != null) component.CurrentEntityState = StateComponent;
         }
 
         public T GetComponent<T>() //Ignore this function, Use TryGetValue on the Dictionary instead
@@ -87,6 +73,33 @@ namespace Wraithknight
             Components.TryGetValue(typeof(T), out var value);
             return (T)(object)value;
         }
+
+        #region Finalization
+
+        public void FinalizeCreation()
+        {
+            foreach (var component in Components)
+            {
+                if (component.Value is BindableComponent bindableComponent)
+                {
+                    FinalizeBindableComponent(bindableComponent);
+                }
+            }
+        }
+
+        private void FinalizeBindableComponent(BindableComponent component)
+        {
+            for (int i = 0; i < component.Bindings.Count; i++)
+            {
+                Type type = Components.ElementAt(i).Key;
+                if (Components.TryGetValue(type, out var binding)) component.Bindings[type] = binding;
+                else throw new ArgumentException("Entity does not contain binding type");
+            }
+        }
+
+        #endregion
+
+        #region Overrides
 
         public override int GetHashCode()
         {
@@ -99,5 +112,8 @@ namespace Wraithknight
             if (temp == null) return false;
             return ID.GetHashCode() == temp.GetHashCode();
         }
+
+        #endregion
+
     }
 }

@@ -42,7 +42,6 @@ namespace Wraithknight
 
         public AttackComponent(EntityType projectile, AttackType type, Vector2Ref sourcePos, Vector2 posOffset ,double posOffsetInDirection = 0, int startSpeed = 0, int attackState = 0, double attackDelayMilliseconds = 0, double attackCooldownMilliseconds = 0, bool blockInput = true, double blockInputDurationMilliseconds = 0, int selfKnockback = 0, CursorType cursorType = CursorType.Relative)
         {
-            MultiBinding = true;
             Projectile = projectile;
             Type = type;
             CursorType = cursorType;

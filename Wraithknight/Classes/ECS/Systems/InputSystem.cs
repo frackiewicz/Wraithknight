@@ -102,10 +102,11 @@ namespace Wraithknight
 
         #region Logic
 
-        private void HandleInputLogic(InputComponent component, GameTime gameTime)
+        private void HandleInputLogic(InputComponent input, GameTime gameTime)
         {
-            MovementLogic(component);
-            _attackSubsystem.AttackLogic(component, gameTime);
+            MovementLogic(input);
+            _attackSubsystem.AttackLogic(input, gameTime);
+            BlinkLogic(input);
         }
        
 
@@ -119,6 +120,16 @@ namespace Wraithknight
 
                 movement.Acceleration.Cartesian.X = input.MovementDirection.X * movement.AccelerationBase;
                 movement.Acceleration.Cartesian.Y = input.MovementDirection.Y * movement.AccelerationBase;
+            }
+        }
+
+        private void BlinkLogic(InputComponent input)
+        {
+            if (!input.Blink) return;
+            if (input.Bindings.TryGetValue(typeof(BlinkComponent), out var binding))
+            {
+                BlinkComponent blink = binding as BlinkComponent;
+                blink.BlinkTrigger = true;
             }
         }
 
