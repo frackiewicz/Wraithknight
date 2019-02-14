@@ -69,7 +69,7 @@ namespace Wraithknight
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), typeof(MovementComponent));
                     entity.AddComponent(new HealthComponent(20), typeof(MovementComponent));
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20, 40), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
-                    entity.AddComponent(new BlinkComponent(2000), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent) });
+                    entity.AddComponent(new BlinkComponent(2000), new List<Type> { typeof(InputComponent), typeof(MovementComponent), typeof(AttackBehaviorComponent) });
                     entity.AddComponent(new InputComponent(true), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent), typeof(BlinkComponent) });
                     break;
                 }

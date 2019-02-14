@@ -20,13 +20,11 @@ namespace Wraithknight
         {
             foreach (var blink in _components)
             {
-       
                 if (blink.BlinkTrigger)
                 {
                     if (blink.Cooldown.Over)
                     {
-                        ExecuteBlink(blink);
-                        SetBlinkCooldown(blink, gameTime);
+                        if(ExecuteBlink(blink)) SetBlinkCooldown(blink, gameTime);
                     }
                     ResetBlink(blink);
                 }
@@ -43,14 +41,46 @@ namespace Wraithknight
             blink.Cooldown.SetTimer(gameTime, blink.CooldownMilliseconds);
         }
 
-        private static void ExecuteBlink(BlinkComponent blink)
+        private static bool ExecuteBlink(BlinkComponent blink)
         {
-            Console.WriteLine("blink");
-            if (blink.Bindings.TryGetValue(typeof(MovementComponent), out var binding))
+            InputComponent input = GetInputComponent(blink);
+
+            return MovementBlink(blink, input) ||
+                   AttackBlink(blink, input);
+        }
+
+        private static InputComponent GetInputComponent(BlinkComponent blink) 
+        {
+            if (blink.Bindings.TryGetValue(typeof(InputComponent), out var inputBinding))
             {
-                MovementComponent movement = binding as MovementComponent;
-                movement.Speed.AddVector2(new Coord2(movement.Speed.Cartesian).ChangePolarLength(400).Cartesian);
+                return inputBinding as InputComponent;
             }
+            return null;
+        }
+
+        private static bool MovementBlink(BlinkComponent blink, InputComponent input)
+        {
+            if (blink.Bindings.TryGetValue(typeof(MovementComponent), out var movementBinding))
+            {
+                MovementComponent movement = movementBinding as MovementComponent;
+                if (!input.MovementDirection.Equals(Vector2.Zero))
+                {
+                    movement.Speed.AddVector2(new Coord2(input.MovementDirection).ChangePolarLength(400).Cartesian);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool AttackBlink(BlinkComponent blink, InputComponent input)
+        {
+            if (blink.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBinding))
+            {
+                AttackBehaviorComponent attackBehavior = attackBinding as AttackBehaviorComponent;
+            }
+
+            return false;
         }
 
         private static void ResetBlink(BlinkComponent blink)
