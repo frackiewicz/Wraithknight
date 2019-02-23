@@ -20,6 +20,7 @@ namespace Wraithknight
         public double TargetTimeSpanMilliseconds;
 
         public bool Over => CurrentTime.TotalGameTime.TotalMilliseconds > TargetTimeSpanMilliseconds;
+        public double OverTime => CurrentTime.TotalGameTime.TotalMilliseconds - TargetTimeSpanMilliseconds;
 
         public TimerComponent(TimerType type = TimerType.Flag)
         {

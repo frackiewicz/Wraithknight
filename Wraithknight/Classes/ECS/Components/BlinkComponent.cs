@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Wraithknight
 {
@@ -17,9 +18,20 @@ namespace Wraithknight
         public TimerComponent Cooldown = new TimerComponent();
         public double CooldownMilliseconds;
 
-        public BlinkComponent(double cooldown)
+        public int BlinkMovementSpeed;
+        public double BlinkMovementDurationInMilliseconds;
+        public TimerComponent MovementDurationTimer = new TimerComponent();
+        public bool PreviousTimerOver;
+        public Vector2 MovementDirection;
+        public Coord2 MovementExitSpeed;
+
+        //Extra damage, projectile speed etc
+
+        public BlinkComponent(double cooldown, int blinkMovementSpeed, double blinkMovementDurationInMilliseconds)
         {
             CooldownMilliseconds = cooldown;
+            BlinkMovementSpeed = blinkMovementSpeed;
+            BlinkMovementDurationInMilliseconds = blinkMovementDurationInMilliseconds;
         }
     }
 }

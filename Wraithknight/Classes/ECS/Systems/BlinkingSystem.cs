@@ -24,10 +24,12 @@ namespace Wraithknight
                 {
                     if (blink.Cooldown.Over)
                     {
-                        if(ExecuteBlink(blink)) SetBlinkCooldown(blink, gameTime);
+                        if(ExecuteBlink(blink, gameTime)) SetBlinkCooldown(blink, gameTime);
                     }
                     ResetBlink(blink);
                 }
+
+                MaintainMovementBlink(blink);
             }
         }
 
@@ -41,11 +43,10 @@ namespace Wraithknight
             blink.Cooldown.SetTimer(gameTime, blink.CooldownMilliseconds);
         }
 
-        private static bool ExecuteBlink(BlinkComponent blink)
+        private static bool ExecuteBlink(BlinkComponent blink, GameTime gameTime)
         {
             InputComponent input = GetInputComponent(blink);
-
-            return MovementBlink(blink, input) ||
+            return ExecuteMovementBlink(blink, input, gameTime) ||
                    AttackBlink(blink, input);
         }
 
@@ -58,20 +59,49 @@ namespace Wraithknight
             return null;
         }
 
-        private static bool MovementBlink(BlinkComponent blink, InputComponent input)
+        #region Movement
+
+        private static bool ExecuteMovementBlink(BlinkComponent blink, InputComponent input, GameTime gameTime)
         {
             if (blink.Bindings.TryGetValue(typeof(MovementComponent), out var movementBinding))
             {
                 MovementComponent movement = movementBinding as MovementComponent;
                 if (!input.MovementDirection.Equals(Vector2.Zero))
                 {
-                    movement.Speed.AddVector2(new Coord2(input.MovementDirection).ChangePolarLength(400).Cartesian);
+                    blink.MovementDurationTimer.SetTimer(gameTime, blink.BlinkMovementDurationInMilliseconds);
+                    blink.MovementDirection = input.MovementDirection;
+                    blink.MovementExitSpeed = movement.Speed;
+                    SetMovementBlinkSpeed(blink, movement);
                     return true;
                 }
             }
 
             return false;
         }
+
+        private static void MaintainMovementBlink(BlinkComponent blink)
+        {
+            if (blink.Bindings.TryGetValue(typeof(MovementComponent), out var movementBinding))
+            {
+                MovementComponent movement = movementBinding as MovementComponent;
+                if (!blink.MovementDurationTimer.Over)
+                {
+                    SetMovementBlinkSpeed(blink, movement);
+                } else if (blink.MovementDurationTimer.Over && !blink.PreviousTimerOver)
+                {
+                    movement.Speed = blink.MovementExitSpeed;
+                }
+
+                blink.PreviousTimerOver = blink.MovementDurationTimer.Over;
+            }
+        }
+
+        private static void SetMovementBlinkSpeed(BlinkComponent blink, MovementComponent movement)
+        {
+            movement.Speed.SetVector2(new Coord2(blink.MovementDirection).ChangePolarLength(blink.BlinkMovementSpeed).Cartesian);
+        }
+
+        #endregion
 
         private static bool AttackBlink(BlinkComponent blink, InputComponent input)
         {

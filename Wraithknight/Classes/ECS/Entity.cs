@@ -91,7 +91,7 @@ namespace Wraithknight
         {
             for (int i = 0; i < component.Bindings.Count; i++)
             {
-                Type type = Components.ElementAt(i).Key;
+                Type type = component.Bindings.ElementAt(i).Key;
                 if (Components.TryGetValue(type, out var binding)) component.Bindings[type] = binding;
                 else throw new ArgumentException("Entity does not contain binding type");
             }
