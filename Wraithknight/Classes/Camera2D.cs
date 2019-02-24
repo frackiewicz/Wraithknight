@@ -120,11 +120,11 @@ namespace Wraithknight{
 
         private void SetCullRectangle()
         {
-            ConvertScreenToWorld(0, 0);
-            CullRec.X = _calculatedPoint.X - 16;
-            CullRec.Y = _calculatedPoint.Y - 16;
-            CullRec.Width = (int)((Graphics.Viewport.Width * 1 / CurrentZoom) + 32);
-            CullRec.Height = (int)((Graphics.Viewport.Height * 1 / CurrentZoom) + 32);
+            _calculatedPoint = ConvertScreenToWorld(0, 0);
+            CullRec.X = _calculatedPoint.X;
+            CullRec.Y = _calculatedPoint.Y;
+            CullRec.Width = (int)((Graphics.Viewport.Width * 1 / CurrentZoom));
+            CullRec.Height = (int)((Graphics.Viewport.Height * 1 / CurrentZoom));
         }
 
         private void MoveToTargetPos(GameTime gameTime) 

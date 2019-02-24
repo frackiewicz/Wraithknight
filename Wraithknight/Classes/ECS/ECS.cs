@@ -100,15 +100,15 @@ namespace Wraithknight
 
             _systemSet.Add(new StateSystem(this));
 
-            _systemSet.Add(new AnimationSystem());
             _systemSet.Add(new InputSystem(this, _camera));
-            _systemSet.Add(new CollisionSystem());
+            _systemSet.Add(new BlinkingSystem());
             _systemSet.Add(new MovementSystem());
+            _systemSet.Add(new CollisionSystem());
             _systemSet.Add(new TimerSystem());
             _systemSet.Add(new HealthSystem());
             _systemSet.Add(new IntelligenceSystem());
-            _systemSet.Add(new BlinkingSystem());
 
+            _systemSet.Add(new AnimationSystem());
             _systemSet.Add(drawSystem);
         }
         #endregion

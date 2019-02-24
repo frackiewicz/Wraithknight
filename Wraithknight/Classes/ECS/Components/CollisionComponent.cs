@@ -26,6 +26,7 @@ namespace Wraithknight
 
         public bool IsWall; //Should use coordinate efficiency
         public bool IsPhysical;
+        public bool IsPhasing; //Used for Blinking? maybe deal damage to self if stuck in enemy to discourage it
 
 
         public CollisionComponent(CollisionBehavior behavior = CollisionBehavior.Block, AABB collisionRectangle = new AABB(), Vector2 offset = new Vector2(), bool isWall = false, bool isPhysical = false)
