@@ -68,9 +68,7 @@ namespace Wraithknight
                 MovementComponent movement = movementBinding as MovementComponent;
                 if (!input.MovementDirection.Equals(Vector2.Zero))
                 {
-                    blink.MovementDurationTimer.SetTimer(gameTime, blink.BlinkMovementDurationInMilliseconds);
-                    blink.MovementDirection = input.MovementDirection;
-                    blink.MovementExitSpeed = movement.Speed;
+                    SetMovementVariables(blink, movement, input, gameTime);
                     SetMovementBlinkSpeed(blink, movement);
                     return true;
                 }
@@ -79,7 +77,7 @@ namespace Wraithknight
             return false;
         }
 
-        private static void MaintainMovementBlink(BlinkComponent blink)
+        private static void MaintainMovementBlink(BlinkComponent blink) //TODO Think about this, kinda wanna reorganize the blink logic in general
         {
             if (blink.Bindings.TryGetValue(typeof(MovementComponent), out var movementBinding))
             {
@@ -89,10 +87,61 @@ namespace Wraithknight
                     SetMovementBlinkSpeed(blink, movement);
                 } else if (blink.MovementDurationTimer.Over && !blink.PreviousTimerOver)
                 {
-                    movement.Speed = blink.MovementExitSpeed;
+                    ExitMovementBlink(blink, movement);
                 }
 
                 blink.PreviousTimerOver = blink.MovementDurationTimer.Over;
+            }
+        }
+
+        private static void ExitMovementBlink(BlinkComponent blink, MovementComponent movement)
+        {
+            movement.Speed = blink.MovementExitSpeed;
+            if (blink.Bindings.TryGetValue(typeof(CollisionComponent), out var collisionBinding))
+            {
+                CollisionComponent collision = collisionBinding as CollisionComponent;
+                collision.IsPhasing = false;
+            }
+            if (blink.Bindings.TryGetValue(typeof(DrawComponent), out var drawBinding))
+            {
+                DrawComponent draw = drawBinding as DrawComponent;
+                if (draw.Tint == Color.Cyan) draw.Tint = Color.White;
+            }
+            blink.CurrentEntityState.Blinking = false;
+        }
+
+        private static void SetMovementVariables(BlinkComponent blink, MovementComponent movement, InputComponent input, GameTime gameTime)
+        {
+            blink.MovementDurationTimer.SetTimer(gameTime, blink.BlinkMovementDurationInMilliseconds);
+            blink.MovementDirection = input.MovementDirection;
+            blink.MovementExitSpeed = movement.Speed;
+
+            SetMovementVariablesForBindings(blink);
+
+            blink.CurrentEntityState.Blinking = true;
+        }
+
+        private static void SetMovementVariablesForBindings(BlinkComponent blink)
+        {
+            if (blink.InvulnerableOnMovementBlink)
+            {
+                if (blink.Bindings.TryGetValue(typeof(HealthComponent), out var healthBinding))
+                {
+                    HealthComponent health = healthBinding as HealthComponent;
+                    //TODO make this shit invincible, use blink duration
+                }
+            }
+
+            if (blink.Bindings.TryGetValue(typeof(CollisionComponent), out var collisionBinding))
+            {
+                CollisionComponent collision = collisionBinding as CollisionComponent;
+                collision.IsPhasing = true;
+            }
+
+            if (blink.Bindings.TryGetValue(typeof(DrawComponent), out var drawBinding)) //TODO Breunig talk about Coupling
+            {
+                DrawComponent draw = drawBinding as DrawComponent;
+                draw.Tint = Color.Cyan;
             }
         }
 

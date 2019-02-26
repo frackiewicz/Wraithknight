@@ -98,10 +98,7 @@ namespace Wraithknight
             StateComponent stateComponent = movement.CurrentEntityState;
             if (movement.IsMoving)
             {
-                if (stateComponent.CurrentStatePriority < 1)
-                {
-                    stateComponent.CurrentState = EntityState.Moving;
-                }
+                stateComponent.TryToSetState(EntityState.Moving);
 
                 if (stateComponent.CurrentState == EntityState.Moving)
                 {

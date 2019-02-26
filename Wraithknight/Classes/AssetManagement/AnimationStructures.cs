@@ -40,6 +40,12 @@ namespace Wraithknight
                     animationList.Add(new Animation(Assets.GetTexture("heroslashweakdying"), "dying", "dying", frameSize, EntityState.Dying, false).CreateAnimationFrames(0, 9, 50));
                     break;
                 }
+                case EntityType.HeroKnightThrowingDagger:
+                {
+                    frameSize = new Point(16, 16);
+                    animationList.Add(new Animation(Assets.GetTexture("herothrowingdagger"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 6, 50));
+                    break;
+                }
 
             }
 

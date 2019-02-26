@@ -32,7 +32,7 @@ namespace Wraithknight
         {
             Texture = texture ?? Assets.GetTexture("DummyTexture");
             DrawRec = drawRec ?? new AABB(0, 0, Texture.Width, Texture.Height);
-            SourceRec = sourceRec ?? new Rectangle(0, 0, Texture.Width, Texture.Height);
+            SourceRec = sourceRec ?? new Rectangle(0, 0, (int)DrawRec.Width, (int)DrawRec.Height);
             BoundPos = boundPos;
             Scale = scale ?? new Vector2(DrawRec.Width/SourceRec.Width, DrawRec.Height/SourceRec.Height);
             if (offset != null) Offset = (Vector2) offset;
@@ -41,7 +41,7 @@ namespace Wraithknight
             GetRotationFromMovementVector = getRotationFromMovementVector;
             if (tint == null) Tint = Color.White; else Tint = (Color) tint;
             LayerDepth = layerDepth;
-            Origin = new Vector2(DrawRec.Width/2, DrawRec.Height/2); //TODO whaT thE FUcK
+            Origin = new Vector2(DrawRec.Width/2, DrawRec.Height/2);
         }
 
         public void ApplyOffset()

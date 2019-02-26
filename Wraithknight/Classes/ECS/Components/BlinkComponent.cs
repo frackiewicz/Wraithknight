@@ -21,6 +21,7 @@ namespace Wraithknight
         public int BlinkMovementSpeed;
         public double BlinkMovementDurationInMilliseconds;
         public TimerComponent MovementDurationTimer = new TimerComponent();
+        public bool InvulnerableOnMovementBlink = true;
         public bool PreviousTimerOver;
         public Vector2 MovementDirection;
         public Coord2 MovementExitSpeed;

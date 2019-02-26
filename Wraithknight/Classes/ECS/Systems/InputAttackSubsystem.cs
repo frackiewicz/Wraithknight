@@ -161,10 +161,7 @@ namespace Wraithknight
 
             if (attack.RemainingAttackCooldownMilliseconds > 0 || (attack.DelayedAttack != null && attack.DelayedAttack.RemainingAttackDelayMilliseconds > 0))
             {
-                if (stateComponent.CurrentStatePriority < 2)
-                {
-                    stateComponent.CurrentState = EntityState.Attacking;
-                }
+                stateComponent.TryToSetState(EntityState.Attacking);
 
                 if (stateComponent.CurrentState == EntityState.Attacking)
                 {

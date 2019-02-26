@@ -21,6 +21,8 @@ namespace Wraithknight
             }
             else
             {
+                if ((actor.Collision.IsPhasing || target.IsPhasing) && (!target.IsWall)) return;
+
                 if (actor.Collision.CollisionRectangle.Intersects(target.CollisionRectangle))
                 {
                     Vector2 penetrationVector = ClosestPointOnBoundsToPoint(CalculateMinkowskiDifference(actor.Collision.CollisionRectangle, target.CollisionRectangle), Vector2.Zero);

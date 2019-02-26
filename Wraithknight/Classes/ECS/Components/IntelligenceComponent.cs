@@ -36,7 +36,7 @@ namespace Wraithknight
             Reset = reset;
         }
     }
-    class IntelligenceComponent : BindableComponent
+    class IntelligenceComponent : BindableComponent //TODO Add triggered orders, hit wall -> random movement, take damage -> seek source
     {
         public List<IntelligenceOrder> Orders = new List<IntelligenceOrder>();
         public double UpdateCooldownMilliseconds = 0;

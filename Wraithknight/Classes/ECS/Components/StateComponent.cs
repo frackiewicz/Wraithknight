@@ -17,19 +17,32 @@ namespace Wraithknight
         Idle,
         Moving,
         Attacking,
+        Acting,
         Dying,
-        Dead, //TODO figure out a good way to do this
-        Other,
+        Dead,
         None
     }
     class StateComponent : Component
     {
+        //TODO Breunig any better way to define this?
+        private readonly Dictionary<EntityState, int> _statePriorities = new Dictionary<EntityState, int>()
+        {
+            { EntityState.Idle, 0 },
+            { EntityState.Moving, 1 },
+            { EntityState.Attacking, 2 },
+            { EntityState.Acting, 2 },
+            { EntityState.Dying, 98 },
+            { EntityState.Dead, 99 },
+            { EntityState.None, -1 }
+        };
+
         public EntityState PreviousState;
         public EntityState CurrentState;
         public int CurrentStatePriority;
         public Direction Direction;
         public Direction Orientation;
 
+        public bool Blinking = false;
         public bool Dead = false;
 
         public bool ReadyToChange; //To fixate states and put them on a timer maybe?
@@ -48,6 +61,14 @@ namespace Wraithknight
             Direction = Direction.Down;
             ReadyToChange = true;
             StateIdentifier = "";
+        }
+
+        public void TryToSetState(EntityState state)
+        {
+            if (CurrentStatePriority < _statePriorities[state])
+            {
+                CurrentState = state;
+            }
         }
     }
     /*

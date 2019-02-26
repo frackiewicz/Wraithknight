@@ -47,8 +47,11 @@ namespace Wraithknight
 }
 
 /*
- * All Background Objects will be rectangular and axis aligned
- * Projectiles might be rotated -> think of an implementation
- * Characters are also very likely rectangular and axis aligned
+ * How about you turn this component into a list of collision boxes
+ * those boxes than have their specific behaviors assigned
+ * components which have this bound to them will then ask for the behaviortype that the require
  *
+ * thoughts??
+ * you need to do this before finishing daggers
+ * TODO Breunig?
  */
