@@ -20,15 +20,15 @@ namespace Wraithknight
         {
             foreach (var blink in _components)
             {
-                if (blink.BlinkTrigger)
+                if (blink.Input.BlinkTriggered)
                 {
-                    if (blink.Cooldown.Over)
+                    if (blink.HasChargeReady)
                     {
-                        if(ExecuteBlink(blink, gameTime)) SetBlinkCooldown(blink, gameTime);
+                        if (ExecuteBlink(blink, gameTime)) SetBlinkCooldown(blink, gameTime);
                     }
-                    ResetBlink(blink);
                 }
 
+                RechargeBlink(blink, gameTime);
                 MaintainMovementBlink(blink);
             }
         }
@@ -41,22 +41,23 @@ namespace Wraithknight
         private static void SetBlinkCooldown(BlinkComponent blink, GameTime gameTime)
         {
             blink.Cooldown.SetTimer(gameTime, blink.CooldownMilliseconds);
+            blink.Charges--;
         }
 
         private static bool ExecuteBlink(BlinkComponent blink, GameTime gameTime)
         {
-            InputComponent input = GetInputComponent(blink);
+            InputComponent input = blink.Input;
             return ExecuteMovementBlink(blink, input, gameTime) ||
-                   AttackBlink(blink, input);
+                   ExecuteAttackBlink(blink, input);
         }
 
-        private static InputComponent GetInputComponent(BlinkComponent blink) 
+        private static void RechargeBlink(BlinkComponent blink, GameTime gameTime)
         {
-            if (blink.Bindings.TryGetValue(typeof(InputComponent), out var inputBinding))
+            if (blink.Charges < blink.MaxCharges && blink.Cooldown.Over)
             {
-                return inputBinding as InputComponent;
+                blink.Charges++;
+                blink.Cooldown.SetTimer(gameTime, blink.CooldownMilliseconds);
             }
-            return null;
         }
 
         #region Movement
@@ -152,7 +153,9 @@ namespace Wraithknight
 
         #endregion
 
-        private static bool AttackBlink(BlinkComponent blink, InputComponent input)
+        #region Attack
+
+        private static bool ExecuteAttackBlink(BlinkComponent blink, InputComponent input)
         {
             if (blink.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBinding))
             {
@@ -162,9 +165,6 @@ namespace Wraithknight
             return false;
         }
 
-        private static void ResetBlink(BlinkComponent blink)
-        {
-            blink.BlinkTrigger = false;
-        }
+        #endregion
     }
 }

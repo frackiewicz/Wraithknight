@@ -20,6 +20,13 @@ namespace Wraithknight
         public bool SwitchWeapons = false; //Space
         public bool Action = false; //F
         public bool Blink = false; //Shift
+        #region Triggers
+        public bool PrimaryAttackTriggered = false; //LMB
+        public bool SecondaryAttackTriggered = false; //RMB
+        public bool SwitchWeaponsTriggered = false; //Space
+        public bool ActionTriggered = false; //F
+        public bool BlinkTriggered = false; //Shift
+        #endregion
         public Point CursorPoint = new Point();
 
         public InputComponent(bool userInput)

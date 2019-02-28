@@ -42,7 +42,6 @@ namespace Wraithknight
                 }
                 else ResetInput(component);
 
-
                 HandleInputLogic(component, gameTime);
             }
         }
@@ -77,10 +76,20 @@ namespace Wraithknight
             
             component.PrimaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.LMB);
             component.SecondaryAttack = InputReader.IsMouseButtonPressed(MouseButtons.RMB);
-            component.SwitchWeapons = InputReader.IsKeyTriggered(Keys.Space);
-            component.Action = InputReader.IsKeyTriggered(Keys.F);
+            component.SwitchWeapons = InputReader.IsKeyPressed(Keys.Space);
+            component.Action = InputReader.IsKeyPressed(Keys.F);
             component.Blink = InputReader.IsKeyPressed(Keys.LeftShift);
             component.CursorPoint = _camera.ConvertScreenToWorld(InputReader.CurrentCursorPos);
+            #region Triggers
+
+            //TODO Breunig save triggers here or use "old" data in components
+            component.PrimaryAttackTriggered = InputReader.IsMouseButtonTriggered(MouseButtons.LMB);
+            component.SecondaryAttackTriggered = InputReader.IsMouseButtonTriggered(MouseButtons.RMB);
+            component.SwitchWeaponsTriggered = InputReader.IsKeyTriggered(Keys.Space);
+            component.ActionTriggered = InputReader.IsKeyTriggered(Keys.F);
+            component.BlinkTriggered = InputReader.IsKeyTriggered(Keys.LeftShift);
+
+            #endregion
         }
 
         private static void ResetInput(InputComponent component)
@@ -106,7 +115,6 @@ namespace Wraithknight
         {
             MovementLogic(input);
             _attackSubsystem.AttackLogic(input, gameTime);
-            BlinkLogic(input);
         }
        
 
@@ -120,16 +128,6 @@ namespace Wraithknight
 
                 movement.Acceleration.Cartesian.X = input.MovementDirection.X * movement.AccelerationBase;
                 movement.Acceleration.Cartesian.Y = input.MovementDirection.Y * movement.AccelerationBase;
-            }
-        }
-
-        private void BlinkLogic(InputComponent input)
-        {
-            if (!input.Blink) return;
-            if (input.Bindings.TryGetValue(typeof(BlinkComponent), out var binding))
-            {
-                BlinkComponent blink = binding as BlinkComponent;
-                blink.BlinkTrigger = true;
             }
         }
 

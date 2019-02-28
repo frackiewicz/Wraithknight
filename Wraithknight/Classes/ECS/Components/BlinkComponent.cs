@@ -9,11 +9,11 @@ namespace Wraithknight
 {
     class BlinkComponent : BindableComponent
     {
-        public bool BlinkTrigger;
         public InputComponent Input;
 
         public int MaxCharges;
         public int Charges;
+        public bool HasChargeReady => Charges > 0;
 
         public TimerComponent Cooldown = new TimerComponent();
         public double CooldownMilliseconds;
@@ -28,11 +28,21 @@ namespace Wraithknight
 
         //Extra damage, projectile speed etc
 
-        public BlinkComponent(double cooldown, int blinkMovementSpeed, double blinkMovementDurationInMilliseconds)
+        public BlinkComponent(int maxCharges, double cooldown, int blinkMovementSpeed, double blinkMovementDurationInMilliseconds)
         {
+            MaxCharges = maxCharges;
+            Charges = MaxCharges;
             CooldownMilliseconds = cooldown;
             BlinkMovementSpeed = blinkMovementSpeed;
             BlinkMovementDurationInMilliseconds = blinkMovementDurationInMilliseconds;
+        }
+
+        public override void Activate()
+        {
+            if (Bindings.TryGetValue(typeof(InputComponent), out var binding))
+            {
+                Input = binding as InputComponent;
+            }
         }
     }
 }
