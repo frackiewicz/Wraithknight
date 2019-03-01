@@ -88,10 +88,11 @@ namespace Wraithknight
                 loopCounter++;
             }
 
-            if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1));
+            if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1)); //TODO Rework this
+
+            ResizeLevelToEdges(level, 2);
 
             SpawnEntities(level);
-
 
             return level;
         }
@@ -319,7 +320,7 @@ namespace Wraithknight
                 {
                     if (!map[x, y] && !visited[x, y])
                     {
-                        FindSimilarCluster(x, y, map, visited, rooms);
+                        RunFloodling(x, y, map, visited, rooms);
                     }
                 }
             }
@@ -348,7 +349,7 @@ namespace Wraithknight
                 {
                     if (!map[x, y] && !visited[x, y])
                     {
-                        FindSimilarCluster(x, y, map, visited, rooms);
+                        RunFloodling(x, y, map, visited, rooms);
                     }
                 }
             }
@@ -356,7 +357,7 @@ namespace Wraithknight
             return rooms.Count;
         }
 
-        private static void FindSimilarCluster(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
+        private static void RunFloodling(int x, int y, bool[,] map, bool[,] visited, List<Floodling> floodlings)
         {
             Floodling floodling = new Floodling(map[x, y], x, y);
             Stack<Point> stack = new Stack<Point>();
@@ -384,7 +385,7 @@ namespace Wraithknight
             floodlings.Add(floodling);
         }
 
-        private static void FlipSimilarCluster(Floodling floodling, bool[,] map, bool[,] visited)
+        private static void FlipSimilarCluster(Floodling floodling, bool[,] map, bool[,] visited) //Forgot what this does lmao
         {
             Stack<Point> stack = new Stack<Point>();
             stack.Push(new Point(floodling.Source.X, floodling.Source.Y));
@@ -408,6 +409,95 @@ namespace Wraithknight
                 }
             }
         }
+
+        #region Map Resizing
+
+        private static void ResizeLevelToEdges(Level level, int buffer)
+        {
+            bool[,] map = level.Walls;
+            Point topLeft = FindTopLeft(map);
+            Point bottomRight = FindBottomRight(map);
+
+            int newWidth = (topLeft.X - bottomRight.X) + 2 * buffer;
+            int newHeight = (topLeft.Y - bottomRight.Y) + 2 * buffer;
+            bool[,] newMap = new bool[newWidth, newHeight];
+
+            for (int x = topLeft.X - buffer; x < bottomRight.X + buffer; x++)
+            {
+                for (int y = topLeft.Y - buffer; y < bottomRight.Y + buffer; y++)
+                {
+                    newMap[x - topLeft.X + buffer, y - topLeft.Y + buffer] = map[x, y];
+                }
+            }
+            
+            level.Data = new EntityType[level.Walls.GetLength(0), level.Walls.GetLength(1)];
+        }
+
+        private static Point FindTopLeft(bool[,] map)
+        {
+            Point topLeft = new Point();
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    if (!map[x, y])
+                    {
+                        topLeft.Y = y;
+                        goto EndFirst;
+                    }
+                }
+            }
+            EndFirst:
+
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (!map[x, y])
+                    {
+                        topLeft.X = x;
+                        goto EndSecond;
+                    }
+                }
+            }
+            EndSecond:
+
+            return topLeft;
+        }
+
+        private static Point FindBottomRight(bool[,] map)
+        {
+            Point bottomRight = new Point();
+            for (int x = map.GetLength(0)-1; x > 0; x--)
+            {
+                for (int y = map.GetLength(1)-1; y > 0; y--)
+                {
+                    if (!map[x, y])
+                    {
+                        bottomRight.Y = y;
+                        goto EndFirst;
+                    }
+                }
+            }
+            EndFirst:
+
+            for (int y = map.GetLength(1)-1; y < 0; y--)
+            {
+                for (int x = map.GetLength(0)-1; x < 0; x--)
+                {
+                    if (map[x, y])
+                    {
+                        bottomRight.X = x;
+                        goto EndSecond;
+                    }
+                }
+            }
+            EndSecond:
+
+            return bottomRight;
+        }
+
+        #endregion
 
         #endregion
 
