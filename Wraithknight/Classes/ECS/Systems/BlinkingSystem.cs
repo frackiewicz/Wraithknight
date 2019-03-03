@@ -34,6 +34,7 @@ namespace Wraithknight
         }
 
         public override void Reset()
+
         {
             _components.Clear();
         }
