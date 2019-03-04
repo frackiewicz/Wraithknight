@@ -40,7 +40,7 @@ namespace Wraithknight
 
         public int NoisePercent;
         public int BoundsNoisePercent;
-        public int BoundsReach; //distancefrombounds
+        public int BoundsReach;
 
         public int AutomataCycles;
         public int StarvationNumber;
@@ -48,6 +48,8 @@ namespace Wraithknight
 
         public int MinRoomPercent;
         public int MaxRoomPercent;
+
+        public bool Resize;
 
         public int TotalEnemySpawnBudget;
 
@@ -75,7 +77,7 @@ namespace Wraithknight
             return GenerateLevel(level);
         }
 
-        public Level GenerateLevel(Level level) //For now Cellular Automata
+        public Level GenerateLevel(Level level) //TODO For the love of god rework the structure of this nonsense
         {
             FillLevelWithRandomNoise(level, NoisePercent);
             FillBoundsWithRandomNoise(level, BoundsNoisePercent, BoundsReach);
@@ -90,7 +92,7 @@ namespace Wraithknight
 
             if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1)); //TODO Rework this
 
-            ResizeLevelToEdges(level, 2);
+            if (Resize) ResizeLevelToEdges(level, 4);
 
             SpawnEntities(level);
 
@@ -120,6 +122,9 @@ namespace Wraithknight
 
                 MinRoomPercent = 30;
                 MaxRoomPercent = 50;
+
+                Resize = true;
+
                 TotalEnemySpawnBudget = 25;
             }
 
@@ -144,6 +149,9 @@ namespace Wraithknight
 
                 MinRoomPercent = 10;
                 MaxRoomPercent = 15;
+
+                Resize = true;
+
                 TotalEnemySpawnBudget = 100;
             }
         }
@@ -418,26 +426,49 @@ namespace Wraithknight
             Point topLeft = FindTopLeft(map);
             Point bottomRight = FindBottomRight(map);
 
-            int newWidth = (bottomRight.X - topLeft.X) + 2 * buffer;
-            int newHeight = (bottomRight.Y - topLeft.Y) + 2 * buffer;
-            /*
-            level.Data[topLeft.X, topLeft.Y] = EntityType.DebugRectangle;
-            level.Data[bottomRight.X, bottomRight.Y] = EntityType.DebugRectangle;
-            */
+            //CULL
+            int xDifference = bottomRight.X - topLeft.X;
+            int yDifference = bottomRight.Y - topLeft.Y;
 
+            bool[,] culledWalls = new bool[xDifference, yDifference];
 
-            bool[,] newMap = new bool[newWidth, newHeight];
-
-            for (int x = topLeft.X - buffer; x < bottomRight.X + buffer; x++)
+            for (int x = topLeft.X; x < bottomRight.X; x++)
             {
-                for (int y = topLeft.Y - buffer; y < bottomRight.Y + buffer; y++)
+                for (int y = topLeft.Y; y < bottomRight.Y; y++)
                 {
-                    newMap[x - topLeft.X + buffer, y - topLeft.Y + buffer] = map[x, y];
+                    culledWalls[x - topLeft.X, y - topLeft.Y] = map[x, y];
                 }
             }
 
-            level.Walls = newMap;
+            //THEN BUFFER
+            int newWidth = xDifference + 2 * buffer + 1;
+            int newHeight = yDifference + 2 * buffer + 1;
+
+            bool[,] bufferedWalls = new bool[newWidth, newHeight];
+            FillBuffer(bufferedWalls);
+
+            for (int x = topLeft.X; x < bottomRight.X; x++)
+            {
+                for (int y = topLeft.Y; y < bottomRight.Y; y++)
+                {
+                    bufferedWalls[x - topLeft.X + buffer, y - topLeft.Y + buffer] = map[x, y];
+                }
+            }
+
+
+            level.Walls = bufferedWalls;
             level.Data = new EntityType[level.Walls.GetLength(0), level.Walls.GetLength(1)];
+        }
+
+        private static void FillBuffer(bool[,] bufferedWalls)
+        {
+            for (int x = 0; x < bufferedWalls.GetLength(0); x++)
+            {
+                for (int y = 0; y < bufferedWalls.GetLength(1); y++)
+                {
+                    bufferedWalls[x, y] = true;
+                }
+            }
         }
 
         private static Point FindTopLeft(bool[,] map) //TODO brainfart with x and y
