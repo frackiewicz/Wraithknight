@@ -74,9 +74,10 @@ namespace Wraithknight
         private void DrawComponent(DrawComponent component)
         {
             if (component.Inactive) return;
-            if (component.DrawRec.Intersects(_camera.CullRec)) //isVisible TODO Give the drawrec a buffer, that maybe removes the pop ins
+
+            UpdatePosition(component);
+            if (component.DrawRec.Intersects(_camera.CullRec)) //TODO can confirm, this causes the pop ins
             {
-                UpdatePosition(component);
                 if (component.GetRotationFromMovementVector) RotateFromMovementVector(component);
                 Functions_Draw.Draw(component);
             }

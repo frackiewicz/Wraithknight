@@ -22,9 +22,6 @@ namespace Wraithknight{
         public Vector3 TranslateBody;
         public Matrix View;
 
-        public Vector2 DeltaPosition;
-        public float Distance;
-
         public Matrix MatZoom;
 
         public Matrix Projection;
@@ -33,7 +30,7 @@ namespace Wraithknight{
         private Vector3 _vector3Helper;
         private Point _calculatedPoint;
 
-        internal AABB CullRec = new AABB();
+        internal AABB CullRec;
 
         public float CurrentZoom = 1.0f;
         public float TargetZoom = 1.0f;
@@ -84,19 +81,47 @@ namespace Wraithknight{
         }
 
         public void Update(GameTime gameTime)
-        {  
-            UpdateVariables();
-            
+        {
             MoveToTargetPos(gameTime);
-            HandelZoom(gameTime);
+            ApplyZoom(gameTime);
 
+            SetCullRectangle();
             SetView();
+        }
+
+        private void MoveToTargetPos(GameTime gameTime)
+        {
+            Vector2 positionDelta = TargetPosition - CurrentPosition;
+            Vector2 positionChange = positionDelta * CameraSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (positionDelta.Length() < 0.01f) CurrentPosition = TargetPosition;
+            else CurrentPosition += positionChange;
+        }
+
+        private void ApplyZoom(GameTime gameTime)
+        {
+            if (CurrentZoom != TargetZoom)
+            {
+                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; }
+                else if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
+                else if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
+            }
+        }
+    
+        private void SetCullRectangle()
+        {
+            _calculatedPoint = ConvertScreenToWorld(0, 0);
+            int buffer = 16; //lazy
+            CullRec.X = _calculatedPoint.X - buffer;
+            CullRec.Y = _calculatedPoint.Y - buffer;
+            CullRec.Width = Graphics.Viewport.Width * (1 / CurrentZoom) + 2 * buffer;
+            CullRec.Height = Graphics.Viewport.Height * (1 / CurrentZoom) + 2 * buffer;
         }
 
         public void SetView()
         {
-            TranslateCenter.X = (int)Graphics.Viewport.Width / 2f;
-            TranslateCenter.Y = (int)Graphics.Viewport.Height / 2f;
+            TranslateCenter.X = Graphics.Viewport.Width / 2f;
+            TranslateCenter.Y = Graphics.Viewport.Height / 2f;
             TranslateCenter.Z = 0;
 
             TranslateBody.X = -CurrentPosition.X;
@@ -108,41 +133,6 @@ namespace Wraithknight{
                    MatRotation *
                    MatZoom *
                    Matrix.CreateTranslation(TranslateCenter);
-        }
-
-        private void UpdateVariables()
-        {
-            DeltaPosition = TargetPosition - CurrentPosition;
-            Distance = DeltaPosition.Length();
-
-            SetCullRectangle();
-        }
-
-        private void SetCullRectangle()
-        {
-            _calculatedPoint = ConvertScreenToWorld(0, 0);
-            CullRec.X = _calculatedPoint.X;
-            CullRec.Y = _calculatedPoint.Y;
-            CullRec.Width = (int)((Graphics.Viewport.Width * 1 / CurrentZoom));
-            CullRec.Height = (int)((Graphics.Viewport.Height * 1 / CurrentZoom));
-        }
-
-        private void MoveToTargetPos(GameTime gameTime) 
-        {
-            if (Distance < 0.001f) { CurrentPosition = TargetPosition; }
-            else
-            { CurrentPosition += DeltaPosition * CameraSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds; }
-        }
-
-        private void HandelZoom(GameTime gameTime)
-        {
-            if (CurrentZoom != TargetZoom)
-            {
-                if (Math.Abs((CurrentZoom - TargetZoom)) < ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds) { CurrentZoom = TargetZoom; }
-                if (CurrentZoom > TargetZoom) { CurrentZoom -= ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
-                if (CurrentZoom < TargetZoom) { CurrentZoom += ZoomSpeed * CurrentZoom * (float)gameTime.ElapsedGameTime.TotalSeconds; }
-
-            }
         }
     }
 }
