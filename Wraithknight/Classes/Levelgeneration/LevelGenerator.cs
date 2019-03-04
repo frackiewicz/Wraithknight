@@ -418,8 +418,14 @@ namespace Wraithknight
             Point topLeft = FindTopLeft(map);
             Point bottomRight = FindBottomRight(map);
 
-            int newWidth = (topLeft.X - bottomRight.X) + 2 * buffer;
-            int newHeight = (topLeft.Y - bottomRight.Y) + 2 * buffer;
+            int newWidth = (bottomRight.X - topLeft.X) + 2 * buffer;
+            int newHeight = (bottomRight.Y - topLeft.Y) + 2 * buffer;
+            /*
+            level.Data[topLeft.X, topLeft.Y] = EntityType.DebugRectangle;
+            level.Data[bottomRight.X, bottomRight.Y] = EntityType.DebugRectangle;
+            */
+
+
             bool[,] newMap = new bool[newWidth, newHeight];
 
             for (int x = topLeft.X - buffer; x < bottomRight.X + buffer; x++)
@@ -429,11 +435,12 @@ namespace Wraithknight
                     newMap[x - topLeft.X + buffer, y - topLeft.Y + buffer] = map[x, y];
                 }
             }
-            
+
+            level.Walls = newMap;
             level.Data = new EntityType[level.Walls.GetLength(0), level.Walls.GetLength(1)];
         }
 
-        private static Point FindTopLeft(bool[,] map)
+        private static Point FindTopLeft(bool[,] map) //TODO brainfart with x and y
         {
             Point topLeft = new Point();
             for (int x = 0; x < map.GetLength(0); x++)
@@ -442,7 +449,7 @@ namespace Wraithknight
                 {
                     if (!map[x, y])
                     {
-                        topLeft.Y = y;
+                        topLeft.X = x;
                         goto EndFirst;
                     }
                 }
@@ -455,7 +462,7 @@ namespace Wraithknight
                 {
                     if (!map[x, y])
                     {
-                        topLeft.X = x;
+                        topLeft.Y = y;
                         goto EndSecond;
                     }
                 }
@@ -474,20 +481,20 @@ namespace Wraithknight
                 {
                     if (!map[x, y])
                     {
-                        bottomRight.Y = y;
+                        bottomRight.X = x;
                         goto EndFirst;
                     }
                 }
             }
             EndFirst:
 
-            for (int y = map.GetLength(1)-1; y < 0; y--)
+            for (int y = map.GetLength(1)-1; y > 0; y--)
             {
-                for (int x = map.GetLength(0)-1; x < 0; x--)
+                for (int x = map.GetLength(0)-1; x > 0; x--)
                 {
-                    if (map[x, y])
+                    if (!map[x, y])
                     {
-                        bottomRight.X = x;
+                        bottomRight.Y = y;
                         goto EndSecond;
                     }
                 }

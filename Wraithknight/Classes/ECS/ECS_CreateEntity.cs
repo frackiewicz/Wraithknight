@@ -31,7 +31,11 @@ namespace Wraithknight
         //Projectiles
         HeroKnightSlashWeak,
         HeroKnightSlashStrong,
-        HeroKnightThrowingDagger
+        HeroKnightThrowingDagger,
+
+
+        //DEBUG
+        DebugRectangle
     }
 
     static class ECS_CreateEntity
@@ -260,7 +264,14 @@ namespace Wraithknight
                     break;
                 }
 
-                    #endregion
+                #endregion
+
+                case EntityType.DebugRectangle:
+                {
+                    entity.SetAllegiance(Allegiance.Neutral);
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("DummyTexture"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), tint: Color.Pink, layerDepth: 0.01f));
+                    break;
+                }
             }
 
             entity.FinalizeCreation();
