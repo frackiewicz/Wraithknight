@@ -1,0 +1,136 @@
+/********************* Colour reference chart****************
+
+background-dark     #131021
+background-light    #1e1d2e
+
+font-color          #337580
+accent              #00d9b5
+
+*/
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url(http://allfont.de/allfont.css?fonts=futura-bold);
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif;
+
+}
+
+hr {
+    color: #131021;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.topbar {
+    height: 50px;
+    background-color: #131021;
+    z-index: 1;
+}
+
+.title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.title>div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 95px;
+    width: 100px;
+    background-color: #131021;
+    border: 5px solid #131021;
+    border-top: 0px;
+    border-radius: 200px;
+    padding-top: 10px;
+}
+
+img {
+    image-rendering: crisp-edges;
+}
+
+.nav-ankers {
+    display: flex;
+    justify-content: center;
+
+}
+
+
+.hero {
+    z-index: -1;
+    margin: 0px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/hero.jpeg");
+    width: 100%;
+    height: 70vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    font-size: 80px;
+    vertical-align: middle;
+    line-height: 100vh;
+}
+
+
+.description {
+    background-color: #131021;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Raleway;
+    color: white;
+    font-size: x-large;
+}
+
+.description > p {
+    width: 50%;
+    text-align: center;
+}
+
+
+.characters{
+    background-color: #1e1d2e;
+
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    font-family: sans-serif;
+    color: white;
+    font-size: x-large;
+}
+
+.headline_text {
+    color: #00d9b5;
+    font-family: 'Futura-Bold', arial;}
+
+.regular_text {
+    color: #337580;
+}
+
+.highlighted_text{
+    color: #00d9b5;
+}
+
+
+.img-description{
+    width: 30%;
+}
+
+.screenshots{
+    background-color: black;
+
+}
+.screenshots > div >img{
+    width: 380px;
+    margin: 5px;
+}
+
+.screenshots>div{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}

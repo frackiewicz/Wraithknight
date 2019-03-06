@@ -25,6 +25,12 @@
 /processorParam:TextureFormat=Color
 /build:empty.png
 
+#begin File.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:File.fx
+
 #begin floor1.png
 /importer:TextureImporter
 /processor:TextureProcessor
