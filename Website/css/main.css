@@ -18,7 +18,7 @@ body {
 }
 
 hr {
-    color: #131021;
+    color: #131021; /*würde das auf die helle blae accent farbe setzen*/
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -26,7 +26,6 @@ hr {
 .topbar {
     height: 50px;
     background-color: #131021;
-    z-index: 1;
 }
 
 .title {
@@ -36,6 +35,7 @@ hr {
 }
 
 .title>div {
+    z-index: 3;
     display: flex;
     flex-direction: row;
     justify-content: center;

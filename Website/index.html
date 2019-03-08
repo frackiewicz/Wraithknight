@@ -7,6 +7,9 @@
 
     <link rel="shortcut icon" href="favicon.ico"/>
     <title>Wraithknight</title>
+
+    <link rel="stylesheet" type="text/css" href="css/nav.css"/>
+    <script src="js/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
 
@@ -19,7 +22,33 @@
         </div>
 
     </div>
-
+    <!--Navigation Half-Circle-->
+    <div class="cn-wrapper">
+        <ul>
+            <!--Right Button-->
+            <li>
+                <a href="#hero">
+                    <img src="images/sheet.png">
+                    <!--<span class="icon-picture"></span>-->
+                </a>
+            </li>
+            <!--Middle Button-->
+            <li>
+                <a href="#description">
+                    <img src="images/sheet.png">
+                    <!--<span class="icon-headphones"></span>-->
+                </a>
+            </li>
+            <!--Left Button-->
+            <li>
+                <a href="#screenshots">
+                    <img src="images/sheet.png">
+                    <!--<span class="icon-home"></span>-->
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--/Navigation Half-Circle-->
 
     <!--  <div class="nav-ankers">
           <a><img src="images/sheet.png"></a>
@@ -31,7 +60,7 @@
 </nav>
 
 <!--Hero    -->
-<section class="hero">
+<section id="hero" class="hero">
 
 
 </section>
@@ -39,7 +68,7 @@
 
 <!--Beschreibung-->
 <section>
-<div class="description">
+<div id="description" class="description">
     <p class="regular_text">
         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
         dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
@@ -71,7 +100,7 @@
 </section>
 
 
-<section class="screenshots">
+<section id="screenshots" class="screenshots">
     <div>
 
         <img src="images/hero.jpeg">
@@ -92,7 +121,9 @@
 </section>
 
 
+<!--Imported-->
 <script src="js/main.js"></script>
-
+<!--<script src="js/polyfills.js"></script>-->
+<!--/Imported-->
 </body>
 </html>

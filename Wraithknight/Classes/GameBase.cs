@@ -33,6 +33,10 @@ namespace Wraithknight
             TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 30);
             //_graphics.SynchronizeWithVerticalRetrace = false;
             IsMouseVisible = true;
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.PreferredBackBufferWidth = 1920;
+
             #endregion
         }
 
