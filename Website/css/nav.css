@@ -50,18 +50,12 @@
     transform: skew(-30deg) rotate(-60deg) scale(1);
 }
 
-.csstransforms .cn-wrapper li a span {
-    font-size: 1.1em;
-    opacity: 0.7;
-}
-
 .csstransforms .cn-wrapper li a img {
     -webkit-transform: rotate(180deg) translate(0, -0.75em);
     -moz-transform: rotate(180deg) translate(0, -0.75em);
     -ms-transform: rotate(180deg) translate(0, -0.75em);
     -o-transform: rotate(180deg) translate(0, -0.75em);
     transform: rotate(180deg) translate(0, -0.75em);
-
 }
 
 .csstransforms .cn-wrapper li:first-child {
@@ -87,18 +81,15 @@
 
 .csstransforms .cn-wrapper li:nth-child(odd) a {
     background-color: #337580;
-    /*background-color: hsla(0, 88%, 63%, 1);*/
 }
 
 .csstransforms .cn-wrapper li:nth-child(even) a {
     background-color: #337580;
-    /*background-color: hsla(0, 88%, 65%, 1);*/
 }
 
 /* active style */
 .csstransforms .cn-wrapper li.active a {
     background-color: #00d9b5;
-    /*background-color: hsla(0, 88%, 70%, 1);*/
 }
 
 
@@ -107,7 +98,6 @@
 .csstransforms .cn-wrapper li:not(.active) a:active,
 .csstransforms .cn-wrapper li:not(.active) a:focus {
     background-color: #00d9b5;
-    /*background-color: hsla(0, 88%, 70%, 1);*/
 }
 
 .csstransforms .cn-wrapper li:not(.active) a:focus {

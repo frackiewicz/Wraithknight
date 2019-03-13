@@ -10,31 +10,85 @@ accent              #00d9b5
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url(http://allfont.de/allfont.css?fonts=futura-bold);
 
-body {
-    margin: 0px;
-    padding: 0px;
-    font-family: sans-serif;
+html{
+    scroll-behavior: smooth;
+}
 
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: #131021;
+}
+
+h1 {
+    color: #00d9b5;
+    font-family: 'Futura-Bold', arial, sans-serif;
+    font-size: xx-large;
+    margin-top: 0;
+    margin-bottom: 1em;
+    padding-top: 1em;
+    padding-bottom: 0;
+    text-align: center;
+}
+
+h2 {
+    color: #00d9b5;
+    font-family: 'Futura-Bold', arial, sans-serif;
+    font-size: xx-large;
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    padding-top: 0.8em;
+    padding-bottom: 0;
+    text-align: center;
 }
 
 hr {
-    color: #131021; /*würde das auf die helle blae accent farbe setzen*/
+    color: #131021;
     margin-left: 10px;
     margin-right: 10px;
 }
 
-.topbar {
+img {
+    image-rendering: crisp-edges;
+}
+
+.drop-shadow {
+	filter: drop-shadow(0px 0px 10px rgba(51,117,128,.5));
+}
+
+/*.headline_text {*/
+/*color: #00d9b5;*/
+/*text-align: center;*/
+/*font-family: 'Futura-Bold', arial, sans-serif;*/
+/*font-size: x-large;*/
+/*}*/
+
+.highlighted_text {
+    color: #00d9b5;
+    font-size: x-large;
+}
+
+.regular_text {
+    color: #337580;
+    font-size: x-large;
+    text-align: justify;
+}
+
+/*---------------- Topbar ----------------*/
+
+#topbar {
     height: 50px;
     background-color: #131021;
 }
 
-.title {
+#topbar > .title {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-.title>div {
+#topbar > .title > div {
     z-index: 3;
     display: flex;
     flex-direction: row;
@@ -43,94 +97,198 @@ hr {
     width: 100px;
     background-color: #131021;
     border: 5px solid #131021;
-    border-top: 0px;
+    border-top: 0;
     border-radius: 200px;
     padding-top: 10px;
 }
 
-img {
-    image-rendering: crisp-edges;
+#topbar > .title > div > img {
+    image-rendering: pixelated;
 }
 
-.nav-ankers {
-    display: flex;
-    justify-content: center;
-
+#topbar > .cn-wrapper > ul > li > a > img {
+    image-rendering: pixelated;
 }
 
+/*---------------- /Topbar ----------------*/
 
-.hero {
+/*---------------- Hero ----------------*/
+
+#hero {
     z-index: -1;
-    margin: 0px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/hero.jpeg");
+    margin: 0;
     width: 100%;
     height: 70vh;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/hero.jpeg") no-repeat center;
     background-size: cover;
     position: relative;
     font-size: 80px;
     vertical-align: middle;
     line-height: 100vh;
+
 }
 
+/*---------------- /Hero ----------------*/
 
-.description {
+/*---------------- Description ----------------*/
+
+#description {
     background-color: #131021;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-family: Raleway;
-    color: white;
-    font-size: x-large;
 }
 
-.description > p {
+#description > p {
     width: 50%;
     text-align: center;
 }
 
+/*---------------- /Description ----------------*/
 
-.characters{
+/*---------------- Team ----------------*/
+
+#team {
     background-color: #1e1d2e;
+}
 
+#team > .bildtextübergeordnet {
+    display: flex;
+    flex-direction: row;
+    padding: 0 100px 0 100px;
+}
+
+#team > .bildtextübergeordnet > .bildtext {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    align-items: center;
+    flex: 1;
+}
+
+#team > .bildtextübergeordnet > .bildtext > img {
+    width: 300px;
+}
+
+#team > .bildtextübergeordnet > .bildtext > p {
+    text-align: justify;
+    padding: 20px 50px 15px 50px;
+    color: #337580;
+
+}
+
+/*---------------- /Team ----------------*/
+
+/*---------------- Produkt ----------------*/
+
+#produkt {
+    background-color: #131021;
+    font-size: x-large;
+}
+
+#produkt > .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    font-family: sans-serif;
+    padding-right: 15%;
+    padding-left: 15%;
+}
+
+#produkt > .content > .trailer {
+    align-self: center;
+    width: 60%;
+    height: 60%;
+}
+
+#produkt > .content > .trailer > video {
+    height: 100%;
+    width: 100%;
+}
+
+#produkt > .content > .regular_text {
+    /*text-align: justify;*/
+}
+
+/*---------------- /Produkt ----------------*/
+
+/*---------------- Characters ----------------*/
+
+#characters {
+    background-color: #1e1d2e;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     font-family: sans-serif;
-    color: white;
-    font-size: x-large;
+    /*font-size: x-large;*/
+    padding-right: 15%;
+    padding-left: 15%;
 }
 
-.headline_text {
-    color: #00d9b5;
-    font-family: 'Futura-Bold', arial;}
-
-.regular_text {
-    color: #337580;
+#characters > img {
+    image-rendering: pixelated;
 }
 
-.highlighted_text{
-    color: #00d9b5;
-}
-
-
-.img-description{
+#characters > .img-description {
+    /*padding-top: 20px;*/
     width: 30%;
 }
 
-.screenshots{
-    background-color: black;
+/*---------------- /Characters ----------------*/
 
-}
-.screenshots > div >img{
-    width: 380px;
-    margin: 5px;
+/*---------------- Screenshots ----------------*/
+
+#screenshots {
+    background-color: #131021;
 }
 
-.screenshots>div{
+#screenshots > div {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
 }
+
+#screenshots > div > div {
+    width: 10%;
+    height: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+#screenshots > div > div > img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+#screenshots > div > div > img:hover {
+    animation: pulsate 3s ease-in-out infinite;
+    /*filter: drop-shadow(0px 0px 10px rgba(0,217,181,0));*/
+    /*transition: filter 1s ease-out;*/
+}
+
+@-webkit-keyframes pulsate {
+    0%  { filter: drop-shadow(0px 0px 10px rgba(0,217,181,0))}
+    50%   { filter:drop-shadow(0px 0px 10px rgba(0,217,181,.5))}
+    /*100% { filter:drop-shadow(0px 0px 10px rgba(0,217,181,.5))}*/
+    100%  { filter: drop-shadow(0px 0px 10px rgba(0,217,181,0))}
+}
+/*#00d9b5 rgb(0,217,181)*/
+
+/*---------------- /Screenshots ----------------*/
+
+/*@media screen and (max-width: 1000px) {*/
+/*.bildtext{*/
+/*grid-template-columns: auto auto;*/
+/*}*/
+/*.bildtext p{*/
+/*font-size: 10px;*/
+/*}*/
+/*}*/
+
+/*@media screen and (max-width: 700px) {*/
+/*.bildtext {*/
+/*grid-template-columns: auto;*/
+/*}*/
+/*}*/
