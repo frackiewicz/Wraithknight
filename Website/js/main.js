@@ -69,34 +69,9 @@ function switchHero(index, element) {
 
     element.classList.add("drop-shadow");
 
-    var oldDivCharacters = document.getElementById("characters");
 
-    var newDivCharacters = document.createElement("div");
-    newDivCharacters.id = "characters";
+    document.querySelector("#characters > img").src = imageSrc;
+    document.querySelector("#characters > div > h2").textContent = title;
+    document.querySelector("#characters > div > p").textContent = desc;
 
-    var image = document.createElement("img");
-    image.src = imageSrc;
-    image.height = 500;
-    image.width = 500;
-
-    var imageDescriptionBox = document.createElement("div");
-    imageDescriptionBox.className = "img-description";
-
-    var headline = document.createElement("h2");
-    headline.appendChild(document.createTextNode(title));
-
-    var line = document.createElement("hr");
-
-    var description = document.createElement("p");
-    description.className = "regular_text";
-    description.appendChild(document.createTextNode(desc));
-
-    imageDescriptionBox.appendChild(headline);
-    imageDescriptionBox.appendChild(line);
-    imageDescriptionBox.appendChild(description);
-
-    newDivCharacters.appendChild(image);
-    newDivCharacters.appendChild(imageDescriptionBox);
-
-    oldDivCharacters.parentNode.replaceChild(newDivCharacters, oldDivCharacters);
 }

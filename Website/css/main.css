@@ -10,7 +10,7 @@ accent              #00d9b5
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url(http://allfont.de/allfont.css?fonts=futura-bold);
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
@@ -53,9 +53,6 @@ img {
     image-rendering: crisp-edges;
 }
 
-.drop-shadow {
-	filter: drop-shadow(0px 0px 10px rgba(51,117,128,.5));
-}
 
 /*.headline_text {*/
 /*color: #00d9b5;*/
@@ -107,7 +104,9 @@ img {
 }
 
 #topbar > .cn-wrapper > ul > li > a > img {
-    image-rendering: pixelated;
+    image-rendering: auto;
+    width: 64px;
+    height: 64px;
 }
 
 /*---------------- /Topbar ----------------*/
@@ -125,7 +124,7 @@ img {
     font-size: 80px;
     vertical-align: middle;
     line-height: 100vh;
-
+    filter: grayscale(0.5);
 }
 
 /*---------------- /Hero ----------------*/
@@ -139,10 +138,13 @@ img {
     justify-content: center;
     align-items: center;
     font-family: Raleway;
+    padding-bottom: 15px;
 }
 
 #description > p {
-    width: 50%;
+    width: 35%;
+    padding-top: 25px;
+    margin: 0px;
     text-align: center;
 }
 
@@ -152,15 +154,20 @@ img {
 
 #team {
     background-color: #1e1d2e;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
-#team > .bildtextübergeordnet {
+.team_container {
     display: flex;
     flex-direction: row;
-    padding: 0 100px 0 100px;
+    width: 60%;
 }
 
-#team > .bildtextübergeordnet > .bildtext {
+.developer_description {
     display: flex;
     flex-direction: column;
     width: auto;
@@ -168,15 +175,30 @@ img {
     flex: 1;
 }
 
-#team > .bildtextübergeordnet > .bildtext > img {
-    width: 300px;
+#team > .team_container > .developer_description > img {
+    width: 250px;
+    height: 200px;
 }
 
-#team > .bildtextübergeordnet > .bildtext > p {
-    text-align: justify;
-    padding: 20px 50px 15px 50px;
-    color: #337580;
 
+
+.developer_description > h3 {
+    font-family: Raleway;
+    color: #00d9b5;
+
+    margin: 15px 0px 0px;
+}
+
+.developer_description > strong {
+    font-family: 'Futura-Bold', arial, sans-serif;
+    color: #00d9b5;
+    margin: 0px;
+}
+
+.developer_description > p {
+    text-align: justify;
+    margin: 20px 50px 40px 50px;
+    color: #337580;
 }
 
 /*---------------- /Team ----------------*/
@@ -225,6 +247,9 @@ img {
     /*font-size: x-large;*/
     padding-right: 15%;
     padding-left: 15%;
+    height: auto;
+    flex: 1;
+    transition: flex 1s ease-out;
 }
 
 #characters > img {
@@ -262,18 +287,55 @@ img {
     height: 100%;
     image-rendering: pixelated;
 }
-#screenshots > div > div > img:hover {
-    animation: pulsate 3s ease-in-out infinite;
+
+.drop-shadow {
+    filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1));
+}
+
+/*
+#screenshots > div > div > img:not(.drop-shadow) {
+    filter: drop-shadow(0px 0px 0px rgba(51,117, 128, .5));
+    transition: filter 2s ease-out;
+}
+*/
+#screenshots > div > div > img:not(.drop-shadow):hover {
+    animation: transition 0.5s, pulsate 2s 0.5s ease-in-out infinite;
     /*filter: drop-shadow(0px 0px 10px rgba(0,217,181,0));*/
     /*transition: filter 1s ease-out;*/
 }
 
-@-webkit-keyframes pulsate {
-    0%  { filter: drop-shadow(0px 0px 10px rgba(0,217,181,0))}
-    50%   { filter:drop-shadow(0px 0px 10px rgba(0,217,181,.5))}
-    /*100% { filter:drop-shadow(0px 0px 10px rgba(0,217,181,.5))}*/
-    100%  { filter: drop-shadow(0px 0px 10px rgba(0,217,181,0))}
+#screenshots > div > div > img.drop-shadow:hover {
+    animation: pulsate2 2s ease-in-out infinite;
 }
+
+@-webkit-keyframes transition {
+    0% {
+        filter: drop-shadow(0px 0px 2px rgba(51, 117, 128, 0))
+    }
+    100% {
+        filter: drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+    }
+}
+
+@-webkit-keyframes pulsate {
+    0%, 100% {
+        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, 0)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+    }
+    50% {
+        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+    }
+}
+
+
+@-webkit-keyframes pulsate2 {
+    0%, 100% {
+        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+    }
+    50% {
+        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, 1)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+    }
+}
+
 /*#00d9b5 rgb(0,217,181)*/
 
 /*---------------- /Screenshots ----------------*/

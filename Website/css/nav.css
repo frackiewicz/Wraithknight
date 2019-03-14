@@ -97,7 +97,8 @@
 .csstransforms .cn-wrapper li:not(.active) a:hover,
 .csstransforms .cn-wrapper li:not(.active) a:active,
 .csstransforms .cn-wrapper li:not(.active) a:focus {
-    background-color: #00d9b5;
+    /*background-color: #00d9b5; */
+    background-image: radial-gradient(circle, #00d9b5 37%, #337580 71%); /* 37% - 71% */
 }
 
 .csstransforms .cn-wrapper li:not(.active) a:focus {
