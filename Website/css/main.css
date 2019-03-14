@@ -25,10 +25,7 @@ h1 {
     color: #00d9b5;
     font-family: 'Futura-Bold', arial, sans-serif;
     font-size: xx-large;
-    margin-top: 0;
-    margin-bottom: 1em;
-    padding-top: 1em;
-    padding-bottom: 0;
+    margin: 0.25em 1em;
     text-align: center;
 }
 
@@ -70,6 +67,31 @@ img {
     color: #337580;
     font-size: x-large;
     text-align: justify;
+}
+
+.section_title_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45%;
+}
+
+.section_title {
+    border: 1px solid #00d9b5;
+    width: 150px;
+    margin: 5vh;
+    background-color: #1e1d2e; /* lmao */
+    z-index: 2;
+}
+
+.section_title_line {
+    position: absolute;
+    width: 80%;
+    color: #337580;
+    margin-left: 10%;
+    margin-right: 10%;
+    z-index: 1;
 }
 
 /*---------------- Topbar ----------------*/
@@ -164,15 +186,18 @@ img {
 .team_container {
     display: flex;
     flex-direction: row;
-    width: 60%;
+    justify-content: space-between;
+    width: 45%;
 }
 
 .developer_description {
+    max-width: 300px;
     display: flex;
     flex-direction: column;
     width: auto;
     align-items: center;
     flex: 1;
+
 }
 
 #team > .team_container > .developer_description > img {
@@ -207,7 +232,10 @@ img {
 
 #produkt {
     background-color: #131021;
-    font-size: x-large;
+}
+
+#produkt > h1 {
+    margin: 1em;
 }
 
 #produkt > .content {
@@ -247,7 +275,8 @@ img {
     /*font-size: x-large;*/
     padding-right: 15%;
     padding-left: 15%;
-    height: auto;
+    height: 50vh;
+    min-height: 478px;
     flex: 1;
     transition: flex 1s ease-out;
 }
@@ -267,6 +296,8 @@ img {
 
 #screenshots {
     background-color: #131021;
+    height: 50vh;
+    min-height: 478px;
 }
 
 #screenshots > div {
@@ -276,8 +307,8 @@ img {
 }
 
 #screenshots > div > div {
-    width: 10%;
-    height: 10%;
+    width: 9%;
+    height: 9%;
     padding-left: 5%;
     padding-right: 5%;
 }
