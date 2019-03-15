@@ -201,8 +201,8 @@ img {
 }
 
 #team > .team_container > .developer_description > img {
-    width: 250px;
-    height: 200px;
+    width: 200px;
+    height: 150px;
 }
 
 
@@ -210,7 +210,7 @@ img {
 .developer_description > h3 {
     font-family: Raleway;
     color: #00d9b5;
-
+    letter-spacing: 0.05em;
     margin: 15px 0px 0px;
 }
 
@@ -218,12 +218,14 @@ img {
     font-family: 'Futura-Bold', arial, sans-serif;
     color: #00d9b5;
     margin: 0px;
+    letter-spacing: 0.1em;
+    line-height: 1.8em;
 }
 
 .developer_description > p {
-    text-align: justify;
-    margin: 20px 50px 40px 50px;
+    margin: 20px 20px 40px 20px;
     color: #337580;
+    text-align: center;
 }
 
 /*---------------- /Team ----------------*/
@@ -245,12 +247,15 @@ img {
     font-family: sans-serif;
     padding-right: 15%;
     padding-left: 15%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    align-items: center;
 }
 
 #produkt > .content > .trailer {
     align-self: center;
-    width: 60%;
-    height: 60%;
+    width: 70%;
+    height: 70%;
 }
 
 #produkt > .content > .trailer > video {
@@ -260,6 +265,36 @@ img {
 
 #produkt > .content > .regular_text {
     /*text-align: justify;*/
+}
+
+.trailer_text {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.trailer_text > p {
+    width: 325px;
+    margin: 5%;
+    color: #00d9b5;
+    font-family: Raleway;
+    letter-spacing: 0.05em;
+    line-height: 1.8em;
+}
+
+#left {
+    margin-left: 0px;
+}
+
+.content > h4 {
+    color: #00d9b5;
+    font-family: Raleway;
+    font-weight: 700;
+    font-size: 22px;
+    width: 60%;
+    letter-spacing: 0.1em;
+    line-height: 1.8em;
+    padding-top: 3.5em;
 }
 
 /*---------------- /Produkt ----------------*/
@@ -275,8 +310,8 @@ img {
     /*font-size: x-large;*/
     padding-right: 15%;
     padding-left: 15%;
-    height: 50vh;
-    min-height: 478px;
+    height: 60vh;
+    min-height: 440px;
     flex: 1;
     transition: flex 1s ease-out;
 }
@@ -296,8 +331,8 @@ img {
 
 #screenshots {
     background-color: #131021;
-    height: 50vh;
-    min-height: 478px;
+    height: 40vh;
+    min-height: 300px;
 }
 
 #screenshots > div {
@@ -320,7 +355,7 @@ img {
 }
 
 .drop-shadow {
-    filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1));
+    filter: drop-shadow(0px 0px 20px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1));
 }
 
 /*
@@ -341,29 +376,29 @@ img {
 
 @-webkit-keyframes transition {
     0% {
-        filter: drop-shadow(0px 0px 2px rgba(51, 117, 128, 0))
+        filter: drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 0))
     }
     100% {
-        filter: drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+        filter: drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1))
     }
 }
 
 @-webkit-keyframes pulsate {
     0%, 100% {
-        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, 0)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+        filter: drop-shadow(0px 0px 20px rgba(51, 117, 128, 0)) drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1))
     }
     50% {
-        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+        filter: drop-shadow(0px 0px 20px rgba(51, 117, 128, .7)) drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1))
     }
 }
 
 
 @-webkit-keyframes pulsate2 {
     0%, 100% {
-        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, .5)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+        filter: drop-shadow(0px 0px 20px rgba(51, 117, 128, .7)) drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1))
     }
     50% {
-        filter: drop-shadow(0px 0px 10px rgba(51, 117, 128, 1)) drop-shadow(0px 0px 2px rgba(51, 117, 128, 1))
+        filter: drop-shadow(0px 0px 20px rgba(51, 117, 128, 1)) drop-shadow(0px 0px 1px #00d9b5) drop-shadow(0px 0px 3px rgba(51, 117, 128, 1))
     }
 }
 

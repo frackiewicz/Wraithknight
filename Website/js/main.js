@@ -8,54 +8,42 @@ function switchHero(index, element) {
             title = "Knight";
             desc = "Der Hauptcharakter ist ein wiederauferstandener Ritter. " +
                 "Durch seinen Tod hat er seine Ehre verloren und möchte diese wiedererlangen." +
-                " Bewaffnet mit einem Langschwert und einem Wurfmesser versucht er sich durchzukämpfen. " +
-                "Durch seine Schnelligkeit und durch seine Kampfstärke ist es ihm möglich gegen mehrere " +
-                "Gegner zu kämpfen und diese im Idealfall zu besiegen.";
+                " Bewaffnet mit einem Langschwert und einem Wurfmesser versucht er sich durchzukämpfen. ";
             imageSrc = "images/heroweb.png";
             break;
         case 2:
             title = "Frog";
             desc = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr," +
                 "sed diam nonumy eirmod tempor invidunt ut labore et dolore m" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "usto duo dolores et ea rebum. Stet clita kasd gubergren,";
+                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j";
             imageSrc = "images/froschweb.png";
             break;
         case 3:
             title = "Archer";
             desc = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr," +
                 "sed diam nonumy eirmod tempor invidunt ut labore et dolore m" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "usto duo dolores et ea rebum. Stet clita kasd gubergren,";
+                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j";
             imageSrc = "images/bogiweb.png";
             break;
         case 4:
             title = "Weak Knight";
             desc = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr," +
                 "sed diam nonumy eirmod tempor invidunt ut labore et dolore m" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "usto duo dolores et ea rebum. Stet clita kasd gubergren,";
+                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j";
             imageSrc = "images/weakritterweb.png";
             break;
         case 5:
             title = "Wolf";
             desc = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr," +
                 "sed diam nonumy eirmod tempor invidunt ut labore et dolore m" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "usto duo dolores et ea rebum. Stet clita kasd gubergren,";
+                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j";
             imageSrc = "images/wolfweb.png";
             break;
         case 6:
             title = "Ganon";
             desc = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr," +
                 "sed diam nonumy eirmod tempor invidunt ut labore et dolore m" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j" +
-                "usto duo dolores et ea rebum. Stet clita kasd gubergren,";
+                "agna aliquyam erat, sed diam voluptua. At vero eos et accusam et j";
             imageSrc = "images/ganonweb2.png";
             break;
         default:
