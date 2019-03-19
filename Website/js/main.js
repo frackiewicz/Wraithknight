@@ -58,8 +58,8 @@ function switchHero(index, element) {
     element.classList.add("drop-shadow");
 
 
-    document.querySelector("#characters > img").src = imageSrc;
-    document.querySelector("#characters > div > h2").textContent = title;
-    document.querySelector("#characters > div > p").textContent = desc;
+    document.querySelector(".characters-content > img").src = imageSrc;
+    document.querySelector(".characters-content > div > h2").textContent = title;
+    document.querySelector(".characters-content > div > p").textContent = desc;
 
 }
