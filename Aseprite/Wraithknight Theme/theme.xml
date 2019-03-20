@@ -32,8 +32,8 @@
         <color id="workspace" value="#2d2d30" />
         <color id="workspace_filler" value="#111112" />
         <color id="workspace_text" value="#ffffff" />
-        <color id="workspace_link" value="#42A5F5" />
-        <color id="workspace_link_hover" value="#82B1FF" />
+        <color id="workspace_link" value="#00d9b5" />
+        <color id="workspace_link_hover" value="#ffffff" />
         <color id="status_bar_text" value="#ffffff" />
         <color id="status_bar_face" value="#2d2d30" />
         <color id="menuitem_normal_text" value="#c5c5c5" />
@@ -46,7 +46,7 @@
         <color id="window_titlebar_text" value="#ffffff" />
         <color id="window_titlebar_face" value="#111112" />
         <color id="tab_normal_text" value="#c5c5c5" />
-        <color id="tab_active_text" value="#ffffff" />
+        <color id="tab_active_text" value="#00d9b5" />
         <color id="tab_active_face" value="#2d2d30" />
         <color id="flag_normal" value="#111112" />
         <color id="flag_active" value="#ff0000" />
@@ -62,8 +62,8 @@
         <color id="textbox_face" value="#ffffff" />
         <color id="textbox_code_face" value="#eeeeee" />
         <color id="entry_suffix" value="#c6c6c6" />
-        <color id="link_text" value="#42A5F5" />
-        <color id="link_hover" value="#82B1FF" />
+        <color id="link_text" value="#00d9b5" />
+        <color id="link_hover" value="#ffffff" />
         <color id="check_hot_face" value="#3a3a3d" />
         <color id="check_focus_face" value="#3a3a3d" />
         <color id="radio_hot_face" value="#3a3a3d" />
@@ -106,10 +106,10 @@
         <color id="select_box_grid" value="#64c864" />
         <color id="edit_pal_face" value="#0D47A1" />
         <color id="home_list_background" value="#111112" />
-        <color id="home_list_background_hover" value="#0D47A1" />
+        <color id="home_list_background_hover" value="#337580" />
         <color id="home_list_title_text" value="#ffffff" />
         <color id="home_list_desc_text" value="#48484d" />
-        <color id="home_list_desc_text_hover" value="#BBDEFB" />
+        <color id="home_list_desc_text_hover" value="#00d9b5" />
     </colors>
     <parts>
         <part id="cursor_normal" x="80" y="0" w="16" h="16" focusx="0" focusy="0" />
