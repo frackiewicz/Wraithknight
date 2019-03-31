@@ -21,6 +21,7 @@ namespace Wraithknight
             if (input.Bindings.TryGetValue(typeof(AttackBehaviorComponent), out var attackBehaviorBinding))
             {
                 AttackBehaviorComponent attackBehavior = attackBehaviorBinding as AttackBehaviorComponent;
+                SetAttackStates(attackBehavior);
 
                 if (HasDelayedAttack(attackBehavior))
                 {
@@ -38,7 +39,6 @@ namespace Wraithknight
                 if (attackBehavior.RemainingAttackCooldownMilliseconds > 0) return;
 
                 FindAndStartTriggeredAttack(input, attackBehavior, gameTime);
-                SetAttackStates(attackBehavior);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Wraithknight
                     double Angle = new Coord2(cursorDelta).Polar.Angle;
 
                     if (Angle < PI / 2 && Angle > -PI / 2) stateComponent.Orientation = Direction.Right;
-                    if (Angle >= PI / 2 || Angle <= -PI / 2) stateComponent.Orientation = Direction.Left;
+                    else if (Angle >= PI / 2 && Angle <= -PI / 2) stateComponent.Orientation = Direction.Left;
                 }
             }
             else

@@ -43,6 +43,10 @@ namespace Wraithknight
 
         private static void StartAnimation(AnimationComponent component, EntityState trigger, GameTime gameTime) //for now just randomize it
         {
+            if (trigger == EntityState.Dying)
+            {
+
+            }
             List<Animation> animations = component.Animations.FindAll(a => a.Trigger == trigger);
             if (animations.Count == 0) return;
 
@@ -51,16 +55,14 @@ namespace Wraithknight
             component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
             component.BoundDrawComponent.Texture = component.CurrentAnimation.SpriteSheet;
         }
+
         private static void StartAnimation(AnimationComponent component, String identifier, GameTime gameTime)
         {
             component.CurrentAnimation = component.Animations.Find(a => a.Identifier.Equals(identifier));
             component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
             component.BoundDrawComponent.Texture = component.CurrentAnimation.SpriteSheet;
         }
-        private static void ReplayAnimation(AnimationComponent component, GameTime gameTime)
-        {
-            component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
-        }
+
 
         private static void ProcessAnimation(AnimationComponent component, GameTime gameTime)
         {
@@ -76,6 +78,11 @@ namespace Wraithknight
             }
 
             ApplyAnimationRec(component, gameTime);
+        }
+
+        private static void ReplayAnimation(AnimationComponent component, GameTime gameTime)
+        {
+            component.CurrentAnimation.StartTimeMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
         }
 
         private static void ApplyAnimationRec(AnimationComponent component, GameTime gameTime)

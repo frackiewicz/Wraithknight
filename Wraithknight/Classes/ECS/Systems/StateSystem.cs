@@ -26,8 +26,11 @@ namespace Wraithknight
         {
             foreach (var stateComponent in _components)
             {
+                if (stateComponent.Inactive) continue;
+
                 SetPreviousState(stateComponent);
-                KillIfDead(stateComponent);
+                ClearCurrentState(stateComponent);
+                if(stateComponent.Dead) KillEntity(stateComponent);
             }
         }
 
@@ -42,9 +45,15 @@ namespace Wraithknight
             component.PreviousState = component.CurrentState;
         }
 
-        private void KillIfDead(StateComponent component)
+        private static void ClearCurrentState(StateComponent component)
         {
-            if(component.Dead) _ecs.KillEntity(component.RootID);
+            if (component.CurrentState == EntityState.Dying || component.CurrentState == EntityState.Dead) return;
+            component.Clear();
+        }
+
+        private void KillEntity(StateComponent component)
+        {
+            _ecs.KillEntity(component.RootID);
         }
     }
 }

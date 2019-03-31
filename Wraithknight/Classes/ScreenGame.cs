@@ -19,7 +19,9 @@ namespace Wraithknight
         private Entity _hero;
 
         private LevelGenerator _levelGenerator = new LevelGenerator();
-        private Level _currentLevel;
+        private Level _currentLevel; //TODO Make Level into a super class, current level becomes LevelSpawnData
+        private LevelTracker _currentLevelTracker;
+        private GameTracker _gameTracker = new GameTracker();
 
         public ScreenGame(ScreenManager screenManager) : base(screenManager)
         {
@@ -39,8 +41,29 @@ namespace Wraithknight
 
             _ecs.UpdateSystems(_internalGameTime);
             _camera.Update(_internalGameTime);
+
+            if (_currentLevelTracker.ReadyForRestart) LoadContent();
             return this;
         }
+
+        #region UpdateFunctions
+
+        private readonly TimeSpan _gameTimeCull = TimeSpan.FromMilliseconds(1000.0f / 30);
+        private void UpdateGameTime(GameTime gameTime)
+        {
+            if (Flags.FpsBelowThreshold)
+            {
+                _internalGameTime.ElapsedGameTime = _gameTimeCull;
+                _internalGameTime.TotalGameTime += _gameTimeCull;
+            }
+            else
+            {
+                _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
+                _internalGameTime.TotalGameTime += gameTime.ElapsedGameTime;
+            }
+        }
+
+        #endregion
 
         public override Screen Draw(GameTime gameTime)
         {
@@ -56,11 +79,19 @@ namespace Wraithknight
 
         public override Screen LoadContent()
         {
-            _currentLevel = _levelGenerator.GenerateLevel();
-            _ecs.PurgeForNextLevel();
-            _ecs.ProcessLevel(_currentLevel);
-            _hero = _ecs.GetHero();
+            LoadLevel();
             return this;
+        }
+
+        private void LoadLevel()
+        {
+            _gameTracker.Runs++;
+            _levelGenerator.TotalEnemySpawnBudget = _levelGenerator.TotalEnemySpawnBudget + 50 * _gameTracker.Runs;
+            _currentLevel = _levelGenerator.GenerateLevel();
+            _currentLevelTracker = new LevelTracker();
+            _ecs.PurgeForNextLevel();
+            _ecs.ProcessLevel(_currentLevel, _currentLevelTracker);
+            _hero = _ecs.GetHero();
         }
 
         public override Screen UnloadContent()
@@ -113,12 +144,13 @@ namespace Wraithknight
             if (InputReader.IsKeyTriggered(Keys.F5)) Flags.ShowMovementCenters = !Flags.ShowMovementCenters;
             if (InputReader.IsKeyPressed(Keys.F10)) Functions_Draw.Draw("Error", Assets.GetFont("Test"), new Vector2(100, 100));
 
-            if (InputReader.IsKeyTriggered(Keys.N)) //TODO Create GenerationTesterScreen to test generation lmao
+            /* if (InputReader.IsKeyTriggered(Keys.N)) //TODO Create GenerationTesterScreen to test generation lmao
             {
                 _levelGenerator.ApplySimpleCellularAutomata(_currentLevel);
                 _ecs.PurgeForNextLevel();
-                _ecs.ProcessLevel(_currentLevel);
+                _ecs.ProcessLevel(_currentLevel, _currentLevelTracker);
             }
+            */
             SimpleCameraMovement(gameTime);
 
             return this;
@@ -155,21 +187,7 @@ namespace Wraithknight
 
         #endregion
 
-        private readonly TimeSpan _gameTimeCull = TimeSpan.FromMilliseconds(1000.0f / 30);
 
-        private void UpdateGameTime(GameTime gameTime)
-        {
-            if (Flags.FpsBelowThreshold)
-            {
-                _internalGameTime.ElapsedGameTime = _gameTimeCull;
-                _internalGameTime.TotalGameTime += _gameTimeCull;
-            }
-            else
-            {
-                _internalGameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
-                _internalGameTime.TotalGameTime += gameTime.ElapsedGameTime;
-            }
-        }
 
         private void OpenMenuScreen()
         {
@@ -178,7 +196,9 @@ namespace Wraithknight
 
         public void Restart()
         {
+            _gameTracker.Runs = 0;
             _ecs.PurgeForNextLevel();
+            _levelGenerator.ApplyPreset(LevelPreset.Forest);
             LoadContent();
         }
     }

@@ -19,20 +19,47 @@ namespace Wraithknight
 
             switch (type)
             {
-                case EntityType.Forest_Knight:
+
+                #region Actors
+
+                case EntityType.ForestKnight:
                 {
-                    frameSize = new Point(64, 64);
-                    animationList.Add(new Animation(Assets.GetTexture("forestknightRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 8, 150));
-                    animationList.Add(new Animation(Assets.GetTexture("forestknightIdle"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 4, 500));
+                    frameSize = new Point(128, 64);
+                    animationList.Add(new Animation(Assets.GetTexture("forestKnightRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 9, 150));
+                    animationList.Add(new Animation(Assets.GetTexture("forestKnightIdle"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 5, 500));
+                    animationList.Add(new Animation(Assets.GetTexture("forestKnightAttack"), "attacking", "idle", frameSize, EntityState.Attacking).CreateAnimationFrames(0, 8, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestKnightDying"), "dying", "dying", frameSize, EntityState.Dying).CreateAnimationFrames(0, 17, 100));
                     break;
                 }
-                case EntityType.Forest_Wolf:
+
+                case EntityType.ForestWolf:
                 {
-                    frameSize = new Point(64,32);
-                    animationList.Add(new Animation(Assets.GetTexture("wolfRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 6, 100));
-                    animationList.Add(new Animation(Assets.GetTexture("wolf"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 1, 1000));
+                    frameSize = new Point(64, 48);
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 6, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfIdle"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 1, 1000));
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfAttack"), "attacking", "idle", frameSize, EntityState.Attacking).CreateAnimationFrames(0, 6, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfDying"), "dying", "dying", frameSize, EntityState.Dying).CreateAnimationFrames(0, 7, 100));
                     break;
                 }
+
+                case EntityType.ForestArcher:
+                {
+                    frameSize = new Point(96, 64);
+                    animationList.Add(new Animation(Assets.GetTexture("forestArcherRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 10, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestArcherAttack"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 1, 500));
+                    animationList.Add(new Animation(Assets.GetTexture("forestArcherAttack"), "attacking", "idle", frameSize, EntityState.Attacking).CreateAnimationFrames(0, 22, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestArcherDying"), "dying", "dying", frameSize, EntityState.Dying).CreateAnimationFrames(0, 13, 100));
+                    break;
+                }
+
+                #endregion
+
+                #region Objects
+
+                #endregion
+
+                #region Projectiles
+
                 case EntityType.HeroKnightSlashWeak:
                 {
                     frameSize = new Point(64, 64);
@@ -46,6 +73,28 @@ namespace Wraithknight
                     animationList.Add(new Animation(Assets.GetTexture("herothrowingdagger"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 6, 50));
                     break;
                 }
+
+                case EntityType.ForestKnightSlash:
+                {
+                    frameSize = new Point(64, 64);
+                    animationList.Add(new Animation(Assets.GetTexture("heroslashweak"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 1, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("heroslashweakdying"), "dying", "dying", frameSize, EntityState.Dying, false).CreateAnimationFrames(0, 9, 50));
+                    break;
+                }
+                case EntityType.ForestArcherArrow:
+                {
+                    frameSize = new Point(16, 16);
+                    animationList.Add(new Animation(Assets.GetTexture("herothrowingdagger"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 6, 50));
+                    break;
+                }
+                case EntityType.ForestWolfBite:
+                {
+                    frameSize = new Point(32, 48);
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfBite"), "moving", "moving", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 6, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestWolfBite"), "dying", "dying", frameSize, EntityState.Moving, false).CreateAnimationFrames(0, 1, 500, 7));
+                    break;
+                }
+                #endregion
 
             }
 

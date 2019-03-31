@@ -63,7 +63,9 @@
     <Compile Include="Classes\ECS\Systems\StateSystem.cs" />
     <Compile Include="Classes\Functions\Functions_DebugWriter.cs" />
     <Compile Include="Classes\Functions\Functions_GameControl.cs" />
+    <Compile Include="Classes\GameTracker.cs" />
     <Compile Include="Classes\Levelgeneration\LevelGenerator.cs" />
+    <Compile Include="Classes\Levelgeneration\LevelTracker.cs" />
     <Compile Include="Classes\Menu\Button.cs" />
     <Compile Include="Classes\ECS\Systems\CollisionLogicSubsystem.cs" />
     <Compile Include="Classes\Menu\ButtonWithText.cs" />
@@ -109,7 +111,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\Screen.cs" />
     <Compile Include="Classes\ScreenManager.cs" />
-    <Compile Include="Classes\SoundManager.cs" />
     <Compile Include="Classes\ScreenGame.cs" />
   </ItemGroup>
   <ItemGroup>

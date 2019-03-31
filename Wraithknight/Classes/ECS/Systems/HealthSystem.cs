@@ -19,7 +19,7 @@ namespace Wraithknight
         {
             foreach (var health in _components)
             {
-                KillIfDead(health);
+                if(health.IsDead) Kill(health);
                 InvincibilityLogic(health, gameTime);
                 ApplyVariables(health);
             }
@@ -30,12 +30,9 @@ namespace Wraithknight
             _components.Clear();
         }
 
-        private static void KillIfDead(HealthComponent health)
+        private static void Kill(HealthComponent health)
         {
-            if (health.IsDead)
-            {
-                health.CurrentEntityState.Dead = true;
-            }
+            health.CurrentEntityState.Dead = true;
         }
 
         private static void InvincibilityLogic(HealthComponent health, GameTime gameTime) 

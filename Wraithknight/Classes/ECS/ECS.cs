@@ -25,9 +25,10 @@ namespace Wraithknight
         //TODO Also replace Dictionary with Hashtable, might improve performance slightly
         private readonly List<Entity> _actors = new List<Entity>(); //this is only for debugging lol
         private readonly HashSet<System> _systemSet = new HashSet<System>();
-        private DrawSystem drawSystem;
+        private DrawSystem _drawSystem;
         private readonly Camera2D _camera;
 
+        private LevelTracker _levelTracker;
         //enum for biome
 
         public ECS(Camera2D camera)
@@ -57,7 +58,7 @@ namespace Wraithknight
 
         public void Draw()
         {
-            drawSystem.Draw();
+            _drawSystem.Draw();
         }
 
         public T GetSystem<T>()
@@ -96,7 +97,7 @@ namespace Wraithknight
 
         private void CreateSystems(ecsBootRoutine routine)
         {
-            drawSystem = new DrawSystem(_camera);
+            _drawSystem = new DrawSystem(_camera);
 
             _systemSet.Add(new StateSystem(this));
 
@@ -109,19 +110,23 @@ namespace Wraithknight
             _systemSet.Add(new IntelligenceSystem());
 
             _systemSet.Add(new AnimationSystem());
-            _systemSet.Add(drawSystem);
+            _systemSet.Add(_drawSystem);
         }
         #endregion
 
         #region EntityManagement
-        //TODO Breunig lmao
         public Entity CreateEntity(EntityType type, Vector2Ref position = null, Coord2? speed = null, GameTime gameTime = null, Allegiance allegiance = Allegiance.Neutral)
         {
             Entity entity = ECS_CreateEntity.CreateEntity(type, position, speed, gameTime, allegiance);
 
-            if (type == EntityType.Hero || type == EntityType.Forest_Wolf || type == EntityType.Forest_Knight)
+            if (type == EntityType.Hero || type == EntityType.ForestWolf || type == EntityType.ForestKnight)
             {
                 _actors.Add(entity);
+            }
+
+            if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf) //TODO temporary
+            {
+                _levelTracker.EnemiesCount++;
             }
             return entity;
         }
@@ -170,12 +175,17 @@ namespace Wraithknight
             }
             else
             {
+                EntityType type = entity.Type; //TODO temporary
+                if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf)
+                {
+                    _levelTracker.EnemiesCount--;
+                    if (_levelTracker.EnemiesCount <= 0) _levelTracker.ReadyForRestart = true;
+                }
                 DeactivateAllComponents(entity);
             }
 
             entity.Alive = false;
         }
-
 
         private static bool HasDeathAnimation(Entity entity)
         {
@@ -196,16 +206,13 @@ namespace Wraithknight
                 AnimationComponent animation = component as AnimationComponent;
                 if (animation.CurrentEntityState.CurrentState != EntityState.Dying)
                 {
-                    entity.StateComponent.CurrentState = EntityState.Dying;
-                    entity.StateComponent.CurrentStatePriority = 10;
-                    entity.StateComponent.Dead = false;
+                    entity.StateComponent.TryToSetState(EntityState.Dying);
+                    entity.StateComponent.Dead = false; //Entity is kept alive until it plays its dying animation
                 }
                 else
                 {
-                    entity.StateComponent.CurrentState = EntityState.Dead;
-                    entity.StateComponent.CurrentStatePriority = 11;              
+                    entity.StateComponent.TryToSetState(EntityState.Dead);
                 }
-                    
             }
         }
 
@@ -298,6 +305,13 @@ namespace Wraithknight
 
         public void ProcessLevel(Level level)
         {
+            ProcessLevel(level, new LevelTracker());
+        }
+
+        public void ProcessLevel(Level level, LevelTracker tracker)
+        {
+            _levelTracker = tracker;
+
             for (int x = 0; x < level.Walls.GetLength(0); x++)
             {
                 for (int y = 0; y < level.Walls.GetLength(1); y++)
@@ -311,9 +325,10 @@ namespace Wraithknight
                     #endregion
 
                     #region MapData
-                    if (level.Data[x, y] != EntityType.Nothing)
+                    EntityType mapData = level.SpawnData[x, y];
+                    if (mapData != EntityType.Nothing)
                     {
-                        AddEntity(CreateEntity(level.Data[x, y], new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
+                        AddEntity(CreateEntity(mapData, new Vector2Ref(x * level.TileWidth + level.TileWidth / 2, y * level.TileHeight + level.TileHeight / 2)));
                     }
                     #endregion
                 }

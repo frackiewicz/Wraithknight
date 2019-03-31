@@ -16,9 +16,9 @@ namespace Wraithknight
         Hero,
 
         //Enemies
-        Forest_Knight,
-        Forest_Wolf,
-        Forest_Archer,
+        ForestKnight,
+        ForestWolf,
+        ForestArcher,
 
         //Objects
         Wall,
@@ -32,6 +32,11 @@ namespace Wraithknight
         HeroKnightSlashWeak,
         HeroKnightSlashStrong,
         HeroKnightThrowingDagger,
+
+        ForestKnightSlash,
+        ForestArcherArrow,
+        ForestWolfBite,
+
 
 
         //DEBUG
@@ -62,11 +67,11 @@ namespace Wraithknight
                 {
                     entity.SetAllegiance(Allegiance.Friendly);
                     entity.SetStateComponent();
-                    entity.AddComponent(new MovementComponent(accelerationBase: 1000, maxSpeed: 175, friction: 650, position: safePosition));
+                    entity.AddComponent(new MovementComponent(accelerationBase: 1250, maxSpeed: 175, friction: 800, position: safePosition));
                     entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                     {
                         new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 35, startSpeed: 200, attackState: 0, attackCooldownMilliseconds: 500, blockInputDurationMilliseconds: 250, selfKnockback: -150),
-                        new AttackComponent(EntityType.HeroKnightThrowingDagger, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 25, startSpeed: 800, attackState: 0, attackCooldownMilliseconds: 400, blockInputDurationMilliseconds: 100)
+                        new AttackComponent(EntityType.HeroKnightThrowingDagger, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 25, startSpeed: 1100, attackState: 0, attackCooldownMilliseconds: 250, blockInputDurationMilliseconds: 100)
                     }, entity.GetComponent<MovementComponent>().Position));
                     entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), typeof(MovementComponent));
@@ -76,45 +81,64 @@ namespace Wraithknight
                     entity.AddComponent(new InputComponent(true), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent), typeof(BlinkComponent) });
                     break;
                 }
-                case EntityType.Forest_Knight:
+                case EntityType.ForestKnight:
                 {
                     entity.SetAllegiance(Allegiance.Enemy);
                     entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(accelerationBase: 250, maxSpeed: 100, friction: 300, position: safePosition));
                     entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                     {
-                        new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 2000, attackCooldownMilliseconds: 1500, cursorType: CursorType.Relative)
+                        new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 500, attackCooldownMilliseconds: 1500, cursorType: CursorType.Relative)
                     }, entity.GetComponent<MovementComponent>().Position));
-                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestknightIdle"), drawRec: new AABB(0, 0, 64, 64), scale: new Vector2(1,1), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), typeof(MovementComponent));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestknightIdle"), drawRec: new AABB(0, 0, 128, 64), scale: new Vector2(1,1), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), typeof(MovementComponent));
                     entity.AddComponent(new HealthComponent(20, invincibilityTimeMilliseconds: 200), new List<Type> { typeof(MovementComponent), typeof(DrawComponent) });
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
                     entity.AddComponent(new InputComponent(false), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent) });
                     List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
-                    orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.Attack1, 1, 1000, true));
+                    orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.AttackPrimary, 1, 750, true));
                     orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                     entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), typeof(InputComponent));
                     break;
                 }
-                case EntityType.Forest_Wolf:
+                case EntityType.ForestWolf:
                 {
                     entity.SetAllegiance(Allegiance.Enemy);
                     entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(accelerationBase: 1200, maxSpeed: 150, friction: 400, position: safePosition));
-                    entity.AddComponent(new DrawComponent(Assets.GetTexture("wolf"), drawRec: new AABB(0, 0, 64, 32), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, 0)), typeof(MovementComponent));
+                    entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
+                    {
+                        new AttackComponent(EntityType.ForestWolfBite, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 75, attackState: 0, attackDelayMilliseconds: 500, attackCooldownMilliseconds: 1000, cursorType: CursorType.Relative)
+                    }, entity.GetComponent<MovementComponent>().Position));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestWolfIdle"), drawRec: new AABB(0, 0, 64, 48), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, 0)), typeof(MovementComponent));
                     entity.AddComponent(new HealthComponent(15, invincibilityTimeMilliseconds: 200), new List<Type> { typeof(MovementComponent), typeof(DrawComponent) });
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
-                    entity.AddComponent(new InputComponent(false), typeof(MovementComponent));
+                    entity.AddComponent(new InputComponent(false), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent) });
                     List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
-                    orders.Add(new IntelligenceOrder(EntityType.Hero, 50, OrderType.Null, 1, 250, true));
+                    orders.Add(new IntelligenceOrder(EntityType.Hero, 75, OrderType.AttackPrimary, 1, 250, true));
                     orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
                     entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), typeof(InputComponent));
                     break;
                 }
-                case EntityType.Forest_Archer:
+                case EntityType.ForestArcher:
                 {
-
+                    entity.SetAllegiance(Allegiance.Enemy);
+                    entity.SetStateComponent();
+                    entity.AddComponent(new MovementComponent(accelerationBase: 200, maxSpeed: 80, friction: 300, position: safePosition));
+                    entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
+                    {
+                        new AttackComponent(EntityType.HeroKnightThrowingDagger, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 0), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 2000, attackCooldownMilliseconds: 500, cursorType: CursorType.Relative)
+                    }, entity.GetComponent<MovementComponent>().Position));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestArcherAttack"), drawRec: new AABB(0, 0, 96, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -10)), typeof(MovementComponent));
+                    entity.AddComponent(new HealthComponent(10, invincibilityTimeMilliseconds: 200), new List<Type> { typeof(MovementComponent), typeof(DrawComponent) });
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                    entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
+                    entity.AddComponent(new InputComponent(false), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent) });
+                    List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
+                    orders.Add(new IntelligenceOrder(EntityType.Hero, 150, OrderType.AttackPrimary, 1, 500, true));
+                    orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
+                    entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), typeof(InputComponent));
                     break;
                 }
 
@@ -229,12 +253,11 @@ namespace Wraithknight
 
                 case EntityType.HeroKnightSlashWeak:
                 {
-                    Color tint = allegiance == Allegiance.Enemy ? Color.Red : Color.White;
                     entity.SetAllegiance(allegiance);
                     entity.SetStateComponent();
                     entity.AddComponent(new MovementComponent(maxSpeed: 100, friction: 200, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
-                    entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int) safePosition.X, (int) safePosition.Y, 64, 64), boundPos: entity.GetComponent<MovementComponent>().Position, tint: tint, getRotationFromMovementVector: true), typeof(MovementComponent));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int) safePosition.X, (int) safePosition.Y, 64, 64), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true), typeof(MovementComponent));
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, knockback: 200, isPhasing: true, hitCooldownMilliseconds: 200), typeof(MovementComponent));
                     entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Type> {typeof(MovementComponent), typeof(ProjectileComponent) });
@@ -255,8 +278,8 @@ namespace Wraithknight
                 {
                     entity.SetAllegiance(allegiance);
                     entity.SetStateComponent();
-                    entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 0, position: safePosition, speed: safeSpeed));
-                    entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
+                    entity.AddComponent(new MovementComponent(maxSpeed: 1500, friction: 0, position: safePosition, speed: safeSpeed));
+                    entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 350));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("herothrowingdagger"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true), typeof(MovementComponent));
                     entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new ProjectileComponent(power: 4, damage: 2, knockback: 50, isPhasing: false, hitCooldownMilliseconds: 0), typeof(MovementComponent));
@@ -264,7 +287,49 @@ namespace Wraithknight
                     break;
                 }
 
+
+                case EntityType.ForestKnightSlash:
+                {
+                    Color tint = allegiance == Allegiance.Enemy ? Color.Red : Color.White;
+                    entity.SetAllegiance(allegiance);
+                    entity.SetStateComponent();
+                    entity.AddComponent(new MovementComponent(maxSpeed: 100, friction: 200, position: safePosition, speed: safeSpeed));
+                    entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("heroslashweak"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 64, 64), boundPos: entity.GetComponent<MovementComponent>().Position, tint: tint, getRotationFromMovementVector: true), typeof(MovementComponent));
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                    entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, knockback: 200, isPhasing: true, hitCooldownMilliseconds: 200), typeof(MovementComponent));
+                    entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Type> { typeof(MovementComponent), typeof(ProjectileComponent) });
+                    break;
+                    }
+                case EntityType.ForestArcherArrow:
+                {
+                    entity.SetAllegiance(allegiance);
+                    entity.SetStateComponent();
+                    entity.AddComponent(new MovementComponent(maxSpeed: 800, friction: 0, position: safePosition, speed: safeSpeed));
+                    entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 1000));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("herothrowingdagger"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true), typeof(MovementComponent));
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                    entity.AddComponent(new ProjectileComponent(power: 5, damage: 5, knockback: 50, isPhasing: false, hitCooldownMilliseconds: 0), typeof(MovementComponent));
+                    entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), new List<Type> { typeof(MovementComponent), typeof(ProjectileComponent) });
+                    break;
+                }
+                case EntityType.ForestWolfBite:
+                {
+                    entity.SetAllegiance(allegiance);
+                    entity.SetStateComponent();
+                    entity.AddComponent(new MovementComponent(maxSpeed: 75, friction: 200, position: safePosition, speed: safeSpeed));
+                    entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 500));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("forestWolfBite"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 32, 48), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true), typeof(MovementComponent));
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                    entity.AddComponent(new ProjectileComponent(power: 10, damage: 5, knockback: 200, isPhasing: true, hitCooldownMilliseconds: 200), typeof(MovementComponent));
+                    entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(16, 16))), new List<Type> { typeof(MovementComponent), typeof(ProjectileComponent) });
+                    break;
+                }
+
                 #endregion
+
+
+                #region DEBUG
 
                 case EntityType.DebugRectangle:
                 {
@@ -272,6 +337,8 @@ namespace Wraithknight
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("DummyTexture"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), tint: Color.Pink, layerDepth: 0.01f));
                     break;
                 }
+
+                #endregion
             }
 
             entity.FinalizeCreation();

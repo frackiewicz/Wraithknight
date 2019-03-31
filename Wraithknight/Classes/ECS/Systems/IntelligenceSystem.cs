@@ -78,12 +78,12 @@ namespace Wraithknight
             intelligence.State = order.Type;
 
 
-            if (order.Type == OrderType.Attack1 || order.Type == OrderType.Attack2)
+            if (order.Type == OrderType.AttackPrimary || order.Type == OrderType.AttackSecondary)
             {
                 input.CursorPoint = node.Pos;
                 intelligence.TargetPos = node.Pos;
-                if (order.Type == OrderType.Attack1) input.PrimaryAttack = true;
-                if (order.Type == OrderType.Attack2) input.SecondaryAttack = true;
+                if (order.Type == OrderType.AttackPrimary) input.PrimaryAttack = true;
+                if (order.Type == OrderType.AttackSecondary) input.SecondaryAttack = true;
             }
 
             if (order.Type == OrderType.Follow || order.Type == OrderType.Move)
@@ -101,8 +101,8 @@ namespace Wraithknight
             InputComponent input = null;
             if (intelligence.Bindings.TryGetValue(typeof(InputComponent), out var binding)) input = binding as InputComponent;
 
-            if (order.Type == OrderType.Attack1) input.PrimaryAttack = false;
-            if (order.Type == OrderType.Attack2) input.SecondaryAttack = false;
+            if (order.Type == OrderType.AttackPrimary) input.PrimaryAttack = false;
+            if (order.Type == OrderType.AttackSecondary) input.SecondaryAttack = false;
             if (order.Type == OrderType.Follow || order.Type == OrderType.Move) input.MovementDirection = Vector2.Zero;
         }
 

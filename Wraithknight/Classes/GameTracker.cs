@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace Wraithknight
 {
-    class SoundManager
+    class GameTracker
     {
-        private readonly GameBase _game;
-
-        public SoundManager(GameBase game)
-        {
-            _game = game;
-        }
+        public int Runs = 0;
     }
 }

@@ -9,14 +9,14 @@ namespace Wraithknight
     class Level
     {
         public bool[,] Walls;
-        public EntityType[,] Data;
+        public EntityType[,] SpawnData;
         public int TileWidth;
         public int TileHeight;
 
         public Level(int x, int y)
         {
             Walls = new bool[x, y];
-            Data = new EntityType[x, y];
+            SpawnData = new EntityType[x, y];
             TileWidth = 32;
             TileHeight = 32;
         }

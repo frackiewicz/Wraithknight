@@ -10,7 +10,6 @@ namespace Wraithknight
     {
         private readonly GraphicsDeviceManager _graphics;
         private readonly ScreenManager _screenManager;
-        private readonly SoundManager _soundManager;
 
         public readonly Color ColorBackground = Color.LightGray;
         public GameTime GameTime;
@@ -25,7 +24,6 @@ namespace Wraithknight
             _fpsCalculator = new FpsCalculator(0.5);
 
             _screenManager = new ScreenManager(this, _graphics);
-            _soundManager = new SoundManager(this);
             #endregion
 
             #region SetSettings
@@ -33,7 +31,7 @@ namespace Wraithknight
             TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 30);
             //_graphics.SynchronizeWithVerticalRetrace = false;
             IsMouseVisible = true;
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.PreferredBackBufferWidth = 1920;
 

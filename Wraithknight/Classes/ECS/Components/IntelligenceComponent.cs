@@ -11,8 +11,8 @@ namespace Wraithknight
 {
     public enum OrderType
     {
-        Attack1,
-        Attack2,
+        AttackPrimary,
+        AttackSecondary,
         Follow,
         Move,
         Null

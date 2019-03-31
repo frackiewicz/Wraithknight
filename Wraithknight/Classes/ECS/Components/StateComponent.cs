@@ -37,8 +37,8 @@ namespace Wraithknight
         };
 
         public EntityState PreviousState;
-        public EntityState CurrentState;
-        public int CurrentStatePriority;
+        public EntityState CurrentState { get; private set; }
+        public int CurrentStatePriority { get; private set; }
         public Direction Direction;
         public Direction Orientation;
 
@@ -68,6 +68,7 @@ namespace Wraithknight
             if (CurrentStatePriority < _statePriorities[state])
             {
                 CurrentState = state;
+                CurrentStatePriority = _statePriorities[state];
             }
         }
     }

@@ -51,6 +51,7 @@ namespace Wraithknight
 
         public bool Resize;
 
+        public int PresetEnemySpawnBudget;
         public int TotalEnemySpawnBudget;
 
         public readonly Dictionary<LevelPreset, List<EnemySpawnBudgetData>> EnemySpawnBudgetValues = new Dictionary<LevelPreset, List<EnemySpawnBudgetData>>
@@ -58,8 +59,9 @@ namespace Wraithknight
             {
                 LevelPreset.Forest, new List<EnemySpawnBudgetData>
                 {
-                    new EnemySpawnBudgetData(EntityType.Forest_Knight, 5),
-                    new EnemySpawnBudgetData(EntityType.Forest_Wolf, 7)
+                    new EnemySpawnBudgetData(EntityType.ForestKnight, 5),
+                    new EnemySpawnBudgetData(EntityType.ForestWolf, 7),
+                    new EnemySpawnBudgetData(EntityType.ForestArcher, 6),
                 }
             }
         };
@@ -125,7 +127,8 @@ namespace Wraithknight
 
                 Resize = true;
 
-                TotalEnemySpawnBudget = 25;
+                PresetEnemySpawnBudget = 25;
+                TotalEnemySpawnBudget = PresetEnemySpawnBudget;
             }
 
             if (preset == LevelPreset.Forest)
@@ -152,7 +155,8 @@ namespace Wraithknight
 
                 Resize = true;
 
-                TotalEnemySpawnBudget = 100;
+                PresetEnemySpawnBudget = 50;
+                TotalEnemySpawnBudget = PresetEnemySpawnBudget;
             }
         }
 
@@ -457,7 +461,7 @@ namespace Wraithknight
 
 
             level.Walls = bufferedWalls;
-            level.Data = new EntityType[level.Walls.GetLength(0), level.Walls.GetLength(1)];
+            level.SpawnData = new EntityType[level.Walls.GetLength(0), level.Walls.GetLength(1)];
         }
 
         private static void FillBuffer(bool[,] bufferedWalls)
@@ -544,7 +548,7 @@ namespace Wraithknight
         private void SpawnEntities(Level level)
         {
             bool[,] walls = level.Walls;
-            EntityType[,] data = level.Data;
+            EntityType[,] data = level.SpawnData;
 
             SpawnPathBlockers(walls, data);
             SpawnEnemies(walls, data);
