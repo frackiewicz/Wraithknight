@@ -43,7 +43,7 @@ namespace Wraithknight
             }
             else if (Flags.BootRoutine == BootRoutine.Generation)
             {
-
+                FlushAndLoad(new ScreenGenerationTester(this));
             }
             #endregion
         }

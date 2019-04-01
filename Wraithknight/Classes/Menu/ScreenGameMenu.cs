@@ -15,11 +15,13 @@ namespace Wraithknight
         private List<Button> _buttons = new List<Button>(); //how do you put logic behind buttons? how to differentiate
         private Viewport _viewport;
         private ScreenGame _screenGame;
+        private ScreenGenerationTester _screenGenerationTester;
 
-        public ScreenGameMenu(ScreenManager screenManager, ScreenGame screenGame = null) : base(screenManager)
+        public ScreenGameMenu(ScreenManager screenManager, ScreenGame screenGame = null, ScreenGenerationTester screenGenerationTester = null) : base(screenManager)
         {
             _viewport = screenManager.Graphics.GraphicsDevice.Viewport;
-            _screenGame = screenGame; 
+            _screenGame = screenGame;
+            _screenGenerationTester = screenGenerationTester;
         }
 
         public override Screen LoadContent()
@@ -53,6 +55,7 @@ namespace Wraithknight
                         if (button.ButtonHandle.Equals("restart_button"))
                         {
                             _screenGame?.Restart();
+                            _screenGenerationTester?.LoadContent();
                             _screenManager.RemoveScreen(this);
                         }
 

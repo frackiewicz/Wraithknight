@@ -52,6 +52,15 @@ namespace Wraithknight
                     break;
                 }
 
+                case EntityType.ForestBoss:
+                {
+                    frameSize = new Point(132, 96);
+                    animationList.Add(new Animation(Assets.GetTexture("forestBossRunning"), "running", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 8, 150));
+                    animationList.Add(new Animation(Assets.GetTexture("forestBossDying"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 1, 500));
+                    animationList.Add(new Animation(Assets.GetTexture("forestBossAttack"), "attacking", "idle", frameSize, EntityState.Attacking).CreateAnimationFrames(0, 10, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("forestBossDying"), "dying", "dying", frameSize, EntityState.Dying).CreateAnimationFrames(0, 18, 100));
+                    break;
+                }
                 #endregion
 
                 #region Objects

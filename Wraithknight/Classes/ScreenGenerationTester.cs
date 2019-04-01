@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Wraithknight.Classes
+namespace Wraithknight
 {
     class ScreenGenerationTester : Screen
     {
@@ -53,7 +53,8 @@ namespace Wraithknight.Classes
 
         public override Screen LoadContent()
         {
-            _currentLevel = _levelGenerator.GenerateLevel();
+            _currentLevel = new Level(100, 100);
+            _levelGenerator.StepFillWithNoise(_currentLevel);
             _ecs.PurgeForNextLevel();
             _ecs.ProcessLevel(_currentLevel);
             return this;
@@ -102,21 +103,36 @@ namespace Wraithknight.Classes
         public override Screen HandleInput(GameTime gameTime)
         {
             if (InputReader.IsKeyTriggered(Keys.Escape)) OpenMenuScreen();
-            if (InputReader.IsKeyTriggered(Keys.F1)) ToggleAllDebug();
-            if (InputReader.IsKeyTriggered(Keys.F2)) Flags.ShowDrawRecs = !Flags.ShowDrawRecs;
-            if (InputReader.IsKeyTriggered(Keys.F3)) Flags.ShowCollisionRecs = !Flags.ShowCollisionRecs;
-            if (InputReader.IsKeyTriggered(Keys.F4)) Flags.ShowDebuggingText = !Flags.ShowDebuggingText;
-            if (InputReader.IsKeyTriggered(Keys.F5)) Flags.ShowMovementCenters = !Flags.ShowMovementCenters;
 
-            if (InputReader.IsKeyTriggered(Keys.B))
+            if (InputReader.IsKeyTriggered(Keys.D1))
             {
+                _levelGenerator.StepFillWithNoise(_currentLevel);
+                ApplyLevel(_currentLevel);
             }
-
-            if (InputReader.IsKeyTriggered(Keys.N)) //TODO Create GenerationTesterScreen to test generation lmao
+            if (InputReader.IsKeyTriggered(Keys.D2))
             {
-                _levelGenerator.ApplySimpleCellularAutomata(_currentLevel);
-                _ecs.PurgeForNextLevel();
-                _ecs.ProcessLevel(_currentLevel);
+                _levelGenerator.StepFillBoundsWithNoise(_currentLevel);
+                ApplyLevel(_currentLevel);
+            }
+            if (InputReader.IsKeyTriggered(Keys.D3))
+            {
+                _levelGenerator.StepApplyCellularAutomata(_currentLevel);
+                ApplyLevel(_currentLevel);
+            }
+            if (InputReader.IsKeyTriggered(Keys.D4))
+            {
+                _levelGenerator.StepMapCleanUp(_currentLevel);
+                ApplyLevel(_currentLevel);
+            }
+            if (InputReader.IsKeyTriggered(Keys.D5))
+            {
+                _levelGenerator.StepResizeLevelToEdges(_currentLevel);
+                ApplyLevel(_currentLevel);
+            }
+            if (InputReader.IsKeyTriggered(Keys.D6))
+            {
+                _levelGenerator.StepSpawnEntities(_currentLevel);
+                ApplyLevel(_currentLevel);
             }
 
             if (InputReader.IsKeyTriggered(Keys.M))
@@ -131,12 +147,22 @@ namespace Wraithknight.Classes
             return this;
         }
 
+        private void ApplyLevel(Level level)
+        {
+            _ecs.PurgeForNextLevel();
+            _ecs.ProcessLevel(level);
+        }
+
         private void SimpleCameraMovement(GameTime gameTime)
         {
-            if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
-            if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 50 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyTriggered(Keys.Space)) _camera.FollowingHero = !_camera.FollowingHero;
+
+            if (InputReader.IsKeyPressed(Keys.Up)) _camera.TargetPosition.Y -= 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Down)) _camera.TargetPosition.Y += 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Left)) _camera.TargetPosition.X -= 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+            if (InputReader.IsKeyPressed(Keys.Right)) _camera.TargetPosition.X += 500 * (float)gameTime.ElapsedGameTime.TotalSeconds * 1 / _camera.CurrentZoom;
+
+
 
             if (InputReader.IsScrollingUp()) _camera.TargetZoom += 1;
             if (InputReader.IsScrollingDown()) _camera.TargetZoom -= 1;
@@ -165,7 +191,7 @@ namespace Wraithknight.Classes
 
         private void OpenMenuScreen()
         {
-            _screenManager.AddScreen(new ScreenGameMenu(_screenManager));
+            _screenManager.AddScreen(new ScreenGameMenu(_screenManager, screenGenerationTester: this));
         }
     }
 }

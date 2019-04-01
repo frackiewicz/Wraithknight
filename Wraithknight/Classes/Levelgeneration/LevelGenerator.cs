@@ -101,6 +101,39 @@ namespace Wraithknight
             return level;
         }
 
+        #region Step By Step Generation
+
+        public void StepFillWithNoise(Level level)
+        {
+            FillLevelWithRandomNoise(level, NoisePercent);
+        }
+
+        public void StepFillBoundsWithNoise(Level level)
+        {
+            FillBoundsWithRandomNoise(level, BoundsNoisePercent, BoundsReach);
+        }
+
+        public bool StepApplyCellularAutomata(Level level)
+        {
+            return ApplySimpleCellularAutomata(level);
+        }
+
+        public void StepMapCleanUp(Level level)
+        {
+            MapCleanupFuckyou(level.Walls);
+        }
+
+        public void StepResizeLevelToEdges(Level level)
+        {
+            ResizeLevelToEdges(level, 4);
+        }
+
+        public void StepSpawnEntities(Level level)
+        {
+            SpawnEntities(level);
+        }
+        #endregion
+
         public void ApplyPreset(LevelPreset preset)
         {
             if (preset == LevelPreset.Test)
@@ -321,6 +354,11 @@ namespace Wraithknight
             return true;
         }
 
+        private void MapCleanupFuckyou(bool[,] map)
+        {
+            if(RemoveEmptyRooms) RemoveSmallerRoomsFuckyou(map);
+        }
+
         private bool RemoveSmallerRooms(bool[,] map)
         {
             bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
@@ -348,6 +386,32 @@ namespace Wraithknight
             }
 
             return true;
+        }
+
+        private void RemoveSmallerRoomsFuckyou(bool[,] map)
+        {
+            bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
+            List<Floodling> rooms = new List<Floodling>();
+
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    if (!map[x, y] && !visited[x, y])
+                    {
+                        RunFloodling(x, y, map, visited, rooms);
+                    }
+                }
+            }
+
+            rooms.Sort((a, b) => b.Count.CompareTo(a.Count));
+
+            float OpenPercentage = ((float)rooms[0].Count / map.Length) * 100;
+
+            for (int i = 1; i < rooms.Count; i++)
+            {
+                FlipSimilarCluster(rooms[i], map, new bool[map.GetLength(0), map.GetLength(1)]);
+            }
         }
 
         private static int CountRooms(bool[,] map)
@@ -603,6 +667,7 @@ namespace Wraithknight
                 }
                 #endregion
             }
+            SpawnEnemyAtRandomLocation(walls, data, EntityType.ForestBoss);
         }
 
 

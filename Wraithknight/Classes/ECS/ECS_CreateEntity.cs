@@ -19,6 +19,7 @@ namespace Wraithknight
         ForestKnight,
         ForestWolf,
         ForestArcher,
+        ForestBoss,
 
         //Objects
         Wall,
@@ -141,6 +142,27 @@ namespace Wraithknight
                     entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), typeof(InputComponent));
                     break;
                 }
+
+                case EntityType.ForestBoss:
+                    {
+                        entity.SetAllegiance(Allegiance.Enemy);
+                        entity.SetStateComponent();
+                        entity.AddComponent(new MovementComponent(accelerationBase: 200, maxSpeed: 80, friction: 300, position: safePosition));
+                        entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
+                    {
+                        new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 20, startSpeed: 300, attackState: 0, attackDelayMilliseconds: 900, attackCooldownMilliseconds: 1500, cursorType: CursorType.Relative)
+                    }, entity.GetComponent<MovementComponent>().Position));
+                        entity.AddComponent(new DrawComponent(Assets.GetTexture("forestBossDying"), drawRec: new AABB(0, 0, 128, 64), scale: new Vector2(1, 1), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -32)), typeof(MovementComponent));
+                        entity.AddComponent(new HealthComponent(40, invincibilityTimeMilliseconds: 200), new List<Type> { typeof(MovementComponent), typeof(DrawComponent) });
+                        entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                        entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
+                        entity.AddComponent(new InputComponent(false), new List<Type> { typeof(MovementComponent), typeof(AttackBehaviorComponent) });
+                        List<IntelligenceOrder> orders = new List<IntelligenceOrder>();
+                        orders.Add(new IntelligenceOrder(EntityType.Hero, 100, OrderType.AttackPrimary, 1, 750, true));
+                        orders.Add(new IntelligenceOrder(EntityType.Hero, 300, OrderType.Move, 0, 250, true));
+                        entity.AddComponent(new IntelligenceComponent(orders, entity.GetComponent<MovementComponent>().Position), typeof(InputComponent));
+                        break;
+                    }
 
                 #endregion
 
