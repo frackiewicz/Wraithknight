@@ -94,7 +94,7 @@ namespace Wraithknight
 
             if (DoCleanup && !MapCleanup(level.Walls)) return GenerateLevel(level.Walls.GetLength(0), level.Walls.GetLength(1)); //TODO Rework this
 
-            if (Resize) ResizeLevelToEdges(level, 4);
+            if (Resize) ResizeLevelToEdges(level, 10);
 
             SpawnEntities(level);
 

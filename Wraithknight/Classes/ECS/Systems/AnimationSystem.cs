@@ -28,9 +28,9 @@ namespace Wraithknight
                 {
                     StartAnimation(component, component.CurrentEntityState.CurrentState, gameTime);
                 }
-                if (component.CurrentAnimation == null) return;
 
-                ProcessAnimation(component, gameTime);
+                if (component.CurrentAnimation == null) return;
+                ProcessCurrentAnimation(component, gameTime);
 
                 if (component.CurrentAnimation.AllowMirroring) ApplyMirroring(component); else ResetMirroring(component);
             }
@@ -64,7 +64,7 @@ namespace Wraithknight
         }
 
 
-        private static void ProcessAnimation(AnimationComponent component, GameTime gameTime)
+        private static void ProcessCurrentAnimation(AnimationComponent component, GameTime gameTime)
         {
             if (component.CurrentAnimation.Finished(gameTime))
             {

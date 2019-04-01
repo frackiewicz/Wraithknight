@@ -30,7 +30,7 @@ namespace Wraithknight
 
                 SetPreviousState(stateComponent);
                 ClearCurrentState(stateComponent);
-                if(stateComponent.Dead) KillEntity(stateComponent);
+                if(stateComponent.Dead && stateComponent.CurrentState != EntityState.Dying) KillEntity(stateComponent); //TODO Statecheck is a bandaid FUCKINGHELL RESOLVE THIS
             }
         }
 
@@ -41,6 +41,10 @@ namespace Wraithknight
 
         private void SetPreviousState(StateComponent component) //gets called when all computation is finished and it is preparing for the next game update
         {
+            if (component.CurrentState == EntityState.Dying && component.RootType == EntityType.ForestArcher)
+            {
+
+            }
             component.RecentlyChanged = component.PreviousState != component.CurrentState;
             component.PreviousState = component.CurrentState;
         }

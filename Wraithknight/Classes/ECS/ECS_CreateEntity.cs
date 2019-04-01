@@ -71,11 +71,12 @@ namespace Wraithknight
                     entity.AddComponent(new MovementComponent(accelerationBase: 1250, maxSpeed: 175, friction: 800, position: safePosition));
                     entity.AddComponent(new AttackBehaviorComponent(new List<AttackComponent>()
                     {
-                        new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 35, startSpeed: 200, attackState: 0, attackCooldownMilliseconds: 500, blockInputDurationMilliseconds: 250, selfKnockback: -150),
+                        new AttackComponent(EntityType.HeroKnightSlashWeak, AttackType.Primary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 35, startSpeed: 200, attackState: 0, attackDelayMilliseconds: 100, attackCooldownMilliseconds: 500, blockInputDurationMilliseconds: 250, selfKnockback: -150),
                         new AttackComponent(EntityType.HeroKnightThrowingDagger, AttackType.Secondary, entity.GetComponent<MovementComponent>().Position, new Vector2(0, 20), posOffsetInDirection: 25, startSpeed: 1100, attackState: 0, attackCooldownMilliseconds: 250, blockInputDurationMilliseconds: 100)
                     }, entity.GetComponent<MovementComponent>().Position));
                     entity.AddComponent(new IntelligenceNode(EntityType.Hero, entity.GetComponent<MovementComponent>().Position));
-                    entity.AddComponent(new DrawComponent(Assets.GetTexture("hero"), drawRec: new AABB(0, 0, 32, 64), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -16)), typeof(MovementComponent));
+                    entity.AddComponent(new DrawComponent(Assets.GetTexture("heroIdle"), drawRec: new AABB(0, 0, 100, 100), boundPos: entity.GetComponent<MovementComponent>().Position, offset: new Vector2(0, -8)), typeof(MovementComponent));
+                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new HealthComponent(20), typeof(MovementComponent));
                     entity.AddComponent(new CollisionComponent(collisionRectangle: new AABB(safePosition, new Vector2(16, 16)), offset: new Vector2(20, 40), isPhysical: true), new List<Type> { typeof(MovementComponent), typeof(HealthComponent) });
                     entity.AddComponent(new BlinkComponent(3, 2000, 1000, 125), new List<Type> { typeof(InputComponent), typeof(MovementComponent), typeof(AttackBehaviorComponent), typeof(CollisionComponent), typeof(HealthComponent), typeof(DrawComponent) });
@@ -303,7 +304,7 @@ namespace Wraithknight
                     entity.AddComponent(new MovementComponent(maxSpeed: 1500, friction: 0, position: safePosition, speed: safeSpeed));
                     entity.AddComponent(new TimerComponent(TimerType.Death, currentTime: gameTime, targetLifespanInMilliseconds: 350));
                     entity.AddComponent(new DrawComponent(Assets.GetTexture("herothrowingdagger"), drawRec: new AABB((int)safePosition.X, (int)safePosition.Y, 16, 16), boundPos: entity.GetComponent<MovementComponent>().Position, getRotationFromMovementVector: true), typeof(MovementComponent));
-                    entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
+                    //entity.AddComponent(new AnimationComponent(AnimationStructures.GetAnimationList(type)), typeof(DrawComponent));
                     entity.AddComponent(new ProjectileComponent(power: 4, damage: 2, knockback: 50, isPhasing: false, hitCooldownMilliseconds: 0), typeof(MovementComponent));
                     entity.AddComponent(new CollisionComponent(behavior: CollisionBehavior.Pass, collisionRectangle: new AABB(safePosition, new Vector2(8, 8))), new List<Type> { typeof(MovementComponent), typeof(ProjectileComponent) });
                     break;
