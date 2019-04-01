@@ -32,6 +32,7 @@ namespace Wraithknight
                 AccelerateUntilMaxSpeed(movement, gameTime);
                 SetMovementStates(movement);
 
+                HandleDeadComponent(movement);
                 movement.IsMoving = !movement.Speed.Cartesian.Equals(Constants.NullVector);
             }
         }
@@ -119,6 +120,16 @@ namespace Wraithknight
             else
             {
                 if (stateComponent.CurrentState == EntityState.Moving) stateComponent.Clear();
+            }
+        }
+
+        private void HandleDeadComponent(MovementComponent movement)
+        {
+            if (movement.CurrentEntityState.Dead)
+            {
+                movement.Acceleration.ChangeX(0);
+                movement.Acceleration.ChangeY(0);
+                if (!movement.IsMoving) movement.Deactivate();
             }
         }
     }

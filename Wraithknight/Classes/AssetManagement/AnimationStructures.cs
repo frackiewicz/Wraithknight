@@ -22,6 +22,17 @@ namespace Wraithknight
 
                 #region Actors
 
+                case EntityType.Hero:
+                {
+                    frameSize = new Point(100, 100);
+                    animationList.Add(new Animation(Assets.GetTexture("heroRunningIn"), "runningIn", "running", frameSize, EntityState.Moving).CreateAnimationFrames(0, 3, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("heroRunning"), "running", "running", frameSize, EntityState.None).CreateAnimationFrames(0, 8, 100));
+                    //animationList.Add(new Animation(Assets.GetTexture("heroRunningOut"), "runningOut", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 4, 100));
+                    animationList.Add(new Animation(Assets.GetTexture("heroIdle"), "idle", "idle", frameSize, EntityState.Idle).CreateAnimationFrames(0, 5, 500));
+                    animationList.Add(new Animation(Assets.GetTexture("heroAttack"), "attacking", "idle", frameSize, EntityState.Attacking).CreateAnimationFrames(0, 8, 100));
+                    break;
+                }
+
                 case EntityType.ForestKnight:
                 {
                     frameSize = new Point(128, 64);
