@@ -1,0 +1,15 @@
+Generell:
+undeutliche Sätze neu formuliert.
+
+
+1.2.1 ECS
+Bild hinzugefügt
+
+1.6.3 Simple Animationen
+Bild hinzugefügt
+
+1.9.1 Cellular Automata
+Zweiter Absatz mit Erklärung erweitert
+
+1.9.2 Kapitel hinzugefügt
+//Passen die Bilder?
