@@ -35,7 +35,7 @@ namespace Wraithknight
             #region Bootroutine
             if (Flags.BootRoutine == BootRoutine.Game)
             {
-                //run game title
+                FlushAndLoad(new ScreenMainMenu(this));
             }
             else if (Flags.BootRoutine == BootRoutine.TestingRoom)
             {
@@ -63,15 +63,21 @@ namespace Wraithknight
             screenToRemove.UnloadContent();
             _screens.Remove(screenToRemove);
         }
+
+        public void UnloadScreen(Screen screenToUnload)
+        {
+            screenToUnload.UnloadContent();
+        }
         public Screen[] GetScreens() { return _screens.ToArray(); }
 
         public void FlushAndLoad(Screen screenToLoad)
         {
             foreach (Screen screen in _screens)
             {
-                RemoveScreen(screen);
+                UnloadScreen(screen);
             }
-            
+            _screens.Clear();
+
             AddScreen(screenToLoad);
         }
         #endregion

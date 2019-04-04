@@ -28,7 +28,8 @@ namespace Wraithknight
         {
             _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "return_button", "Return", Assets.GetFont("Test"), new Vector2(0, 0)));
             _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 25), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "exit_button", "Exit", Assets.GetFont("Test"), new Vector2(0, 0)));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 50), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "restart_button", "Restart", Assets.GetFont("Test"), new Vector2(0, 0)));
+            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 50), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "options_button", "Options", Assets.GetFont("Test"), new Vector2(0, 0)));
+            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 75), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "restart_button", "Restart", Assets.GetFont("Test"), new Vector2(0, 0)));
 
 
             _objects.AddRange(_buttons);
@@ -52,6 +53,7 @@ namespace Wraithknight
 
                         if (button.ButtonHandle.Equals("return_button")) _screenManager.RemoveScreen(this);
                         if (button.ButtonHandle.Equals("exit_button")) Functions_GameControl.ExitGame();
+                        if (button.ButtonHandle.Equals("options_button")) _screenManager.AddScreen(new ScreenOptionsMenu(_screenManager));
                         if (button.ButtonHandle.Equals("restart_button"))
                         {
                             _screenGame?.Restart();
