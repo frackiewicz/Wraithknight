@@ -13,7 +13,7 @@ namespace Wraithknight
         // ****************************************************************** //
         // Descriptors
         public static float Version = 0.01f;
-        public static BootRoutine BootRoutine = BootRoutine.Game;
+        public static BootRoutine BootRoutine = BootRoutine.TestingRoom;
 
 
         // Dev flags
