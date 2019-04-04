@@ -124,7 +124,7 @@ namespace Wraithknight
                 _actors.Add(entity);
             }
 
-            if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf) //TODO temporary
+            if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf || type == EntityType.ForestBoss) //TODO temporary
             {
                 _levelTracker.EnemiesCount++;
             }
@@ -170,13 +170,18 @@ namespace Wraithknight
         {
             if (HasDeathAnimation(entity))
             {
+                EntityType type = entity.Type; //TODO temporary
+                if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf || type == EntityType.ForestBoss)
+                {
+                    Assets.GetSound("Sterben").Play();
+                }
                 ExecuteDeathAnimation(entity);
                 DeactivateSelectComponents(entity);
             }
             else
             {
                 EntityType type = entity.Type; //TODO temporary
-                if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf)
+                if (type == EntityType.ForestArcher || type == EntityType.ForestKnight || type == EntityType.ForestWolf || type == EntityType.ForestBoss)
                 {
                     _levelTracker.EnemiesCount--;
                     if (_levelTracker.EnemiesCount <= 0) _levelTracker.ReadyForRestart = true;

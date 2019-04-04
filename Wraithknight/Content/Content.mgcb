@@ -403,6 +403,18 @@
 /processorParam:TextureFormat=Color
 /build:mushroom2.png
 
+#begin Schlag.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Schlag.wav
+
+#begin Sterben.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sterben.wav
+
 #begin Test.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
