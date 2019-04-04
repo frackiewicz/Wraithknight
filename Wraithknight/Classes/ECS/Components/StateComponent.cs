@@ -44,6 +44,7 @@ namespace Wraithknight
 
         public bool Blinking = false;
         public bool Dead = false;
+        public bool ReadyToRemove = false;
 
         public bool ReadyToChange; //To fixate states and put them on a timer maybe?
         public bool RecentlyChanged;

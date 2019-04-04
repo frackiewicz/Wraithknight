@@ -30,7 +30,7 @@ namespace Wraithknight
 
                 SetPreviousState(stateComponent);
                 ClearCurrentState(stateComponent);
-                if(stateComponent.Dead && stateComponent.CurrentState != EntityState.Dying) KillEntity(stateComponent); //TODO Statecheck is a bandaid FUCKINGHELL RESOLVE THIS
+                if((stateComponent.Dead && stateComponent.CurrentState != EntityState.Dying) || stateComponent.ReadyToRemove) KillEntity(stateComponent); //TODO Statecheck is a bandaid FUCKINGHELL RESOLVE THIS
             }
         }
 

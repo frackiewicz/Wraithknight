@@ -71,6 +71,7 @@ namespace Wraithknight
                 if (component.CurrentAnimation.Trigger == EntityState.Dying)
                 {
                     component.CurrentEntityState.Dead = true;
+                    component.CurrentEntityState.ReadyToRemove = true;
                     return;
                 }
                 if (component.CurrentAnimation.Looping) ReplayAnimation(component, gameTime);
