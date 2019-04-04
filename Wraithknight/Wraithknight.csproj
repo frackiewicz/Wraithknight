@@ -101,6 +101,8 @@
     <Compile Include="Classes\Levelgeneration\Level.cs" />
     <Compile Include="Classes\Menu\IInteractableMenuObject.cs" />
     <Compile Include="Classes\Menu\MenuObject.cs" />
+    <Compile Include="Classes\Menu\ScreenMainMenu.cs" />
+    <Compile Include="Classes\Menu\ScreenOptionsMenu.cs" />
     <Compile Include="Classes\Overrides\AABB.cs" />
     <Compile Include="Classes\Overrides\Vector2ref.cs" />
     <Compile Include="Classes\Program.cs" />
