@@ -41,10 +41,6 @@ namespace Wraithknight
 
         private void SetPreviousState(StateComponent component) //gets called when all computation is finished and it is preparing for the next game update
         {
-            if (component.CurrentState == EntityState.Dying && component.RootType == EntityType.ForestArcher)
-            {
-
-            }
             component.RecentlyChanged = component.PreviousState != component.CurrentState;
             component.PreviousState = component.CurrentState;
         }

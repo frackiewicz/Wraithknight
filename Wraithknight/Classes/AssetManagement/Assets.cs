@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,7 +18,7 @@ namespace Wraithknight
 
 
         private static Dictionary<String, RessourceTexture> TextureLibrary = new Dictionary<String, RessourceTexture>();
-        //TODO Sounds
+        private static Dictionary<String, RessourceSoundEffect> SoundLibrary = new Dictionary<String, RessourceSoundEffect>();
         private static Dictionary<String, RessourceFont> FontLibrary = new Dictionary<String, RessourceFont>();
 
         public static void Initialize(GraphicsDevice graphics, ContentManager content)
@@ -44,9 +45,9 @@ namespace Wraithknight
                 return TextureLibrary[filePath].Texture;
             }
 
-            Texture2D Texture = _content.Load<Texture2D>(filePath);
-            TextureLibrary.Add(filePath, new RessourceTexture(Texture)); // maybe implement permanent storage? FLAGS
-            return Texture;
+            Texture2D texture = _content.Load<Texture2D>(filePath);
+            TextureLibrary.Add(filePath, new RessourceTexture(texture)); // maybe implement permanent storage? FLAGS
+            return texture;
         }
 
         public static void UnloadTexture(String filePath)
@@ -58,6 +59,18 @@ namespace Wraithknight
                 ressource.RefCount--;
                 if (ressource.RefCount <= 0) TextureLibrary.Remove(filePath);
             }
+        }
+
+        public static SoundEffect GetSound(String filePath)
+        {
+            if (SoundLibrary.ContainsKey(filePath))
+            {
+                return SoundLibrary[filePath].SoundEffect;
+            }
+
+            SoundEffect SoundEffect = _content.Load<SoundEffect>(filePath);
+            SoundLibrary.Add(filePath, new RessourceSoundEffect(SoundEffect)); // maybe implement permanent storage? FLAGS
+            return SoundEffect;
         }
 
         public static SpriteFont GetFont(String filePath)
@@ -87,6 +100,18 @@ namespace Wraithknight
                 Texture = texture;
                 RefCount = 1;
                 Permanent = permanent;
+            }
+        }
+
+        private class RessourceSoundEffect
+        {
+            internal readonly SoundEffect SoundEffect;
+            internal int RefCount;
+
+            internal RessourceSoundEffect(SoundEffect soundEffect, bool permanent = false)
+            {
+                SoundEffect = soundEffect;
+                RefCount = 1;
             }
         }
 

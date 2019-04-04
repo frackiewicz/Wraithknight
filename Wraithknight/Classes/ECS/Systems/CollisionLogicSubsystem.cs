@@ -5,6 +5,8 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Wraithknight
 {
@@ -124,6 +126,8 @@ namespace Wraithknight
                 if (!actor.IsPhasing) actor.CurrentEntityState.Dead = true; //projectile didnt penetrate
                 ApplyKnockback(actor, target);
             }
+            SoundEffect effect = Assets.GetSound("Schlag");
+            effect.Play();
         }
 
         private void ApplyKnockback(ProjectileComponent actor, BindableComponent target)
