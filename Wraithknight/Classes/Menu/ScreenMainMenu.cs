@@ -22,7 +22,7 @@ namespace Wraithknight
 
         public override Screen LoadContent()
         {
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "start_game_button", "Start", Assets.GetFont("Test"), new Vector2(0, 0)));
+            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(Assets.GetTexture("start"), new AABB(50, 50, 451, 75)), new Rectangle(50, 50, 451, 75), "start_game_button"));
             _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 25), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "options_button", "Options", Assets.GetFont("Test"), new Vector2(0, 0)));
             _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 50), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "exit_button", "Exit", Assets.GetFont("Test"), new Vector2(0, 0)));
 
@@ -65,6 +65,7 @@ namespace Wraithknight
         public override Screen Draw(GameTime gameTime)
         {
             _screenManager.SpriteBatch.Begin();
+            _screenManager.SpriteBatch.Draw(Assets.GetTexture("MenuBackground"), new Rectangle(0, 0, 1920, 1080), Color.White);
             foreach (var menuObject in _objects)
             {
                 menuObject.Align(_viewport); //TODO optimize when this gets updated, maybe only on res change
