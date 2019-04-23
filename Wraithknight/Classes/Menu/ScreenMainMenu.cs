@@ -22,19 +22,12 @@ namespace Wraithknight
 
         public override Screen LoadContent()
         {
-<<<<<<< HEAD
             AABB aabb = new AABB(50, 50, 451, 75);
             Rectangle rectangle = new Rectangle(50, 50, 451, 75);
 
             _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2 - 100), new DrawComponent(Assets.GetTexture("start"), aabb), rectangle, "start_game_button"));
             _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(Assets.GetTexture("options"), aabb), rectangle, "options_button"));
             _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 100), new DrawComponent(Assets.GetTexture("exit"), aabb), rectangle, "exit_button"));
-=======
-            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(Assets.GetTexture("start"), new AABB(50, 50, 451, 75)), new Rectangle(50, 50, 451, 75), "start_game_button"));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 25), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "options_button", "Options", Assets.GetFont("Test"), new Vector2(0, 0)));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 50), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "exit_button", "Exit", Assets.GetFont("Test"), new Vector2(0, 0)));
->>>>>>> 8645d874ee37e774e3b8a6cea3ac3e8ef156e2e0
-
 
             _objects.AddRange(_buttons);
             AlignObjects();
