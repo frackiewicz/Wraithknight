@@ -26,11 +26,14 @@ namespace Wraithknight
 
         public override Screen LoadContent()
         {
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "return_button", "Return", Assets.GetFont("Test"), new Vector2(0, 0)));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 25), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "exit_button", "Exit", Assets.GetFont("Test"), new Vector2(0, 0)));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 50), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "options_button", "Options", Assets.GetFont("Test"), new Vector2(0, 0)));
-            _buttons.Add(new ButtonWithText(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 75), new DrawComponent(drawRec: new AABB(50, 50, 100, 20)), new Rectangle(50, 50, 100, 20), "restart_button", "Restart", Assets.GetFont("Test"), new Vector2(0, 0)));
+            AABB aabb = new AABB(50, 50, 451, 75);
+            Rectangle rectangle = new Rectangle(50, 50, 451, 75);
 
+            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2 - 100), new DrawComponent(Assets.GetTexture("return"), aabb), rectangle, "return_button"));
+            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2), new DrawComponent(Assets.GetTexture("restart"), aabb), rectangle, "restart_button"));
+            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 100), new DrawComponent(Assets.GetTexture("options"), aabb), rectangle, "options_button"));
+            _buttons.Add(new Button(new Vector2(_viewport.Width / 2, _viewport.Height / 2 + 200), new DrawComponent(Assets.GetTexture("exit"), aabb), rectangle, "exit_button"));
+           
 
             _objects.AddRange(_buttons);
             AlignObjects();
