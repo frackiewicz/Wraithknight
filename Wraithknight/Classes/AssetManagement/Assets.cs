@@ -68,15 +68,9 @@ namespace Wraithknight
                 return SoundLibrary[filePath].SoundEffect;
             }
 
-<<<<<<< HEAD
-            SoundEffect soundEffect = _content.Load<SoundEffect>(filePath);
-            SoundLibrary.Add(filePath, new RessourceSoundEffect(soundEffect)); // maybe implement permanent storage? FLAGS
-            return soundEffect;
-=======
             SoundEffect SoundEffect = _content.Load<SoundEffect>(filePath);
             SoundLibrary.Add(filePath, new RessourceSoundEffect(SoundEffect)); // maybe implement permanent storage? FLAGS
             return SoundEffect;
->>>>>>> 8645d874ee37e774e3b8a6cea3ac3e8ef156e2e0
         }
 
         public static SpriteFont GetFont(String filePath)

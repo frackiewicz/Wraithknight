@@ -1,5 +1,0 @@
-Make the first main character
-Make the first enemy, knight
-Make a simple forest tileset
-Attempt simple map generation
-Put it all together and test movement
